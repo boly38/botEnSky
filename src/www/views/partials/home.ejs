@@ -1,0 +1,21 @@
+  <div class="panel panel-info" id="logs">
+    <div class="panel-heading">Les logs du robot</div>
+    <div class="panel-body">
+        <p>
+            Bienvenue sur la page du <a href="<%- blueskyAccount %>"
+                                        data-umami-event="{blueskyAccount link}" id="blueskyAccount-link"
+                                        class="umami--click--profile-button">@<%- blueskyDisplayName %></a>
+              - un robot BlueSky <a href="https://nodejs.org/"
+                                    data-umami-event="{nodejs link}" id="nodejs-link"
+                                    class="umami--click--nodejs-button">NodeJS</a>.<br/>
+            <br/>
+            Voici mes activités récentes <a href="/" data-umami-event="{logs-refresh link}" id="logs-refresh-link">🔄</a>:<br/>
+              <ul>
+                <% news.forEach(function(newsEntry){ %>
+                  <li><%- newsEntry  %></li>
+                <% }); %>
+                <li>version <%- version %></li>
+              </ul>
+        </>
+    </div>
+  </div>
