@@ -1,0 +1,8 @@
+.env
+.env.*
+.env.test
+!.env.githubaction
+!.env.template
+!.env.bash.development
+!.env.bash.production
+deprecated
