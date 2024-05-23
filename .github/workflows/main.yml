@@ -21,34 +21,35 @@ jobs:
     strategy:
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        node-version: [18.x]
+        node-version: [ 18.x ]
 
-    environment: github_actions_bes #NODE_ENV=test
+    environment: github_actions_bes
     steps:
-    - uses: actions/checkout@v3
+      - name: Git checkout
+        uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies
-      # npx force-resolutions : in case of Permission denied: run it locally to fix package-lock.json
-      run: |
-        echo "install"
-        npm install
-        echo "show outdated (if any)"
-        npm outdated --depth=3 || echo "you must think about update your dependencies :)"
+      - name: Install dependencies
+        # npx force-resolutions : in case of Permission denied: run it locally to fix package-lock.json
+        run: |
+          echo "install"
+          npm install
+          echo "show outdated (if any)"
+          npm outdated --depth=3 || echo "you must think about update your dependencies :)"
 
-    - name: Run tests
-      env:
-        TZ: ${{ vars.TZ }}
-        NODE_ENV: ${{ vars.NODE_ENV }}
-        BLUESKY_SERVICE: ${{ vars.BLUESKY_SERVICE }}
-        BLUESKY_USERNAME: ${{ vars.BLUESKY_USERNAME }}
-        BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
-        BOT_ENGINE_MIN_INTERVAL_MS: ${{ secrets.BOT_ENGINE_MIN_INTERVAL_MS }}
-        BOT_PLANTNET_SIMULATE: ${{ secrets.BOT_PLANTNET_SIMULATE }}
-        BOT_TOKEN_SIMULATION: ${{ secrets.BOT_TOKEN_SIMULATION }}
-        PLANTNET_API_PRIVATE_KEY: ${{ secrets.PLANTNET_API_PRIVATE_KEY }}
-      run: npm run ci-test
+      - name: Run tests
+        env:
+          TZ: ${{ vars.TZ }}
+          NODE_ENV: ${{ vars.NODE_ENV }}
+          BLUESKY_SERVICE: ${{ vars.BLUESKY_SERVICE }}
+          BLUESKY_USERNAME: ${{ vars.BLUESKY_USERNAME }}
+          BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
+          BOT_ENGINE_MIN_INTERVAL_MS: ${{ secrets.BOT_ENGINE_MIN_INTERVAL_MS }}
+          BOT_PLANTNET_SIMULATE: ${{ secrets.BOT_PLANTNET_SIMULATE }}
+          BOT_TOKEN_SIMULATION: ${{ secrets.BOT_TOKEN_SIMULATION }}
+          PLANTNET_API_PRIVATE_KEY: ${{ secrets.PLANTNET_API_PRIVATE_KEY }}
+        run: npm run ci-test
