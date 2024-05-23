@@ -19,6 +19,7 @@ const wwwPath = path.join(__dirname, './src/www');
 const DEBUG_SERVER = false;
 const BES_ISSUES = cacheGetProjectBugsUrl();
 
+const UNAUTHORIZED_FRIENDLY = "Le milieu autorisé c'est un truc, vous y êtes pas vous hein !";// (c) Coluche
 export default class ExpressServer {
     constructor(services) {
         const {config, blueskyService, botService, newsService} = services;
@@ -78,29 +79,20 @@ export default class ExpressServer {
             let pluginName = req.get('PLUGIN-NAME');
             let doSimulate = expressServer.tokenSimulation && apiToken === expressServer.tokenSimulation;
             let doAction = !doSimulate && expressServer.tokenAction && apiToken === expressServer.tokenAction;
-            if (!doSimulate && !doAction) {
-                this.logger.debug(StatusCodes.UNAUTHORIZED, JSON.stringify({
-                    code: 401,
-                    doSimulate,
-                    doAction
-                }));
-                unauthorized(res, "Le milieu autorisé c'est un truc, vous y êtes pas vous hein !", );
-                return;
-            }
-
-            const pluginResult = await expressServer.botService.process(remoteAdd, doSimulate, pluginName)
-                .catch(err => {
-                    res.status(err.status).json({success: false, message: err});
-                });
-            if (pluginResult !== undefined) {
-                res.status(200).json({success: true, message: pluginResult});
+            if (doSimulate || doAction) {
+                expressServer.botService.process(remoteAdd, doSimulate, pluginName)
+                    .then(() => res.status(200).json({success: true}))
+                    .catch(err => res.status(err.status).json({success: false, message: err}));
+            } else {
+                this.logger.debug(StatusCodes.UNAUTHORIZED, JSON.stringify({code: 401, doSimulate, doAction}));
+                unauthorized(res, UNAUTHORIZED_FRIENDLY);
             }
         } catch (error) {
             let errId = generateErrorId();
             this.logger.error(errId, error);
             res.status(500).json({
                 success: false,
-                message: `Erreur inattendue, merci de la signaler sur ${BES_ISSUES} - ` + errId
+                message: `Erreur inattendue, merci de la signaler sur ${BES_ISSUES} - ${errId}`
             });
         }
     }
