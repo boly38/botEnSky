@@ -8,7 +8,7 @@ import {
     cacheGetVersion
 } from "../lib/MemoryCache.js";
 import {unauthorized} from "../lib/CommonApi.js";
-import {generateErrorId} from "../lib/Common.js";
+import {isSet, generateErrorId} from "../lib/Common.js";
 import {StatusCodes} from "http-status-codes";
 
 const __dirname = path.resolve();
@@ -71,6 +71,12 @@ export default class ExpressServer {
         res.json({version});
     }
 
+    /**
+     * trigger bot action
+     * @param req
+     * @param res cronjob limits the response payload (#9) and read only 64KB
+     * @returns {Promise<void>}
+     */
     async hookResponse(req, res) {
         const expressServer = this;
         try {
@@ -82,7 +88,10 @@ export default class ExpressServer {
             if (doSimulate || doAction) {
                 expressServer.botService.process(remoteAdd, doSimulate, pluginName)
                     .then(() => res.status(200).json({success: true}))
-                    .catch(err => res.status(err.status).json({success: false, message: err}));
+                    .catch(err => {
+                        const status = isSet(err.status) ? err.status : 500;
+                        res.status(status).json({success: false, status}); // do not include details in response
+                    });
             } else {
                 this.logger.debug(StatusCodes.UNAUTHORIZED, JSON.stringify({code: 401, doSimulate, doAction}));
                 unauthorized(res, UNAUTHORIZED_FRIENDLY);

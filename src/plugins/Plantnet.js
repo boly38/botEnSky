@@ -1,7 +1,6 @@
 import log4js from 'log4js';
-import {arrayIsNotEmpty, clone, loadJsonResource} from "../lib/Common.js";
+import {isSet, arrayIsNotEmpty, clone, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf, postHtmlOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
-import {isSet} from "node:util/types";
 
 const PLANTNET_MINIMAL_PERCENT = 20;
 const PLANTNET_MINIMAL_RATIO = PLANTNET_MINIMAL_PERCENT / 100;
