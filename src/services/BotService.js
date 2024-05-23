@@ -61,7 +61,7 @@ export default class BotService {
                     resolve(result);
                 })
                 .catch(err => {
-                    bot.logger.warn("plugin response status:" + err.status + " msg:" + err.message);
+                    bot.logger.warn(`plugin error: ${err.message}`);
                     bot.newsService.add(err.html ? err.html : err.message);
                     reject(err);
                 });
