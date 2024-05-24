@@ -55,3 +55,26 @@ npm run start
 ## PullRequests additional information
 Activated bot:
 - [houndci](https://houndci.com/)
+
+
+
+# Maintainer HowTos
+## HowTo create a fresh version
+- use patch or minor or major workflow
+
+this will make a new version and on version tag, the main ci workflow will push a new npmjs version too.
+
+## HowTo release using Gren
+
+```bash
+# provide PAT with permissions to create release on current repository
+export GREN_GITHUB_TOKEN=your_token_here
+# one time setup
+npm install github-release-notes -g
+
+git fetch --all && git pull
+# make a release vX with all history
+gren release --data-source=prs -t v2.2.2 --milestone-match=v2.2.2
+# overrides release vX with history from vX-1
+gren release --data-source=prs -t "v2.2.2..v2.2.1" --milestone-match="v2.2.2" --override
+```
