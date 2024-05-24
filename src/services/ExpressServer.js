@@ -1,4 +1,3 @@
-import log4js from 'log4js';
 import express from 'express';
 import path from 'node:path';
 import {
@@ -8,28 +7,24 @@ import {
     cacheGetVersion
 } from "../lib/MemoryCache.js";
 import {unauthorized} from "../lib/CommonApi.js";
-import {isSet, generateErrorId} from "../lib/Common.js";
+import {generateErrorId, isSet} from "../lib/Common.js";
 import {StatusCodes} from "http-status-codes";
 
 const __dirname = path.resolve();
 const wwwPath = path.join(__dirname, './src/www');
 
-// const BotEngine = require('./BotEngine.js');
-
-const DEBUG_SERVER = false;
 const BES_ISSUES = cacheGetProjectBugsUrl();
 
 const UNAUTHORIZED_FRIENDLY = "Le milieu autorisé c'est un truc, vous y êtes pas vous hein !";// (c) Coluche
 export default class ExpressServer {
     constructor(services) {
-        const {config, blueskyService, botService, newsService} = services;
+        const {config, loggerService, blueskyService, botService, newsService} = services;
         this.config = config;
         this.blueskyService = blueskyService;
         this.botService = botService;
         this.newsService = newsService;
 
-        this.logger = log4js.getLogger('ExpressServer');
-        this.logger.level = DEBUG_SERVER ? "DEBUG" : "INFO";
+        this.logger = loggerService.getLogger().child({label: 'ExpressServer'});
 
         this.port = config.port;
         this.tokenSimulation = config.bot.tokenSimulation;
@@ -53,7 +48,7 @@ export default class ExpressServer {
             expressServer.listeningServer = expressServer.app.listen(
                 expressServer.port,
                 () => expressServer.logger.info(
-                    `Bot ${expressServer.version} listening on ${expressServer.port} - MY_TEST_VAR:${process.env.MY_TEST_VAR}`
+                    `Bot ${expressServer.version} listening on ${expressServer.port}`
                 )
             );
             resolve(expressServer.listeningServer);

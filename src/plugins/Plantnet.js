@@ -1,5 +1,4 @@
-import log4js from 'log4js';
-import {isSet, arrayIsNotEmpty, clone, loadJsonResource} from "../lib/Common.js";
+import {arrayIsNotEmpty, clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf, postHtmlOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
 
 const PLANTNET_MINIMAL_PERCENT = 20;
@@ -7,9 +6,9 @@ const PLANTNET_MINIMAL_RATIO = PLANTNET_MINIMAL_PERCENT / 100;
 const BES_ROUTE = "Bon 🥾 je trace ma route, bonne journée 😊 !";
 
 export default class Plantnet {
-    constructor(config, blueskyService, plantnetService) {
+    constructor(config, loggerService, blueskyService, plantnetService) {
         this.isAvailable = false;
-        this.logger = log4js.getLogger('Plantnet');
+        this.logger = loggerService.getLogger().child({label: 'Pl@ntNet'});
         this.logger.level = "INFO"; // DEBUG will show search results
         this.blueskyService = blueskyService;
         this.plantnetSimulate = (config.bot.plantnetSimulate === true);
@@ -42,7 +41,7 @@ export default class Plantnet {
 
     process(config) {
         const plugin = this;
-        let {pluginName, pluginTags, pluginMoreTags, doSimulate, simulateIdentifyCase} = config;
+        let {pluginName, pluginTags, pluginMoreTags, doSimulate, simulateIdentifyCase, context} = config;
         if (config.pluginName === undefined) {
             pluginName = plugin.getName();
         }
@@ -67,19 +66,19 @@ export default class Plantnet {
             plugin.blueskyService.searchPosts({searchQuery, hasImages, hasNoReply, maxHoursOld})
                 .then(candidatePosts => {
                     if (!arrayIsNotEmpty(candidatePosts)) {
-                        plugin.logger.info(`no candidate for ${pluginName}`);
+                        plugin.logger.info(`no candidate for ${pluginName}`, context);
                         throw {"message": `aucun candidat pour ${pluginName}`, "status": 202};
                     }
                     // arrayIsNotEmpty(candidatePosts)
                     const candidate = candidatePosts[0];
                     const candidatePhoto = firstImageOf(candidate);
                     if (!candidatePhoto) {
-                        plugin.logger.info("no candidate image");
-                        throw{"message": `aucune image pour pl@ntnet dans ${postLinkOf(candidate)}`, "status": 202};
+                        plugin.logger.info("no candidate image", context);
+                        throw {"message": `aucune image pour pl@ntnet dans ${postLinkOf(candidate)}`, "status": 202};
                     }
                     plugin.logger.info(`post Candidate : ${postLinkOf(candidate)}\n` +
                         `\t${postInfoOf(candidate)}\n` +
-                        `\t${postImageOf(candidatePhoto)}`);
+                        `\t${postImageOf(candidatePhoto)}`, context);
 
                     const candidateImageFullsize = candidatePhoto?.fullsize;
 
@@ -89,9 +88,10 @@ export default class Plantnet {
                         doSimulateIdentify,
                         simulateIdentifyCase,
                         candidate,
-                        "tags": pluginTags
+                        "tags": pluginTags,
+                        context
                     };
-                    plugin.logger.debug("identifyOptions : ", identifyOptions);
+                    plugin.logger.debug(`identifyOptions : ${identifyOptions}`, context);
                     plugin.plantnetIdentify(identifyOptions)
                         .then(resolve)
                         .catch(reject)
@@ -102,12 +102,12 @@ export default class Plantnet {
 
     plantnetIdentify(options) {
         const plugin = this;
-        const {image, doSimulate, doSimulateIdentify, simulateIdentifyCase, candidate} = options;
+        const {image, doSimulate, doSimulateIdentify, simulateIdentifyCase, candidate, context} = options;
 
         return new Promise((resolve, reject) => {
             plugin.plantnetService.identify({"imageUrl": image, doSimulateIdentify, simulateIdentifyCase})
                 .then(plantResult => {
-                    plugin.logger.debug("plantnetResult : " + JSON.stringify(plantResult));
+                    plugin.logger.debug(`plantnetResult : ${JSON.stringify(plantResult)}`, context);
                     const firstScoredResult = plugin.plantnetService.hasScoredResult(plantResult, PLANTNET_MINIMAL_RATIO);
                     if (!firstScoredResult) {
                         plugin.replyNoScoredResult(options).then(resolve).catch(reject);
@@ -116,7 +116,7 @@ export default class Plantnet {
                     plugin.replyScoredResult(options, firstScoredResult).then(resolve).catch(reject);
                 })
                 .catch(err => {
-                    plugin.logError("plantnetService.identify", {image, doSimulate, err});
+                    plugin.logError("plantnetService.identify", err, {...context, image, doSimulate});
                     if (err?.status === 404) {
                         plugin.noIdentificationResult(options).then(resolve);
                         return
@@ -170,7 +170,7 @@ export default class Plantnet {
 
     replyResult(options, replyMessage) {
         const plugin = this;
-        const {doSimulate, candidate} = options;
+        const {doSimulate, candidate, context} = options;
         plugin.logger.debug("reply result",
             JSON.stringify({doSimulate, replyMessage, candidate}, null, 2)
         );
@@ -186,18 +186,17 @@ export default class Plantnet {
                     })
                 })
                 .catch(err => {
-                    plugin.logError("replyTo", err);
-                    plugin.logError("replyTo context", {doSimulate, candidate, replyMessage});
+                    plugin.logError("replyTo", err, {...context, doSimulate, candidate, replyMessage});
                     reject({"message": "impossible de répondre au post", "status": 500});
                 });
         });
     }
 
-    logError(action, err) {
+    logError(action, err, context) {
         if (Object.keys(err) && Object.keys(err).length > 0) {
-            this.logger.error(action, JSON.stringify(err, null, 2));
+            this.logger.error(`${action} ${JSON.stringify(err, null, 2)}`, {...context, action});
             return;
         }
-        this.logger.error(action, err);
+        this.logger.error(`${action} ${err}`, {...context, action});
     }
 }

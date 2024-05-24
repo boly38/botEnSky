@@ -1,23 +1,19 @@
 import chaiHttp from "chai-http";
 import * as chaiModule from 'chai';
 import ApplicationConfig from '../src/config/ApplicationConfig.js';
-import log4js from 'log4js';
 import {before, describe, it} from "mocha";
-import {_expectNoError, assumeSuccess, initEnv} from "./libTest.js";
+import {_expectNoError, assumeSuccess, initEnv, testLogger} from "./libTest.js";
+import {after} from "node:test";
 
 const chai = chaiModule.use(chaiHttp);
-
-const logger = log4js.getLogger('twitter-service.test');
-logger.level = "INFO"; // DEBUG will show api params
-
 let agent;
 let expressServer;
 
-describe("Pages", () => {
+describe("🧪🧪 20 - UI - Pages", () => {
 
     before(done => {
         initEnv();
-        console.info(`Pages :: before`);
+        testLogger.info(`Pages :: before`);
         ApplicationConfig.startServerMode()
             .then(() => {
                 expressServer = ApplicationConfig.getInstance().get('expressServer');
@@ -25,6 +21,8 @@ describe("Pages", () => {
             })
             .catch(_expectNoError)
     });
+
+    after(() => ApplicationConfig.stopServerMode())
 
 
     it("get /", done => {

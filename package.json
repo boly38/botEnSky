@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "jshint": "jshint .",
     "tst": "echo windows %TST% test&& set NODE_ENV=test&& mocha --trace-warnings --timeout 180000 --unhandled-rejections=strict tests/all-root.test.js tests/%TST%.test.js",
-    "test": "echo ci-test&& set NODE_ENV=test&& c8 mocha --unhandled-rejections=strict tests/*.test.js --timeout 50000",
+    "test": "echo ci-test&& set NODE_ENV=test&&c8 mocha --exit --unhandled-rejections=strict tests/*.test.js --timeout 50000",
     "ci-test": "echo ci-test&& export NODE_ENV=test&&c8 mocha --unhandled-rejections=strict tests/*.test.js --timeout 50000",
     "wip": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: Plantnet' http://localhost:5000/api/hook"
   },
@@ -38,15 +38,17 @@
   "type": "module",
   "dependencies": {
     "@atproto/api": "^0.12.11",
+    "@logtail/node": "^0.4.21",
+    "@logtail/winston": "^0.4.21",
     "dayjs": "^1.11.11",
     "dotenv-flow": "^4.1.0",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "http-status-codes": "^2.3.0",
-    "log4js": "^6.9.1",
     "node-dependency-injection": "^3.1.2",
     "superagent": "^9.0.2",
-    "tinyurl": "^1.1.7"
+    "tinyurl": "^1.1.7",
+    "winston": "^3.13.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

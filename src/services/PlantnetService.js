@@ -1,4 +1,3 @@
-import log4js from 'log4js';
 import fs from 'fs';
 import superagent from 'superagent';
 import TinyURL from 'tinyurl';
@@ -9,10 +8,9 @@ const MY_API_PLANTNET_V2_URL = 'https://my-api.plantnet.org/v2/identify/all';
 // Pl@ntNet API : https://github.com/plantnet/my.plantnet/blob/master/README.md
 export default class PlantnetService {
 
-    constructor(config) {
+    constructor(config, loggerService) {
         this.isAvailable = false;
-        this.logger = log4js.getLogger('PlantnetService');
-        this.logger.level = "INFO"; // DEBUG will show api params
+        this.logger = loggerService.getLogger().child({label: 'PlantnetService'});
 
         this.apiKey = config.plantnet.apiKey;
         if (!isSet(this.apiKey)) {
