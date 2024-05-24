@@ -1,9 +1,10 @@
 import {nowHuman} from "../lib/Common.js";
 
 export default class NewsService {
-  constructor() {
+  constructor(loggerService) {
     this.max = 30;
     this.lastNews = [];
+    this.logger = loggerService.getLogger().child({ label: 'News 📢' });
   }
 
   add(news) {
@@ -12,6 +13,7 @@ export default class NewsService {
     if (this.lastNews.length > this.max) {
         this.lastNews.splice(this.lastNews.length-1, 1);
     }
+    this.logger.info(news);
   }
 
   getNews() {

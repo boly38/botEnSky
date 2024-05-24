@@ -1,14 +1,11 @@
-import log4js from "log4js";
 import {BskyAgent} from '@atproto/api'
 import {filterWithEmbedImageView, fiterWithNoReply, fromBlueskyPosts, postLinkOf} from "../domain/post.js";
 import {isSet, nowISO8601, nowMinusHoursISO} from "../lib/Common.js";
 
-const DEBUG_SERVICE = false;
 export default class BlueSkyService {
-    constructor(config) {
+    constructor(config, loggerService) {
         this.config = config;
-        this.logger = log4js.getLogger('BlueSkyService');
-        this.logger.level = DEBUG_SERVICE ? "DEBUG" : "INFO";
+        this.logger = loggerService.getLogger().child({ label: 'BlueSkyService' });
         const {identifier, password, service} = config.bluesky
         this.agent = new BskyAgent({service})
         this.api = this.agent.api;// inspired from https://github.com/skyware-js/bot/blob/main/src/bot/Bot.ts#L324

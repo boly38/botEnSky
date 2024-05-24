@@ -1,5 +1,4 @@
 import {ContainerBuilder} from 'node-dependency-injection';
-import log4js from 'log4js';
 import ApplicationProperties from './ApplicationProperties.js';
 import ExpressServer from '../services/ExpressServer.js';
 import BlueSkyService from "../services/BlueSkyService.js";
@@ -7,27 +6,35 @@ import Plantnet from "../plugins/Plantnet.js";
 import PlantnetService from "../services/PlantnetService.js";
 import BotService from "../services/BotService.js";
 import NewsService from "../services/NewsService.js";
+import LoggerService from "../services/LoggerService.js";
 
 export default class ApplicationConfig {
     constructor() {
-        this.logger = log4js.getLogger('ApplicationConfig');
-        this.logger.level = "DEBUG"; // DEBUG will show api params
         this.container = new ContainerBuilder();
-        this.constructServices();
+        this.constructServicesAndLogger();
         this.constructPlugins();
         this.constructBot();
     }
 
-    constructServices() {
+    constructServicesAndLogger() {
         const container = this.container;
         container.register('config', ApplicationProperties);
-        container.register('newsService', NewsService);
+        container.register('loggerService', LoggerService)
+            .addArgument( container.get('config') );
+
+        // register logger
+        this.logger = container.get('loggerService').getLogger().child({ label: 'ApplicationConfig' }); // https://github.com/winstonjs/winston?tab=readme-ov-file#creating-child-loggers
+
+        container.register('newsService', NewsService)
+            .addArgument(container.get('loggerService'));
 
         container.register('blueskyService', BlueSkyService)
-            .addArgument(container.get('config'));
+            .addArgument(container.get('config'))
+            .addArgument(container.get('loggerService'));
 
         container.register('plantnetService', PlantnetService)
-            .addArgument( container.get('config') );
+            .addArgument( container.get('config') )
+            .addArgument(container.get('loggerService'));
     }
     constructPlugins() {
         const container = this.container;
@@ -35,6 +42,7 @@ export default class ApplicationConfig {
 
         container.register('plantnet', Plantnet)
             .addArgument( container.get('config') )
+            .addArgument(container.get('loggerService'))
             .addArgument( container.get('blueskyService') )
             .addArgument( container.get('plantnetService') );
         this.plugins.push( container.get('plantnet') );
@@ -45,6 +53,7 @@ export default class ApplicationConfig {
 
         container.register('botService', BotService)
             .addArgument( container.get('config') )
+            .addArgument( container.get('loggerService'))
             .addArgument( container.get('newsService') )
             .addArgument( this.plugins )
         ;
@@ -55,11 +64,12 @@ export default class ApplicationConfig {
     }
 
     initExpressServer() {
-        const { container }  = this;
+        const { container, logger }  = this;
         container
             .register('expressServer', ExpressServer)
             .addArgument({
                 config: container.get('config'),
+                loggerService: container.get('loggerService'),
                 botService: container.get('botService'),
                 blueskyService: container.get('blueskyService'),
                 newsService: container.get('newsService')
@@ -70,7 +80,7 @@ export default class ApplicationConfig {
             ApplicationConfig.listeningServer = expressServer.init()
                 .then(resolve)
                 .catch(errInitServer => {
-                    this.logger.error("Error, unable to init express server:" + errInitServer);
+                    logger.error("Error, unable to init express server:" + errInitServer);
                     reject(new Error("Init failed"));
                 });
         });

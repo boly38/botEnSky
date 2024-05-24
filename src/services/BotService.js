@@ -1,12 +1,7 @@
-import log4js from 'log4js';
-
-const DEBUG_SERVICE = true;
-
 export default class BotService {
 
-    constructor(config, newsService, plugins) {
-        this.logger = log4js.getLogger('BotService');
-        this.logger.level = DEBUG_SERVICE ? "DEBUG" : "INFO";
+    constructor(config, loggerService, newsService, plugins) {
+        this.logger = loggerService.getLogger().child({ label: 'BotService' });
         this.intervalMs = config.bot.engineMinIntervalMs;
         this.newsService = newsService;
         this.plugins = plugins;
@@ -35,8 +30,8 @@ export default class BotService {
 
     process(remoteAddress, doSimulate, pluginName) {
         const bot = this;
+        const context = {remoteAddress, pluginName};
         return new Promise((resolve, reject) => {
-            bot.logger.debug(`process(${remoteAddress}, doSimulate:${doSimulate}, ${pluginName})`);
             const nowMs = (new Date()).getTime();
             const allowedTs = bot.lastProcess + bot.intervalMs;
             const needToWaitSec = Math.floor((allowedTs - nowMs) / 1000);
@@ -52,16 +47,16 @@ export default class BotService {
                 reject({"message": "je suis actuellement en maintenance, retentez plus tard", "status": 503});
                 return;
             }
-            bot.logger.info( `${remoteAddress} | process ${(doSimulate ? "SIMULATION" : "")} right now - ${pluginName}`);
+            bot.logger.info( `process ${(doSimulate ? "SIMULATION" : "")} right now`, context);
             bot.newsService.add(`${(doSimulate ? "Simulation" : "Exécution")} du plugin - ${pluginName}`);
-            plugin.process({"doSimulate": doSimulate})
+            plugin.process({"doSimulate": doSimulate, context})
                 .then(result => {
-                    bot.logger.info("plugin result " + result.text);
+                    bot.logger.info(`plugin result ${result.text}`, context);
                     bot.newsService.add(result.html);
                     resolve(result);
                 })
                 .catch(err => {
-                    bot.logger.warn(`plugin error: ${err.message}`);
+                    bot.logger.warn(`plugin error: ${err.message}`, context);
                     bot.newsService.add(err.html ? err.html : err.message);
                     reject(err);
                 });
