@@ -1,4 +1,4 @@
-import {getEnv, getPackageJsonContent} from "./Common.js";
+import {getEnv, getPackageJsonContent, isSet} from "./Common.js";
 import console from "node:console";
 
 const DEBUG = getEnv("CACHE_DEBUG", false) === "true";
@@ -15,6 +15,7 @@ export const cacheGetProjectHomepage = () => {
 export const cacheGetProjectBugsUrl = () => {
     return getPackageJson()?.bugs?.url;
 }
+
 //~ private
 class MemoryCache {
     /**
@@ -23,6 +24,9 @@ class MemoryCache {
 }
 
 MemoryCache.packageJson = null;
+MemoryCache.ttlObject = [/* { key, ttl, value }, { key, ttl, value } ... */];
+
+//~ packageJson
 const getPackageJson = () => {
     if (MemoryCache.packageJson === null) {// cache miss
         DEBUG && console.log("cache miss:packageJson")
@@ -31,3 +35,33 @@ const getPackageJson = () => {
     return MemoryCache.packageJson;
 }
 
+//~ ttlObject
+const nowEpochSec = () => {
+    const now = new Date()
+    const utcMsSinceEpoch = now.getTime() + (now.getTimezoneOffset() * 60 * 1000)
+    return Math.round(utcMsSinceEpoch / 1000)
+}
+const evictDeprecatedTtlObject = () => {
+    MemoryCache.ttlObject = MemoryCache.ttlObject.filter(ttlObject => ttlObject.ttl > nowEpochSec());
+}
+export const cacheEvictKey = key => {
+    MemoryCache.ttlObject = MemoryCache.ttlObject.filter(ttlObject => ttlObject.key !== key);
+}
+export const cacheGetTtlObject = (key, ttlSecond, objectProviderFunction) => {
+    return new Promise((resolve, reject) => {
+        evictDeprecatedTtlObject();
+        const ttlObjects = MemoryCache.ttlObject.filter(ttlObject => ttlObject.key === key)
+        if (isSet(ttlObjects) && ttlObjects.length === 1) {
+            return resolve(ttlObjects[0].value);
+        }
+        cacheEvictKey(key);
+        DEBUG && console.log(`cache miss:getTtlObject ${key}`);
+        const ttl = nowEpochSec() + ttlSecond;
+        objectProviderFunction()
+            .then(value => {
+                MemoryCache.ttlObject.push({key, ttl, value})
+                resolve(value);
+            })
+            .catch(reject);
+    });
+}

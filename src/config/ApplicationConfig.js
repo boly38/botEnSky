@@ -7,6 +7,7 @@ import PlantnetService from "../services/PlantnetService.js";
 import BotService from "../services/BotService.js";
 import NewsService from "../services/NewsService.js";
 import LoggerService from "../services/LoggerService.js";
+import LogtailService from "../services/LogtailService.js";
 
 export default class ApplicationConfig {
     constructor() {
@@ -20,42 +21,47 @@ export default class ApplicationConfig {
         const container = this.container;
         container.register('config', ApplicationProperties);
         container.register('loggerService', LoggerService)
-            .addArgument( container.get('config') );
+            .addArgument(container.get('config'));
 
         // register logger
-        this.logger = container.get('loggerService').getLogger().child({ label: 'ApplicationConfig' }); // https://github.com/winstonjs/winston?tab=readme-ov-file#creating-child-loggers
+        this.logger = container.get('loggerService').getLogger().child({label: 'ApplicationConfig'}); // https://github.com/winstonjs/winston?tab=readme-ov-file#creating-child-loggers
 
-        container.register('newsService', NewsService)
+        container.register('logtailService', LogtailService)
+            .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'));
+        container.register('newsService', NewsService)
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('logtailService'));
 
         container.register('blueskyService', BlueSkyService)
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'));
 
         container.register('plantnetService', PlantnetService)
-            .addArgument( container.get('config') )
+            .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'));
     }
+
     constructPlugins() {
         const container = this.container;
         this.plugins = [];
 
         container.register('plantnet', Plantnet)
-            .addArgument( container.get('config') )
+            .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'))
-            .addArgument( container.get('blueskyService') )
-            .addArgument( container.get('plantnetService') );
-        this.plugins.push( container.get('plantnet') );
+            .addArgument(container.get('blueskyService'))
+            .addArgument(container.get('plantnetService'));
+        this.plugins.push(container.get('plantnet'));
     }
 
     constructBot() {
         const container = this.container;
 
         container.register('botService', BotService)
-            .addArgument( container.get('config') )
-            .addArgument( container.get('loggerService'))
-            .addArgument( container.get('newsService') )
-            .addArgument( this.plugins )
+            .addArgument(container.get('config'))
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('newsService'))
+            .addArgument(this.plugins)
         ;
     }
 
@@ -64,7 +70,7 @@ export default class ApplicationConfig {
     }
 
     initExpressServer() {
-        const { container, logger }  = this;
+        const {container, logger} = this;
         container
             .register('expressServer', ExpressServer)
             .addArgument({
@@ -86,7 +92,6 @@ export default class ApplicationConfig {
         });
     }
 }
-
 
 
 ApplicationConfig.singleton = null;

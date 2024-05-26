@@ -9,11 +9,12 @@
                                     data-umami-event="{nodejs link}" id="nodejs-link"
                                     class="umami--click--nodejs-button">NodeJS</a>.<br/>
             <br/>
-            Voici mes activités récentes <a href="/" data-umami-event="{logs-refresh link}" id="logs-refresh-link">🔄</a>:<br/>
+            🧾 activités récentes <a href="/" data-umami-event="{logs-refresh link}" id="logs-refresh-link">🔄</a> <sup>Fraîcheur : <%- news.to %> - TZ : <%- tz %></sup>:<br/>
               <ul>
-                <% news.forEach(function(newsEntry){ %>
-                  <li><%- newsEntry  %></li>
+                <% news.data.forEach(function(newsEntry){ %>
+                  <li><%- newsEntry.dt  %> | <%- newsEntry.message  %></li>
                 <% }); %>
+               <!-- <li><small><%- news.from %></small></li> -->
                 <li>version <%- version %></li>
               </ul>
         </>

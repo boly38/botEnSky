@@ -40,6 +40,7 @@
     "@atproto/api": "^0.12.11",
     "@logtail/node": "^0.4.21",
     "@logtail/winston": "^0.4.21",
+    "axios": "^1.6.8",
     "dayjs": "^1.11.11",
     "dotenv-flow": "^4.1.0",
     "ejs": "^3.1.10",

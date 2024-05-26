@@ -1,6 +1,6 @@
 import {BskyAgent} from '@atproto/api'
 import {filterWithEmbedImageView, fiterWithNoReply, fromBlueskyPosts, postLinkOf} from "../domain/post.js";
-import {isSet, nowISO8601, nowMinusHoursISO} from "../lib/Common.js";
+import {isSet, nowISO8601, nowMinusHoursUTCISO} from "../lib/Common.js";
 
 export default class BlueSkyService {
     constructor(config, loggerService) {
@@ -53,7 +53,7 @@ export default class BlueSkyService {
             maxHoursOld = 1
         } = options;
         return new Promise((resolve, reject) => {
-            const since = isSet(maxHoursOld) ? nowMinusHoursISO(maxHoursOld) : null;
+            const since = isSet(maxHoursOld) ? nowMinusHoursUTCISO(maxHoursOld) : null;
             this.login()
                 .then(() => {
                     let params = {q: searchQuery, sort, limit};

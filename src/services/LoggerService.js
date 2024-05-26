@@ -74,5 +74,4 @@ export default class LoggerService {
         }
         return this.logtail.flush();
     }
-
 }
