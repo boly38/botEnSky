@@ -31,6 +31,8 @@ Services ( having free plan 🚀 🌷 )
 - [Render](https://render.com/) free app hosting and automated deployments
 - [Cron-job.org](https://cron-job.org/) scheduler
 - [PlantNet.org](https://plantnet.org) ([API](https://my.plantnet.org/)) - plant identification service
+- [betterstack](https://logs.betterstack.com/) - logs management
+- 
 
 Team:
 - cf. [contributors](https://github.com/boly38/botEnSky/graphs/contributors)

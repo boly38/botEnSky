@@ -11,11 +11,15 @@ export default class ApplicationProperties {
 
     buildCommonEnvironment() {
         this.nodeEnv = getEnv("NODE_ENV", 'development');
+        this.tz = getEnv("TZ", 'Europe/Paris');
         this.port = getEnvInt("PORT", 5000);
         this.isProd = this.nodeEnv === 'production';
 
         this.log = {
             logtailToken: getEnv("LOG_LOGTAIL_TOKEN", null),
+            logtailApiV1: "https://logs.betterstack.com/api/v1",
+            logtailApiToken: getEnv("LOGTAIL_API_TOKEN", null),
+            logtailSourceId: getEnv("LOGTAIL_SOURCE_ID", null)
         }
 
         this.bot = {

@@ -102,17 +102,19 @@ export default class ExpressServer {
     }
 
     webPagesResponse(req, res) {
-        const {version, newsService} = this;
-        const news = newsService.getNews();
+        const {version, newsService, config} = this;
         const projectHomepage = cacheGetProjectHomepage();
         const projectIssues = cacheGetProjectBugsUrl();
         const projectDiscussions = cacheGetProjectMetadata("projectDiscussions");
         const blueskyAccount = cacheGetProjectMetadata("blueskyAccount");
         const blueskyDisplayName = cacheGetProjectMetadata("blueskyDisplayName");
-        res.render('pages/index', {// page data
-            news,
-            version, projectHomepage, projectIssues, projectDiscussions,
-            blueskyAccount, blueskyDisplayName
-        });
+        newsService.getNews()
+            .then(news => {
+                res.render('pages/index', {// page data
+                    news, "tz":config.tz,
+                    version, projectHomepage, projectIssues, projectDiscussions,
+                    blueskyAccount, blueskyDisplayName
+                });
+            });
     }
 }
