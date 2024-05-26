@@ -1,0 +1,19 @@
+# create bot simulation trigger
+name: BES_SIMULATE___FAKE
+on:
+  # every day at 17h20 and 17h30
+  schedule:
+    - cron: "20 17 * * *"
+    - cron: "30 17 * * *"
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    environment: github_actions_bes
+    steps:
+      - name: Curl
+        run: |
+          curl -I www.google.fr
