@@ -32,7 +32,8 @@ describe("🧪🧪 30 - Pl@ntNet plugin", function () {
             testLogger.debug("plugin.process", result);
             expect(result.html).not.to.be.empty;
             expect(result.text).not.to.be.empty;
-            expect(result.text).to.contains("Réponse prévue : Pl@ntnet identifie (à 85.09%)");
+            // testLogger.debug(result.text)
+            expect(result.text).to.contains(": Pl@ntNet identifie (à 85.09%) Pancratium SIMULATINIUM");
         }
 
     }).timeout(60 * 1000);
@@ -51,7 +52,8 @@ describe("🧪🧪 30 - Pl@ntNet plugin", function () {
             testLogger.debug("plugin.process", result);
             expect(result.html).not.to.be.empty;
             expect(result.text).not.to.be.empty;
-            expect(result.text).to.contains("Réponse prévue : Bonjour, une interrogation de Pl@ntnet (1ère image) n'a pas donné de résultat concluant");
+            // testLogger.debug(result.text)
+            expect(result.text).to.contains("identification par Pl@ntNet n'a pas donné de résultat assez concluant");
         }
 
     }).timeout(60 * 1000);

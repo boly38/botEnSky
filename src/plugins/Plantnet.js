@@ -3,7 +3,6 @@ import {firstImageOf, postHtmlOf, postImageOf, postInfoOf, postLinkOf, postTextO
 
 const PLANTNET_MINIMAL_PERCENT = 20;
 const PLANTNET_MINIMAL_RATIO = PLANTNET_MINIMAL_PERCENT / 100;
-const BES_ROUTE = "Bon 🥾 je trace ma route, bonne journée 😊 !";
 
 export default class Plantnet {
     constructor(config, loggerService, blueskyService, plantnetService) {
@@ -53,30 +52,15 @@ export default class Plantnet {
         }
         // if at least one want to simulate then simulate
         const doSimulateIdentify = plugin.plantnetSimulate || isSet(simulateIdentifyCase);
-
         return new Promise((resolve, reject) => {
-            // OR NO SUPPORTED / const allQuestions = "(\"" + plugin.questions.join("\" OR \"") + "\")" + " \"?\"";
-            let searchQuery = plugin.questions[0];
-            if (config.searchExtra) {
-                searchQuery += " " + config.searchExtra;
-            }
-            const hasImages = true;
-            const hasNoReply = true;
-            const maxHoursOld = 24;// now-24h ... now
-            plugin.blueskyService.searchPosts({searchQuery, hasImages, hasNoReply, maxHoursOld})
-                .then(candidatePosts => {
-                    if (!arrayIsNotEmpty(candidatePosts)) {
-                        plugin.logger.info(`no candidate for ${pluginName}`, context);
-                        throw {"message": `aucun candidat pour ${pluginName}`, "status": 202};
-                    }
-                    // arrayIsNotEmpty(candidatePosts)
-                    const candidate = candidatePosts[0];
+            plugin.searchNextCandidate(config)
+                .then(candidate => {
                     const candidatePhoto = firstImageOf(candidate);
                     if (!candidatePhoto) {
                         plugin.logger.info("no candidate image", context);
-                        throw {"message": `aucune image pour pl@ntnet dans ${postLinkOf(candidate)}`, "status": 202};
+                        throw {"message": `aucune image pour Pl@ntNet dans ${postLinkOf(candidate)}`, "status": 202};
                     }
-                    plugin.logger.info(`post Candidate : ${postLinkOf(candidate)}\n` +
+                    plugin.logger.debug(`post Candidate : ${postLinkOf(candidate)}\n` +
                         `\t${postInfoOf(candidate)}\n` +
                         `\t${postImageOf(candidatePhoto)}`, context);
 
@@ -97,6 +81,50 @@ export default class Plantnet {
                         .catch(reject)
                 })
                 .catch(reject);
+        });
+    }
+
+    /**
+     * iterate through plugin.questions to search next candidate
+     *
+     * Bluesky advanced search may improve this stage :
+     * https://github.com/bluesky-social/social-app/issues/3378 (parent of advanced search)
+     * https://github.com/bluesky-social/social-app/issues/1522 (Use Boolean search operators AND and OR)
+     * https://github.com/bluesky-social/social-app/issues/4093 (ability to know supported keyword/search logic/tips)
+     * https://github.com/bluesky-social/social-app/issues/4094 (support has:images to filter only post having image)
+     *
+     * @param config
+     * @param bookmark
+     * @returns {Promise<unknown>}
+     */
+    searchNextCandidate(config, bookmark = 0) {
+        const plugin = this;
+        let {pluginName, context} = config;
+        return new Promise((resolve, reject) => {
+            let searchQuery = plugin.questions[bookmark];
+            if (config.searchExtra) {
+                searchQuery += " " + config.searchExtra;
+            }
+            const hasImages = true;
+            const hasNoReply = true;
+            const maxHoursOld = 24;// now-24h ... now
+            plugin.blueskyService.searchPosts({searchQuery, hasImages, hasNoReply, maxHoursOld})
+                .then(candidatePosts => {
+                    plugin.logger.info(`${candidatePosts.length} candidate(s)`, context);
+                    if (arrayIsNotEmpty(candidatePosts)) {
+                        resolve(candidatePosts[0]);
+                        return;
+                    }
+                    if (bookmark + 1 < plugin.questions.length) {
+                        plugin.searchNextCandidate(config, bookmark + 1)
+                            .then(resolve)
+                            .catch(reject);
+                        return;
+                    }
+                    plugin.logger.info(`no candidate for ${pluginName}`, context);
+                    throw {"message": `aucun candidat pour ${pluginName}`, "status": 202};
+                })
+                .catch(reject)
         });
     }
 
@@ -139,7 +167,7 @@ export default class Plantnet {
                 .then(illustrateImage => {
                     let scoredResultSummary = plugin.plantnetService.resultInfoOf(firstScoredResult);
                     let withImageLink = (illustrateImage ? "\n\n" + illustrateImage : "")
-                    let replyMessage = `Pl@ntnet identifie ${scoredResultSummary}\n${withImageLink} \n\n${tags}`;
+                    let replyMessage = `Pl@ntNet identifie ${scoredResultSummary}\n${withImageLink} \n\n${tags}`;
                     plugin.replyResult(options, replyMessage)
                         .then(resolve)
                         .catch(reject);
@@ -152,7 +180,7 @@ export default class Plantnet {
         const {candidate} = options;
         const candidateHtmlOf = postHtmlOf(candidate);
         const candidateTextOf = postTextOf(candidate);
-        const noIdentificationText = " ne donne aucune identification";
+        const noIdentificationText = " ne donne aucune identification Pl@ntNet";
         return Promise.resolve({
             "html": `<b>Post</b>:<div class="bg-info">${candidateHtmlOf}</div> ${noIdentificationText}`,
             "text": `Post:\n\t${candidateTextOf}\n\t${noIdentificationText}`
@@ -160,12 +188,14 @@ export default class Plantnet {
     }
 
     replyNoScoredResult(options) {
-        const {tags} = options;
-        const replyMessage = `Bonjour, une interrogation de Pl@ntnet (1ère image)` +
-            ` n'a pas donné de résultat concluant 😩 (score>${PLANTNET_MINIMAL_PERCENT}%).\n` +
-            // `Info: bien cadrer la fleur ou feuille\n\n${tags}`;
-            `${BES_ROUTE}\n\n${tags}`;
-        return this.replyResult(options, replyMessage);
+        const {candidate} = options;
+        const candidateHtmlOf = postHtmlOf(candidate);
+        const candidateTextOf = postTextOf(candidate);
+        const noIdentificationGoodScoreText = `L'identification par Pl@ntNet n'a pas donné de résultat assez concluant 😩 (score<${PLANTNET_MINIMAL_PERCENT}%)`;
+        return Promise.resolve({
+            "html": `<b>Post</b>:<div class="bg-info">${candidateHtmlOf}</div> ${noIdentificationGoodScoreText}`,
+            "text": `Post:\n\t${candidateTextOf}\n\t${noIdentificationGoodScoreText}`
+        });
     }
 
     replyResult(options, replyMessage) {

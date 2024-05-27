@@ -60,10 +60,10 @@ export default class BlueSkyService {
                     if (isSet(since)) {
                         params["since"] = since;
                     }
-                    this.logger.info(`searchPosts`, JSON.stringify(params));
+                    this.logger.info(`searchPosts ${JSON.stringify(params)}`);
                     this.api.app.bsky.feed.searchPosts(params, {})
                         .then(response => {
-                            this.logger.debug(`response`, JSON.stringify(response, null, 2));
+                            this.logger.info(`response`, JSON.stringify(response, null, 2));
                             let posts = fromBlueskyPosts(response.data.posts);
                             if (hasImages === true) {
                                 posts = posts.filter(filterWithEmbedImageView);
