@@ -45,6 +45,7 @@ const evictDeprecatedTtlObject = () => {
     MemoryCache.ttlObject = MemoryCache.ttlObject.filter(ttlObject => ttlObject.ttl > nowEpochSec());
 }
 export const cacheEvictKey = key => {
+    DEBUG && console.log(`cache::cacheEvictKey ${key}`);
     MemoryCache.ttlObject = MemoryCache.ttlObject.filter(ttlObject => ttlObject.key !== key);
 }
 export const cacheGetTtlObject = (key, ttlSecond, objectProviderFunction) => {
