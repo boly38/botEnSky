@@ -69,7 +69,7 @@ export default class ExpressServer {
     /**
      * trigger bot action
      * @param req
-     * @param res cronjob limits the response payload (#9) and read only 64KB
+     * @param res cron job minimal response payload
      * @returns {Promise<void>}
      */
     async hookResponse(req, res) {

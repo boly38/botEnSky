@@ -29,7 +29,6 @@ Application and code structure:
 Services ( having free plan 🚀 🌷 )
 - [GitHub Actions](https://github.com/features/actions)
 - [Render](https://render.com/) free app hosting and automated deployments
-- [Cron-job.org](https://cron-job.org/) scheduler
 - [PlantNet.org](https://plantnet.org) ([API](https://my.plantnet.org/)) - plant identification service
 - [betterstack](https://logs.betterstack.com/) - logs management
 - 
