@@ -1,6 +1,6 @@
 import {isSet, nowHuman, nowISO8601, toHuman} from "../lib/Common.js";
 import {cacheEvictKey, cacheGetTtlObject} from "../lib/MemoryCache.js";
-import { setTimeout } from 'node:timers/promises';
+import {setTimeout} from 'node:timers/promises';// https://nodejs.org/api/timers.html#settimeoutcallback-delay-args
 
 export const NEWS_LABEL = "News 📢";
 export const NEWS_CACHE_KEY = "cache:news";
@@ -26,7 +26,8 @@ export default class NewsService {
         let dt = nowISO8601();
         this.addNewsEntry(dt, news);
         this.loggerNews.info(news);
-        setTimeout(() => cacheEvictKey(NEWS_CACHE_KEY), 5000);// wait a few seconds to get all logs recorded on logtail side
+        setTimeout(5000, NEWS_CACHE_KEY)
+            .then(cacheEvictKey);// wait a few seconds to get all logs recorded on logtail side
     }
 
     getNews() {
