@@ -16,6 +16,10 @@ The goal is to bring happiness to Bluesky users.
 - French help - cf. [botensky.onrender.com](https://botEnSky.onrender.com)
 - English [releases notes](https://github.com/boly38/botEnSky/releases)  - via [![Automated Release Notes by gren](https://img.shields.io/badge/%F0%9F%A4%96-release%20notes-00B2EE.svg)](https://github-tools.github.io/github-release-notes/)
 
+### Bot trigger
+- Github Actions [workflows](.github/workflows) (`trigger_*`) are used to trigger the bot, they are based on `schedule` directives (UTC time, [doc](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule))
+
+
 ## How to contribute ?
 
 cf. [CONTRIBUTING](.github/CONTRIBUTING.md)
