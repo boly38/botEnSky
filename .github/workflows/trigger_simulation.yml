@@ -1,10 +1,10 @@
 # create bot simulation trigger
 name: BES_trigger_simulation
 on:
-  # every day at 17h15 and 17h20
+  # every day at 15h15 and 15h20 UTC
   schedule:
-    - cron: "15 17 * * *"
-    - cron: "20 17 * * *"
+    - cron: "15 15 * * *"
+    - cron: "20 15 * * *"
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 

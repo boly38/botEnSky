@@ -1,9 +1,9 @@
 # create bot action trigger
 name: BES_trigger_action
 on:
-  # every day at 17h30
+  # every day at 15h30 UTC
   schedule:
-    - cron: "30 17 * * *"
+    - cron: "30 15 * * *"
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
