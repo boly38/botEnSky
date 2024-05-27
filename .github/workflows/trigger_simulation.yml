@@ -1,0 +1,23 @@
+# create bot simulation trigger
+name: BES_trigger_simulation
+on:
+  # every day at 17h15 and 17h20
+  schedule:
+    - cron: "15 17 * * *"
+    - cron: "20 17 * * *"
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    environment: github_actions_bes
+    steps:
+      - name: trigger botEnSky simulation
+        env:
+          BES_SIMULATION_TOKEN: ${{ secrets.BES_SIMULATION_TOKEN }}
+          BES_SIMULATION_PLUGIN: ${{ secrets.BES_SIMULATION_PLUGIN }}
+          BES_SIMULATION_URL: ${{ secrets.BES_SIMULATION_URL }}
+        run: |
+          curl -q -H "API-TOKEN: ${BES_SIMULATION_TOKEN}" -H "PLUGIN-NAME: ${BES_SIMULATION_PLUGIN}" "${BES_SIMULATION_URL}"

@@ -1,0 +1,23 @@
+# create bot action trigger
+name: BES_trigger_action
+on:
+  # every day at 17h30
+  schedule:
+    - cron: "30 17 * * *"
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    environment: github_actions_bes
+    steps:
+      - name: trigger botEnSky ACTION
+        env:
+          BES_ACTION_TOKEN: ${{ secrets.BES_ACTION_TOKEN }}
+          BES_ACTION_PLUGIN: ${{ secrets.BES_ACTION_PLUGIN }}
+          BES_ACTION_URL: ${{ secrets.BES_ACTION_URL }}
+        run: |
+          curl -q -H "API-TOKEN: ${BES_ACTION_TOKEN}" -H "PLUGIN-NAME: ${BES_ACTION_PLUGIN}" "${BES_ACTION_URL}"
