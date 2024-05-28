@@ -7,6 +7,7 @@ import {_expectNoError, initEnv, testLogger} from "./libTest.js";
 initEnv();
 const appConfig = ApplicationConfig.getInstance();
 const pluginConfigDoSimulate = {doSimulate: true};
+const defaultTags = "#BeSPlantnet #IndentificationDePlantes";
 let plugin;
 
 // v2 tests example : https://github.com/PLhery/node-twitter-api-v2/blob/master/test/tweet.v2.test.ts
@@ -19,25 +20,27 @@ describe("🧪🧪 30 - Pl@ntNet plugin", function () {
 
     it("simulate plantnet identification with good score and images", async () => {
         await verifyPlantnetProcessResult(pluginConfigDoSimulate,
-            ": Pl@ntNet identifie (à 85.09%) Pancratium SIMULATINIUM");
+            [": Pl@ntNet identifie (à 85.09%) Pancratium SIMULATINIUM", defaultTags]);
     }).timeout(60 * 1000);
 
     it("simulate plantnet identification with good score no image", async () => {
         await verifyPlantnetProcessResult({...pluginConfigDoSimulate, simulateIdentifyCase: "GoodScoreNoImage"},
-            ": Pl@ntNet identifie (à 82.23%) NoImagium SIMULATINIUM");
+            [": Pl@ntNet identifie (à 82.23%) NoImagium SIMULATINIUM", defaultTags]);
     }).timeout(60 * 1000);
 
     it("simulate plantnet identification with bad score", async () => {
         await verifyPlantnetProcessResult({...pluginConfigDoSimulate, simulateIdentifyCase: "BadScore"},
-            "identification par Pl@ntNet n'a pas donné de résultat assez concluant");
+            ["identification par Pl@ntNet n'a pas donné de résultat assez concluant"]);
     }).timeout(60 * 1000);
 
 });
 
-async function verifyPlantnetProcessResult(config, expectedResultText) {
+async function verifyPlantnetProcessResult(config, expectedResultTexts) {
     const result = await plugin.process(config).catch(err => {
         if (err.status === 202) {
-            testLogger.debug("plugin.process : no result");
+            const notice = "we may improve test by simulating bluesky candidate search, when (live) 0 candidate, coverage is poor";
+            // workaround: add "fleur" to questionsPlantnet
+            testLogger.info(`plugin.process : no result - ${notice}`);
         } else {
             _expectNoError(err);
         }
@@ -48,6 +51,8 @@ async function verifyPlantnetProcessResult(config, expectedResultText) {
         expect(result.html).not.to.be.empty;
         expect(result.text).not.to.be.empty;
         // testLogger.debug(result.text)
-        expect(result.text, `expected: ${result.text}`).to.contains(expectedResultText);
+        for (const text of expectedResultTexts) {
+            expect(result.text, `expected: ${result.text}`).to.contains(text);
+        }
     }
 }

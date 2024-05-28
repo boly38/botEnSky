@@ -46,10 +46,10 @@ export default class Plantnet {
             config.pluginName = plugin.getName();
         }
         if (pluginTags === undefined) {
-            config.pluginTags = plugin.getPluginTags();
+            pluginTags = plugin.getPluginTags();
         }
         if (pluginMoreTags !== undefined) {
-            config.pluginTags = [pluginTags, pluginMoreTags].join(' ');
+            pluginTags = [pluginTags, pluginMoreTags].join(' ');
         }
         // if at least one want to simulate then simulate
         const doSimulateIdentify = plugin.plantnetSimulate || isSet(simulateIdentifyCase);
