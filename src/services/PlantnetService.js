@@ -34,10 +34,10 @@ export default class PlantnetService {
 
         return new Promise((resolve, reject) => {
             if (doSimulateIdentify) {
-                const responseFile = simulateIdentifyCase === "BadScore" ?
-                    './src/data/plantNetFrenchResponse2.json' :
-                    './src/data/plantNetFrenchResponse.json';
-                const simulatedAnswer = JSON.parse(fs.readFileSync(responseFile, 'utf8'));
+                const fileSuffix =
+                    simulateIdentifyCase === "BadScore" ? 'BadScore' :
+                        simulateIdentifyCase === "GoodScoreNoImage" ? 'GoodScoreNoImage' : 'GoodScoreImages';
+                const simulatedAnswer = JSON.parse(fs.readFileSync(`./src/data/plantNetFrenchResponse${fileSuffix}.json`, 'utf8'));
                 return resolve(simulatedAnswer);
             }
 
@@ -89,28 +89,24 @@ export default class PlantnetService {
         return infoOf;
     }
 
-    resultImageOf(aResult) {
-        let service = this;
-        return new Promise((resolve, reject) => {
-            if (!isSet(aResult)) {
-                return reject(false);
-            }
-            const firstImage = aResult.images && aResult.images[0] ? aResult.images[0] : false;
-            if (!firstImage) {
-                return reject(false);
-            }
-            let firstImageUrl = firstImage.url ? firstImage.url : {};
-            let imageUrl = firstImageUrl.o ? firstImageUrl.o : firstImageUrl.m ? firstImageUrl.m : firstImageUrl.s;
-            TinyURL.shorten(imageUrl)
-                .then(res => resolve(service.resultImageOfMessage(firstImage, res)))
-                .catch(err => {
-                    service.logger.warn(`Unable to use tinyUrl for this url : ${imageUrl()} - details: ${err}`);
-                    resolve(service.resultImageOfMessage(firstImage, imageUrl));
-                });
-        });
+    resultFirstImage(aResult) {
+        return isSet(aResult) && aResult.images && aResult.images[0] ? aResult.images[0] : null;
     }
 
-    resultImageOfMessage(firstImage, shortenUrl) {
+    resultImageOriginalUrl(aResultImage) {
+        const imageUrl = isSet(aResultImage) ? aResultImage.url : null;
+        if (!isSet(imageUrl)) {
+            return null;
+        }
+        return imageUrl.o ? imageUrl.o : imageUrl.m ? imageUrl.m : imageUrl.s;
+    }
+
+    resultImageToAlternateText(firstImage, contextDetail) {
+        const imageText = this.resultImageToText(firstImage);
+        return `${imageText} comme image exemple pour le résultat suivant: ${contextDetail}`
+    }
+
+    resultImageToText(firstImage) {
         let imageCredits = firstImage.author; // firstImage.citation is too long for a tweet constraint
         let imageOrgan = firstImage.organ === 'flower' ? "fleur" :
             firstImage.organ === 'leaf' ? 'feuille' : false;
@@ -118,7 +114,7 @@ export default class PlantnetService {
         if (imageOrgan) {
             imageOf = `${imageOrgan} - ${imageOf}`;
         }
-        return `${imageOf}\n${shortenUrl}`;
+        return imageOf;
     }
 
     hasScoredResult(plantnetResponse, minimalScore) {

@@ -13,28 +13,31 @@ export default class LogtailService {
         this.logtail_api_v1 = config.log?.logtailApiV1;
         this.logtail_api_token = config.log?.logtailApiToken;
         this.logtail_source_id = config.log?.logtailSourceId;
-        if (isSet(this.logtail_api_v1) && isSet(this.logtail_api_token) && isSet(this.logtail_source_id))
-        this.logtailApiV1 = axios.create({
-            baseURL: this.logtail_api_v1,
-            timeout: 30000,
-            headers: {'Authorization': `Bearer ${this.logtail_api_token}`}
-        });
+        if (isSet(this.logtail_api_v1) && isSet(this.logtail_api_token) && isSet(this.logtail_source_id)) {
+            this.logtailClient = axios.create({
+                baseURL: this.logtail_api_v1,
+                timeout: 30000,
+                headers: {'Authorization': `Bearer ${this.logtail_api_token}`}
+            });
+        }
     }
 
     isAvailable() {
-        return isSet(this.logtail_api_v1);
+        return isSet(this.logtailClient);
     }
 
     querySource(sourceIds/* coma separated ids */, query, from, to, batch = 100) {
+        const service = this;
         return new Promise((resolve, reject) => {
             // query source(s) - https://betterstack.com/docs/logs/query-api/
-            this.logtailApiV1.get('/query', {params: {source_ids: sourceIds, query, from, to, batch}})
+            service.logtailClient.get('/query', {params: {source_ids: sourceIds, query, from, to, batch}})
                 .then(res => resolve(res?.data))
                 .catch(res => reject(res));
         });
     }
 
     getRecentNews() {
+        const service = this;
         const {logger, tz} = this
         return new Promise((resolve, reject) => {
             const logtail_source_id = this.logtail_source_id;
@@ -43,7 +46,7 @@ export default class LogtailService {
             // query syntax : https://betterstack.com/docs/logs/using-logtail/live-tail-query-language/
             const query = `label:"${NEWS_LABEL}"`;
             logger.debug(`querySource id=${logtail_source_id}, query=${query}, from=${from} to=${to} tz=${tz}`);
-            this.querySource(logtail_source_id, query, from, to)
+            service.querySource(logtail_source_id, query, from, to)
                 .then(result => {
                     const data = result.data.map(d => {
                         return {"dt": toHuman(d.dt, tz), "message": d.message}

@@ -1,0 +1,70 @@
+{
+    "query": {
+        "project": "best",
+        "images": ["https://pbs.twimg.com/media/EIxl61NWoAA4gQ7?format=jpg&name=4096x4096", "https://pbs.twimg.com/media/EIxl61NWoAA4gQ7?format=jpg&name=4096x4096"],
+        "organs": ["flower", "leaf"]
+    },
+    "language": "fr",
+    "preferedReferential": "the-plant-list",
+    "results": [{
+            "score": 0.8222715629577637,
+            "species": {
+                "scientificNameWithoutAuthor": "NoImagium SIMULATINIUM",
+                "scientificNameAuthorship": "L.",
+                "genus": {
+                    "scientificNameWithoutAuthor": "Pancratium",
+                    "scientificNameAuthorship": ""
+                },
+                "family": {
+                    "scientificNameWithoutAuthor": "Amaryllidaceae",
+                    "scientificNameAuthorship": ""
+                },
+                "commonNames": ["Lis de mer", "Lis des sables", "Lis maritime"]
+            },
+            "images": [],
+            "gbif": {
+                "id": "2853283"
+            }
+        }, {
+            "score": 0.025389546528458595,
+            "species": {
+                "scientificNameWithoutAuthor": "WithoutIllustrator illyricum",
+                "scientificNameAuthorship": "L.",
+                "genus": {
+                    "scientificNameWithoutAuthor": "Pancratium",
+                    "scientificNameAuthorship": ""
+                },
+                "family": {
+                    "scientificNameWithoutAuthor": "Amaryllidaceae",
+                    "scientificNameAuthorship": ""
+                },
+                "commonNames": ["Pancrace d'Illyrie", "Pancrais d'Illyrie"]
+            },
+            "images": [],
+            "gbif": {
+                "id": "2853249"
+            }
+        }, {
+            "score": 0.018649350851774216,
+            "species": {
+                "scientificNameWithoutAuthor": "Blindless nutans",
+                "scientificNameAuthorship": "L.",
+                "genus": {
+                    "scientificNameWithoutAuthor": "Ornithogalum",
+                    "scientificNameAuthorship": ""
+                },
+                "family": {
+                    "scientificNameWithoutAuthor": "Asparagaceae",
+                    "scientificNameAuthorship": ""
+                },
+                "commonNames": ["Ornithogale penché", "Ornithogale à fleurs penchées"]
+            },
+            "images"
+            : [],
+            "gbif": {
+                "id": "2773281"
+            }
+        }
+    ],
+    "remainingIdentificationRequests": 44
+}

@@ -1,11 +1,11 @@
 import {BskyAgent} from '@atproto/api'
 import {filterWithEmbedImageView, fiterWithNoReply, fromBlueskyPosts, postLinkOf} from "../domain/post.js";
-import {isSet, nowISO8601, nowMinusHoursUTCISO} from "../lib/Common.js";
+import {getEncodingBufferAndBase64FromUri, isSet, nowISO8601, nowMinusHoursUTCISO} from "../lib/Common.js";
 
 export default class BlueSkyService {
     constructor(config, loggerService) {
         this.config = config;
-        this.logger = loggerService.getLogger().child({ label: 'BlueSkyService' });
+        this.logger = loggerService.getLogger().child({label: 'BlueSkyService'});
         const {identifier, password, service} = config.bluesky
         this.agent = new BskyAgent({service})
         this.api = this.agent.api;// inspired from https://github.com/skyware-js/bot/blob/main/src/bot/Bot.ts#L324
@@ -86,22 +86,27 @@ export default class BlueSkyService {
      * @param post
      * @param text
      * @param doSimulate
+     * @param embed
      * @returns {Promise<unknown>}
      */
-    replyTo(post, text, doSimulate) {
+    replyTo(post, text, doSimulate, embed = null) {
         const bs = this;
         return new Promise((resolve, reject) => {
-            const { uri, cid } = post;
+            const {uri, cid} = post;
             const replyPost = {
-                "reply": { "root": {uri,cid}, "parent": {uri,cid} },
+                "reply": {"root": {uri, cid}, "parent": {uri, cid}},
                 "$type": "app.bsky.feed.post",
                 text,
                 "createdAt": nowISO8601(), // ex. "2023-08-07T05:49:40.501974Z" OR new Date().toISOString()
             };
+            if (embed !== null) {
+                replyPost["embed"] = embed;
+            }
 
             if (doSimulate) {
-                bs.logger.info(`SIMULATE REPLY TO ${postLinkOf(post)} : ${text}`);
-                return resolve({ "uri":"simulated_reply_uri", "cid":"simulated_reploy_cid"});
+                const embedDesc = embed !== null ? `\n[${embed["$type"]}|alt:${embed?.images[0]?.alt}]` : '';
+                bs.logger.info(`SIMULATE REPLY TO ${postLinkOf(post)} : ${text}${embedDesc}`);
+                return resolve({"uri": "simulated_reply_uri", "cid": "simulated_reploy_cid"});
             }
             bs.agent.post(replyPost)
                 .then(postReplyResponse => {
@@ -110,6 +115,40 @@ export default class BlueSkyService {
                     resolve(postReplyResponse);
                 })
                 .catch(reject)
+        });
+    }
+
+    prepareImageUrlAsBlueskyEmbed(imageUri, imageAltText) {
+        const bs = this;
+        return new Promise((resolve, reject) => {
+            getEncodingBufferAndBase64FromUri(imageUri)
+                .then(result => {
+                    const {encoding, buffer, base64} = result;
+                    if (encoding === undefined) {
+                        throw new Error("encoding is undefined");
+                    }
+                    if (base64?.length < 1) {
+                        throw new Error("image is empty");
+                    }
+                    if (base64?.length > 1000000) {
+                        throw new Error(`image file size too large (${base64?.length}). 1000000 bytes maximum`);
+                    }
+                    console.log(`base64.length=${base64?.length} encoding=${encoding}`)
+                    // create blueSky blob of image
+                    bs.agent.uploadBlob(buffer, {encoding})
+                        .then(upBlobResponse => {
+                            const {data} = upBlobResponse;
+                            const embed = {
+                                $type: 'app.bsky.embed.images',
+                                images: [ // can be an array up to 4 values
+                                    {"alt":imageAltText, "image": data.blob}
+                                ]
+                            };
+                            resolve(embed);
+                        })
+                        .catch(reject);
+                })
+                .catch(reject);
         });
     }
 
