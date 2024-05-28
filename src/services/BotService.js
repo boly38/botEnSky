@@ -47,8 +47,7 @@ export default class BotService {
                 reject({"message": "je suis actuellement en maintenance, retentez plus tard", "status": 503});
                 return;
             }
-            bot.logger.info( `process ${(doSimulate ? "SIMULATION" : "")} right now`, context);
-            bot.newsService.add(`${(doSimulate ? "Simulation" : "Exécution")} du plugin - ${pluginName}`);
+            bot.logger.info( `${(doSimulate ? "Simulation" : "Exécution")} du plugin - ${pluginName}`, context);
             plugin.process({"doSimulate": doSimulate, context})
                 .then(result => {
                     bot.logger.info(`plugin result ${result.text}`, context);

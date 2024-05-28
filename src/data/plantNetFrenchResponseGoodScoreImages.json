@@ -30,7 +30,8 @@
                         "string": "8 septembre 2012"
                     },
                     "url": {
-                        "o": "https://bs.floristic.org/v1/image/o/009f5bb5bddc80c43c0e05c637ae911d8c2f8b9b",
+                        "o": "https://bs.plantnet.org/image/o/da65bab7ff4708f64db9d00ebb68b5dbfa2a4534",
+                        "unavailable_legacy_o": "https://bs.floristic.org/v1/image/o/009f5bb5bddc80c43c0e05c637ae911d8c2f8b9b",
                         "m": "https://bs.floristic.org/v1/image/m/009f5bb5bddc80c43c0e05c637ae911d8c2f8b9b",
                         "s": "https://bs.floristic.org/v1/image/s/009f5bb5bddc80c43c0e05c637ae911d8c2f8b9b"
                     },

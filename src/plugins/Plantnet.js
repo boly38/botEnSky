@@ -1,5 +1,6 @@
 import {arrayIsNotEmpty, clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf, postHtmlOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
+import TinyURL from "tinyurl";
 
 const PLANTNET_MINIMAL_PERCENT = 20;
 const PLANTNET_MINIMAL_RATIO = PLANTNET_MINIMAL_PERCENT / 100;
@@ -40,15 +41,15 @@ export default class Plantnet {
 
     process(config) {
         const plugin = this;
-        let {pluginName, pluginTags, pluginMoreTags, doSimulate, simulateIdentifyCase, context} = config;
+        let {pluginTags, pluginMoreTags, doSimulate, simulateIdentifyCase, context} = config;
         if (config.pluginName === undefined) {
-            pluginName = plugin.getName();
+            config.pluginName = plugin.getName();
         }
         if (pluginTags === undefined) {
-            pluginTags = plugin.getPluginTags();
+            config.pluginTags = plugin.getPluginTags();
         }
         if (pluginMoreTags !== undefined) {
-            pluginTags = [pluginTags, pluginMoreTags].join(' ');
+            config.pluginTags = [pluginTags, pluginMoreTags].join(' ');
         }
         // if at least one want to simulate then simulate
         const doSimulateIdentify = plugin.plantnetSimulate || isSet(simulateIdentifyCase);
@@ -99,7 +100,7 @@ export default class Plantnet {
      */
     searchNextCandidate(config, bookmark = 0) {
         const plugin = this;
-        let {pluginName, context} = config;
+        const {pluginName, context} = config;
         return new Promise((resolve, reject) => {
             let searchQuery = plugin.questions[bookmark];
             if (config.searchExtra) {
@@ -138,15 +139,15 @@ export default class Plantnet {
                     plugin.logger.debug(`plantnetResult : ${JSON.stringify(plantResult)}`, context);
                     const firstScoredResult = plugin.plantnetService.hasScoredResult(plantResult, PLANTNET_MINIMAL_RATIO);
                     if (!firstScoredResult) {
-                        plugin.replyNoScoredResult(options).then(resolve).catch(reject);
+                        plugin.resolveWithoutScoredResult(options).then(resolve).catch(reject);
                         return;
                     }
-                    plugin.replyScoredResult(options, firstScoredResult).then(resolve).catch(reject);
+                    plugin.replyScoredResultWithImage(options, firstScoredResult).then(resolve).catch(reject);
                 })
                 .catch(err => {
                     plugin.logError("plantnetService.identify", err, {...context, image, doSimulate});
                     if (err?.status === 404) {
-                        plugin.noIdentificationResult(options).then(resolve);
+                        plugin.resolveWithNoIdentificationResult(options).then(resolve);
                         return
                     }
                     reject({
@@ -159,24 +160,65 @@ export default class Plantnet {
         });
     }
 
-    replyScoredResult(options, firstScoredResult) {
-        const plugin = this;
-        const {tags} = options;
-        return new Promise((resolve, reject) => {
-            plugin.plantnetService.resultImageOf(firstScoredResult)
-                .then(illustrateImage => {
-                    let scoredResultSummary = plugin.plantnetService.resultInfoOf(firstScoredResult);
-                    let withImageLink = (illustrateImage ? "\n\n" + illustrateImage : "")
-                    let replyMessage = `Pl@ntNet identifie ${scoredResultSummary}\n${withImageLink} \n\n${tags}`;
-                    plugin.replyResult(options, replyMessage)
-                        .then(resolve)
-                        .catch(reject);
-                })
-                .catch(reject);
+    buildShortUrlWithText(imageUrl, text) {
+        let service = this;
+        return new Promise(resolve => {
+            if (imageUrl === null) {
+                return resolve(false);
+            }
+            TinyURL.shorten(imageUrl)
+                .then(shortenUrl => resolve(`${text}\n${shortenUrl}`))
+                .catch(err => {
+                    service.logger.warn(`Unable to use tinyUrl for this url : ${imageUrl} - details: ${err?.message}`);
+                    resolve(`${text}\n${imageUrl}`);
+                });
         });
     }
 
-    noIdentificationResult(options) {
+    replyScoredResultWithImage(options, firstScoredResult) {
+        const plugin = this;
+        const {tags} = options;
+        return new Promise((resolve, reject) => {
+            const scoredResultSummary = 'Pl@ntNet identifie ' + plugin.plantnetService.resultInfoOf(firstScoredResult);
+            const firstImage = plugin.plantnetService.resultFirstImage(firstScoredResult);
+            const firstImageOriginalUrl = plugin.plantnetService.resultImageOriginalUrl(firstImage);
+            // Case 1 : score result without image as example
+            if (!isSet(firstImage) || !isSet(firstImageOriginalUrl)) {
+                let replyMessage = `${scoredResultSummary}\n\n${tags}`;
+                plugin.replyResult(options, replyMessage)
+                    .then(resolve)
+                    .catch(reject);
+                return;
+            }
+            // Case 2 : score result with image
+            const firstImageAltText = plugin.plantnetService.resultImageToAlternateText(firstImage, scoredResultSummary);
+            this.blueskyService.prepareImageUrlAsBlueskyEmbed(firstImageOriginalUrl, firstImageAltText)
+                .then(embed => {
+                    // Case 2a : image embedded into reply post
+                    let replyMessage = `${scoredResultSummary}\n\n${tags}`;
+                    plugin.replyResult(options, replyMessage, embed)
+                        .then(resolve)
+                        .catch(reject);
+                })
+                .catch(err => {
+                    // Case 2b : image as text link into reply post
+                    plugin.logger.info(`Unable to make bluesky embed of image ${firstImageOriginalUrl}, so keep it as text link: ${err.message}`);
+                    const firstImageShortText = plugin.plantnetService.resultImageToText(firstImage);
+                    plugin.buildShortUrlWithText(firstImageOriginalUrl, firstImageShortText)
+                        .then(illustrateImage => {
+                            let withImageLink = (illustrateImage ? "\n\n" + illustrateImage : "")
+                            let replyMessage = `${scoredResultSummary}\n${withImageLink} \n\n${tags}`;
+                            plugin.replyResult(options, replyMessage)
+                                .then(resolve)
+                                .catch(reject);
+                        })
+                        .catch(reject);
+                })
+
+        });
+    }
+
+    resolveWithNoIdentificationResult(options) {
         const {candidate} = options;
         const candidateHtmlOf = postHtmlOf(candidate);
         const candidateTextOf = postTextOf(candidate);
@@ -187,7 +229,7 @@ export default class Plantnet {
         });
     }
 
-    replyNoScoredResult(options) {
+    resolveWithoutScoredResult(options) {
         const {candidate} = options;
         const candidateHtmlOf = postHtmlOf(candidate);
         const candidateTextOf = postTextOf(candidate);
@@ -198,14 +240,14 @@ export default class Plantnet {
         });
     }
 
-    replyResult(options, replyMessage) {
+    replyResult(options, replyMessage, embed = null) {
         const plugin = this;
         const {doSimulate, candidate, context} = options;
         plugin.logger.debug("reply result",
             JSON.stringify({doSimulate, replyMessage, candidate}, null, 2)
         );
         return new Promise((resolve, reject) => {
-            this.blueskyService.replyTo(candidate, replyMessage, doSimulate)
+            this.blueskyService.replyTo(candidate, replyMessage, doSimulate, embed)
                 .then(() => {
                     const candidateHtmlOf = postHtmlOf(candidate);
                     const candidateTextOf = postTextOf(candidate);

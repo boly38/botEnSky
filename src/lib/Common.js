@@ -4,7 +4,8 @@ import process from "node:process";
 import dayjs from "dayjs";
 
 import utc from "dayjs/plugin/utc.js"
-import timezone from "dayjs/plugin/timezone.js" // dependent on utc plugin
+import timezone from "dayjs/plugin/timezone.js"
+import axios from "axios"; // dependent on utc plugin
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -62,3 +63,19 @@ export const toHuman = (utcDateTimeString, tz) => {
  */
 
 export const generateErrorId = () => "ERR_" + dayjs().format("YYYYMMDDHHmmss");
+
+export const getEncodingBufferAndBase64FromUri = imageUri => {
+    return new Promise((resolve, reject) => {
+        axios
+            .get(imageUri, {
+                responseType: 'arraybuffer'
+            })
+            .then(response => {
+                const encoding = response.headers["content-type"];
+                const buffer = Buffer.from(response.data, 'binary');/* incoming data are binary */
+                const base64 = buffer.toString('base64');
+                resolve({encoding, buffer, base64});
+            })
+            .catch(reject)
+    });
+};
