@@ -1,0 +1,22 @@
+# render redeploy
+name: botensky-redeploy
+
+on:
+  push:
+    tags:
+      - '*'
+    branches: [ prod ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  run-on-tag:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Redeploy app
+      env:
+        API_RENDER_DEPLOY_HOOK: ${{ secrets.API_RENDER_DEPLOY_HOOK }}
+      run: |
+        curl "${API_RENDER_DEPLOY_HOOK}"
