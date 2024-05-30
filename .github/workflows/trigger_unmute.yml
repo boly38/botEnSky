@@ -3,7 +3,7 @@ name: BES_trigger_unmute
 on:
   # every day at 23 55 UTC
   schedule:
-    - cron: "23 55 * * *"
+    - cron: "55 23 * * *"
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
