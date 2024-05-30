@@ -52,4 +52,9 @@ jobs:
           BOT_PLANTNET_SIMULATE: ${{ secrets.BOT_PLANTNET_SIMULATE }}
           BOT_TOKEN_SIMULATION: ${{ secrets.BOT_TOKEN_SIMULATION }}
           PLANTNET_API_PRIVATE_KEY: ${{ secrets.PLANTNET_API_PRIVATE_KEY }}
+          API_RENDER_DEPLOY_HOOK: ${{ secrets.API_RENDER_DEPLOY_HOOK }}
         run: npm run ci-test
+
+      - name: Redeploy app
+        run: |
+          curl "${API_RENDER_DEPLOY_HOOK}"
