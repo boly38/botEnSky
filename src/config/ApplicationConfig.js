@@ -8,6 +8,7 @@ import BotService from "../services/BotService.js";
 import NewsService from "../services/NewsService.js";
 import LoggerService from "../services/LoggerService.js";
 import LogtailService from "../services/LogtailService.js";
+import UnMute from "../plugins/UnMute.js";
 
 export default class ApplicationConfig {
     constructor() {
@@ -52,6 +53,12 @@ export default class ApplicationConfig {
             .addArgument(container.get('blueskyService'))
             .addArgument(container.get('plantnetService'));
         this.plugins.push(container.get('plantnet'));
+
+        container.register('unmute', UnMute)
+            .addArgument(container.get('config'))
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('blueskyService'));
+        this.plugins.push(container.get('unmute'));
     }
 
     constructBot() {

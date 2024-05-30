@@ -10,7 +10,7 @@ const testPlan = {
     searchPost: true,
 }
 
-describe("🧪🧪 10 - BlueSkyService", () => {
+describe("🧪🧪 10 - BlueSkyService\n", () => {
 
     it("search post", done => {
         if (!testPlan.searchPost) {

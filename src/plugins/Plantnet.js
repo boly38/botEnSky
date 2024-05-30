@@ -1,5 +1,13 @@
 import {arrayIsNotEmpty, clone, isSet, loadJsonResource} from "../lib/Common.js";
-import {firstImageOf, postHtmlOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
+import {
+    firstImageOf,
+    postAuthorOf,
+    postHtmlOf,
+    postImageOf,
+    postInfoOf,
+    postLinkOf,
+    postTextOf
+} from "../domain/post.js";
 import TinyURL from "tinyurl";
 
 const PLANTNET_MINIMAL_PERCENT = 20;
@@ -39,7 +47,7 @@ export default class Plantnet {
         return this.isAvailable;
     }
 
-    process(config) {
+    async process(config) {
         const plugin = this;
         let {pluginTags, pluginMoreTags, doSimulate, simulateIdentifyCase, context} = config;
         if (config.pluginName === undefined) {
@@ -53,36 +61,37 @@ export default class Plantnet {
         }
         // if at least one want to simulate then simulate
         const doSimulateIdentify = plugin.plantnetSimulate || isSet(simulateIdentifyCase);
-        return new Promise((resolve, reject) => {
-            plugin.searchNextCandidate(config)
-                .then(candidate => {
-                    const candidatePhoto = firstImageOf(candidate);
-                    if (!candidatePhoto) {
-                        plugin.logger.info("no candidate image", context);
-                        throw {"message": `aucune image pour Pl@ntNet dans ${postLinkOf(candidate)}`, "status": 202};
-                    }
-                    plugin.logger.debug(`post Candidate : ${postLinkOf(candidate)}\n` +
-                        `\t${postInfoOf(candidate)}\n` +
-                        `\t${postImageOf(candidatePhoto)}`, context);
+        try {
+            const candidate = await plugin.searchNextCandidate(config);
+            const candidatePhoto = firstImageOf(candidate);
+            if (!candidatePhoto) {
+                plugin.logger.info("no candidate image", context);
+                return Promise.reject({
+                    "message": `aucune image pour Pl@ntNet dans ${postLinkOf(candidate)}`,
+                    "status": 202
+                });
+            }
+            plugin.logger.debug(`post Candidate : ${postLinkOf(candidate)}\n` +
+                `\t${postInfoOf(candidate)}\n` +
+                `\t${postImageOf(candidatePhoto)}`, context);
 
-                    const candidateImageFullsize = candidatePhoto?.fullsize;
+            const candidateImageFullsize = candidatePhoto?.fullsize;
 
-                    const identifyOptions = {
-                        "image": candidateImageFullsize,
-                        doSimulate,
-                        doSimulateIdentify,
-                        simulateIdentifyCase,
-                        candidate,
-                        "tags": pluginTags,
-                        context
-                    };
-                    plugin.logger.debug(`identifyOptions : ${identifyOptions}`, context);
-                    plugin.plantnetIdentify(identifyOptions)
-                        .then(resolve)
-                        .catch(reject)
-                })
-                .catch(reject);
-        });
+            const identifyOptions = {
+                "image": candidateImageFullsize,
+                doSimulate,
+                doSimulateIdentify,
+                simulateIdentifyCase,
+                candidate,
+                "tags": pluginTags,
+                context
+            };
+            plugin.logger.debug(`identifyOptions : ${identifyOptions}`, context);
+            const result = await plugin.plantnetIdentify(identifyOptions);
+            return Promise.resolve(result);
+        } catch (err) {
+            return Promise.reject(err);
+        }
     }
 
     /**
@@ -100,21 +109,26 @@ export default class Plantnet {
      */
     searchNextCandidate(config, bookmark = 0) {
         const plugin = this;
-        const {pluginName, context} = config;
+        const {pluginName, context, doSimulateSearch} = config;
         return new Promise((resolve, reject) => {
+            if (doSimulateSearch) {
+                plugin.blueskyService.login().then(()=>{
+                    return resolve(loadJsonResource("src/data/blueskyPostFakeFlower.json"));
+                })
+            }
             let searchQuery = plugin.questions[bookmark];
             if (config.searchExtra) {
                 searchQuery += " " + config.searchExtra;
             }
             const hasImages = true;
             const hasNoReply = true;
+            const isNotMuted = true;
             const maxHoursOld = 24;// now-24h ... now
-            plugin.blueskyService.searchPosts({searchQuery, hasImages, hasNoReply, maxHoursOld})
+            plugin.blueskyService.searchPosts({searchQuery, hasImages, hasNoReply, isNotMuted, maxHoursOld})
                 .then(candidatePosts => {
                     plugin.logger.info(`${candidatePosts.length} candidate(s)`, context);
                     if (arrayIsNotEmpty(candidatePosts)) {
-                        resolve(candidatePosts[0]);
-                        return;
+                        return resolve(candidatePosts[0]);
                     }
                     if (bookmark + 1 < plugin.questions.length) {
                         plugin.searchNextCandidate(config, bookmark + 1)
@@ -129,35 +143,34 @@ export default class Plantnet {
         });
     }
 
-    plantnetIdentify(options) {
+    async plantnetIdentify(options) {
         const plugin = this;
         const {image, doSimulate, doSimulateIdentify, simulateIdentifyCase, candidate, context} = options;
-
-        return new Promise((resolve, reject) => {
-            plugin.plantnetService.identify({"imageUrl": image, doSimulateIdentify, simulateIdentifyCase})
-                .then(plantResult => {
-                    plugin.logger.debug(`plantnetResult : ${JSON.stringify(plantResult)}`, context);
-                    const firstScoredResult = plugin.plantnetService.hasScoredResult(plantResult, PLANTNET_MINIMAL_RATIO);
-                    if (!firstScoredResult) {
-                        plugin.resolveWithoutScoredResult(options).then(resolve).catch(reject);
-                        return;
-                    }
-                    plugin.replyScoredResultWithImage(options, firstScoredResult).then(resolve).catch(reject);
-                })
-                .catch(err => {
-                    plugin.logError("plantnetService.identify", err, {...context, image, doSimulate});
-                    if (err?.status === 404) {
-                        plugin.resolveWithNoIdentificationResult(options).then(resolve);
-                        return
-                    }
-                    reject({
-                        "message": "impossible d'identifier l'image",
-                        "html": `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div>` +
-                            `<b>Erreur</b>: impossible d'identifier l'image`,
-                        "status": 500
-                    });
-                });
-        });
+        let plantResult;
+        try {
+            plantResult = await plugin.plantnetService.identify({
+                "imageUrl": image,
+                doSimulateIdentify,
+                simulateIdentifyCase
+            });
+        } catch (err) {
+            plugin.logError("plantnetService.identify", err, {...context, image, doSimulate});
+            if (err?.status === 404) {
+                return await plugin.resolveWithNoIdentificationResult(options);
+            }
+            return Promise.reject({
+                "text": "impossible d'identifier l'image",
+                "html": `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div>` +
+                    `<b>Erreur</b>: impossible d'identifier l'image`,
+                "status": 500
+            });
+        }
+        plugin.logger.debug(`plantnetResult : ${JSON.stringify(plantResult)}`, context);
+        const firstScoredResult = plugin.plantnetService.hasScoredResult(plantResult, PLANTNET_MINIMAL_RATIO);
+        if (!firstScoredResult) {
+            return plugin.resolveWithoutScoredResult(options);
+        }
+        return plugin.replyScoredResultWithImage(options, firstScoredResult);
     }
 
     buildShortUrlWithText(imageUrl, text) {
@@ -218,22 +231,24 @@ export default class Plantnet {
         });
     }
 
-    resolveWithNoIdentificationResult(options) {
-        const {candidate} = options;
+    async resolveWithNoIdentificationResult(options) {
+        const {candidate, context} = options;
         const candidateHtmlOf = postHtmlOf(candidate);
         const candidateTextOf = postTextOf(candidate);
-        const noIdentificationText = " ne donne aucune identification Pl@ntNet";
+        const noIdentificationText = "L'identification par Pl@ntNet ne donne aucun résultat (auteur masqué)";
+        await this.blueskyService.safeMuteCandidateAuthor(postAuthorOf(candidate), noIdentificationText, context);
         return Promise.resolve({
             "html": `<b>Post</b>:<div class="bg-info">${candidateHtmlOf}</div> ${noIdentificationText}`,
             "text": `Post:\n\t${candidateTextOf}\n\t${noIdentificationText}`
         });
     }
 
-    resolveWithoutScoredResult(options) {
-        const {candidate} = options;
+    async resolveWithoutScoredResult(options) {
+        const {candidate, context} = options;
         const candidateHtmlOf = postHtmlOf(candidate);
         const candidateTextOf = postTextOf(candidate);
-        const noIdentificationGoodScoreText = `L'identification par Pl@ntNet n'a pas donné de résultat assez concluant 😩 (score<${PLANTNET_MINIMAL_PERCENT}%)`;
+        const noIdentificationGoodScoreText = `L'identification par Pl@ntNet n'a pas donné de résultat assez concluant 😩 (score<${PLANTNET_MINIMAL_PERCENT}%)(auteur masqué)`;
+        await this.blueskyService.safeMuteCandidateAuthor(postAuthorOf(candidate), noIdentificationGoodScoreText, context);
         return Promise.resolve({
             "html": `<b>Post</b>:<div class="bg-info">${candidateHtmlOf}</div> ${noIdentificationGoodScoreText}`,
             "text": `Post:\n\t${candidateTextOf}\n\t${noIdentificationGoodScoreText}`
