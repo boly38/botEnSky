@@ -1,0 +1,34 @@
+{
+  "author": {
+    "did": "did:plc:4vfm3oevtkk57qmu2nbemjqo",
+    "avatar": "https://cdn.bsky.app/img/avatar/plain/did:plc:4vfm3oevtkk57qmu2nbemjqo/bafkreigslbnc6uecdvkikwnwiik6w522rhx6drzyswfonjiiq64yj44jry@jpeg",
+    "displayName": "Martijn Rijk",
+    "handle": "martijnrijk.bsky.social",
+    "viewer": {
+      "muted": false
+    }
+  },
+  "indexedAt": "2024-05-30T09:44:42.875Z",
+  "likeCount": 0,
+  "replyCount": 0,
+  "repostCount": 0,
+  "uri": "at://did:plc:4vfm3oevtkk57qmu2nbemjqo/app.bsky.feed.post/3ktp4vr7l6c2b",
+  "cid": "bafyreibbi5bijaq7kuklsy3ujcxtqqy5ddkcrxdanndp7wtv5hu7qpmphq",
+  "record": {
+    "$type": "app.bsky.feed.post",
+    "createdAt": "2024-05-30T09:44:42.875Z",
+    "langs": [
+      "en"
+    ],
+    "text": "Fleur toch op met je boodschap!"
+  },
+  "embed": {
+    "$type": "app.bsky.embed.images#view",
+    "images": [
+      {
+        "alt": "",
+        "fullsize": "https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:4vfm3oevtkk57qmu2nbemjqo/bafkreih2tdl335j6xw6ssy34yybvmz7c76ighounjejpdjr7btzdl3pkty@jpeg"
+      }
+    ]
+  }
+}

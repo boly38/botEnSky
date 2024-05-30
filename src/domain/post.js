@@ -39,13 +39,13 @@ export const fromBlueskyPostImages = images => images?.map(fromBlueskyPostImage)
  */
 export const fromBlueskyPost = post => {
     const {
-        "author": {avatar, displayName, handle},
+        "author": {did, avatar, displayName, handle, "viewer": {muted}},
         embed,
         indexedAt, likeCount, replyCount, repostCount, uri, cid,
         record
     } = post;
     const result = {
-        "author": {avatar, displayName, handle},
+        "author": {did, avatar, displayName, handle, "viewer": {muted}},
         indexedAt, likeCount, replyCount, repostCount, uri, cid,
         "record": {
             "$type": record["$type"],
@@ -124,5 +124,17 @@ export const postTextOf = post => {
     return `${postLink} ${postDate} by @${username} (${handleLink}) --- ${text}`;
 }
 
+export const postAuthorOf = post => post?.author;
+export const displayNameOfPostAuthor = postAuthor => postAuthor?.displayName;
+export const handleOfPostAuthor = postAuthor => postAuthor?.handle;
+export const didOfPostAuthor = postAuthor => postAuthor?.did;
+
+export const descriptionOfPostAuthor = postAuthor => {
+    const displayName = displayNameOfPostAuthor(postAuthor);
+    const handle = handleOfPostAuthor(postAuthor);
+    return handle === displayName ? `@${handle}` : `${displayName}(@${handle})`;
+}
+
 export const filterWithEmbedImageView = p => p?.embed?.$type === "app.bsky.embed.images#view"
 export const fiterWithNoReply = p => p?.replyCount === 0
+export const fiterWithNotMuted = p => p?.author?.viewer?.muted === false

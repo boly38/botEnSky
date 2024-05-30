@@ -9,7 +9,7 @@ const chai = chaiModule.use(chaiHttp);
 let agent;
 let expressServer;
 
-describe("🧪🧪 20 - UI - Pages", () => {
+describe("🧪🧪 20 - UI - Pages\n", () => {
 
     before(done => {
         initEnv();

@@ -12,7 +12,8 @@
     "tst": "echo windows %TST% test&& set NODE_ENV=test&& mocha --trace-warnings --timeout 180000 --unhandled-rejections=strict tests/all-root.test.js tests/%TST%.test.js",
     "test": "echo ci-test&& set NODE_ENV=test&&c8 mocha --exit --unhandled-rejections=strict tests/*.test.js --timeout 50000",
     "ci-test": "echo ci-test&& export NODE_ENV=test&&c8 mocha --unhandled-rejections=strict tests/*.test.js --timeout 50000",
-    "wip": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: Plantnet' http://localhost:5000/api/hook"
+    "wipPN": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: Plantnet' http://localhost:5000/api/hook",
+    "wipUM": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: UnMute' http://localhost:5000/api/hook"
   },
   "repository": {
     "type": "git",

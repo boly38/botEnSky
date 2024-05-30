@@ -6,41 +6,45 @@ import {_expectNoError, initEnv, testLogger} from "./libTest.js";
 
 initEnv();
 const appConfig = ApplicationConfig.getInstance();
-const pluginConfigDoSimulate = {doSimulate: true};
+const pluginConfigDoSimulate = {doSimulate: true, doSimulateSearch: true};
 const defaultTags = "#BeSPlantnet #IndentificationDePlantes";
-let plugin;
+let plantnetPlugin;
+let unmutePlugin;
 
 // v2 tests example : https://github.com/PLhery/node-twitter-api-v2/blob/master/test/tweet.v2.test.ts
-describe("🧪🧪 30 - Pl@ntNet plugin", function () {
+describe("🧪🧪 30 - Plugins\n", function () {
 
     before(() => {
-        console.info(`plantnet test :: before`);
-        plugin = appConfig.get('plantnet');
+        console.info(`plugin test :: before`);
+        plantnetPlugin = appConfig.get('plantnet');
+        unmutePlugin = appConfig.get('unmute');
     });
 
-    it("simulate plantnet identification with good score and images", async () => {
-        await verifyPlantnetProcessResult(pluginConfigDoSimulate,
+    it("Pl@ntNet plugin - simulate id. with good score and images", async () => {
+        await verifyPluginProcessResult(plantnetPlugin, pluginConfigDoSimulate,
             [": Pl@ntNet identifie (à 85.09%) Pancratium SIMULATINIUM", defaultTags]);
     }).timeout(60 * 1000);
 
-    it("simulate plantnet identification with good score no image", async () => {
-        await verifyPlantnetProcessResult({...pluginConfigDoSimulate, simulateIdentifyCase: "GoodScoreNoImage"},
+    it("Pl@ntNet plugin - simulate id. with good score no image", async () => {
+        await verifyPluginProcessResult(plantnetPlugin, {...pluginConfigDoSimulate, simulateIdentifyCase: "GoodScoreNoImage"},
             [": Pl@ntNet identifie (à 82.23%) NoImagium SIMULATINIUM", defaultTags]);
     }).timeout(60 * 1000);
 
-    it("simulate plantnet identification with bad score", async () => {
-        await verifyPlantnetProcessResult({...pluginConfigDoSimulate, simulateIdentifyCase: "BadScore"},
+    it("Pl@ntNet plugin - simulate id. with bad score", async () => {
+        await verifyPluginProcessResult(plantnetPlugin, {...pluginConfigDoSimulate, simulateIdentifyCase: "BadScore"},
             ["identification par Pl@ntNet n'a pas donné de résultat assez concluant"]);
+    }).timeout(60 * 1000);
+
+    it("UnMute plugin", async () => {
+        await verifyPluginProcessResult(unmutePlugin, {},["Démasqué martijnrijk"]);
     }).timeout(60 * 1000);
 
 });
 
-async function verifyPlantnetProcessResult(config, expectedResultTexts) {
+async function verifyPluginProcessResult(plugin, config, expectedResultTexts) {
     const result = await plugin.process(config).catch(err => {
         if (err.status === 202) {
-            const notice = "we may improve test by simulating bluesky candidate search, when (live) 0 candidate, coverage is poor";
-            // workaround: add "fleur" to questionsPlantnet
-            testLogger.info(`plugin.process : no result - ${notice}`);
+            testLogger.warn("plugin.process : no result - this use case should no more happens because bs search may be simulated");
         } else {
             _expectNoError(err);
         }

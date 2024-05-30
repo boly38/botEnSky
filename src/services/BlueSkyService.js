@@ -1,5 +1,13 @@
 import {BskyAgent} from '@atproto/api'
-import {filterWithEmbedImageView, fiterWithNoReply, fromBlueskyPosts, postLinkOf} from "../domain/post.js";
+import {
+    descriptionOfPostAuthor,
+    didOfPostAuthor,
+    filterWithEmbedImageView,
+    fiterWithNoReply,
+    fiterWithNotMuted,
+    fromBlueskyPosts,
+    postLinkOf
+} from "../domain/post.js";
 import {getEncodingBufferAndBase64FromUri, isSet, nowISO8601, nowMinusHoursUTCISO} from "../lib/Common.js";
 
 export default class BlueSkyService {
@@ -47,10 +55,11 @@ export default class BlueSkyService {
         const {
             searchQuery = "boly38",
             limit = 5,
-            sort = "latest",
-            hasImages = false,
-            hasNoReply = false,
-            maxHoursOld = 1
+            sort = "latest",// recent first
+            hasImages = false,// does post include embed image
+            hasNoReply = false,// does post has 0 reply
+            isNotMuted = true,// is post muted by bot
+            maxHoursOld = 1// restrict search time window "since" limit
         } = options;
         return new Promise((resolve, reject) => {
             const since = isSet(maxHoursOld) ? nowMinusHoursUTCISO(maxHoursOld) : null;
@@ -65,12 +74,9 @@ export default class BlueSkyService {
                         .then(response => {
                             this.logger.info(`response`, JSON.stringify(response, null, 2));
                             let posts = fromBlueskyPosts(response.data.posts);
-                            if (hasImages === true) {
-                                posts = posts.filter(filterWithEmbedImageView);
-                            }
-                            if (hasNoReply === true) {
-                                posts = posts.filter(fiterWithNoReply);
-                            }
+                            posts = hasImages ? posts.filter(filterWithEmbedImageView) : posts;
+                            posts = hasNoReply ? posts.filter(fiterWithNoReply) : posts;
+                            posts = isNotMuted ? posts.filter(fiterWithNotMuted) : posts;
                             this.logger.debug(`posts`, JSON.stringify(posts, null, 2));
                             resolve(posts);
                         })
@@ -133,7 +139,7 @@ export default class BlueSkyService {
                     if (base64?.length > 1000000) {
                         throw new Error(`image file size too large (${base64?.length}). 1000000 bytes maximum`);
                     }
-                    console.log(`base64.length=${base64?.length} encoding=${encoding}`)
+                    bs.logger.debug(`base64.length=${base64?.length} encoding=${encoding}`)
                     // create blueSky blob of image
                     bs.agent.uploadBlob(buffer, {encoding})
                         .then(upBlobResponse => {
@@ -141,7 +147,7 @@ export default class BlueSkyService {
                             const embed = {
                                 $type: 'app.bsky.embed.images',
                                 images: [ // can be an array up to 4 values
-                                    {"alt":imageAltText, "image": data.blob}
+                                    {"alt": imageAltText, "image": data.blob}
                                 ]
                             };
                             resolve(embed);
@@ -150,6 +156,32 @@ export default class BlueSkyService {
                 })
                 .catch(reject);
         });
+    }
+
+    async getMutes() {
+        await this.login();
+        const response = await this.api.app.bsky.graph.getMutes({/* limit: 50 is default */}, {});
+        const {mutes} = response?.data || [];
+        return mutes;
+    }
+
+    async safeMuteCandidateAuthor(postAuthor, reason, context) {
+        const bs = this;
+        const actorDid = didOfPostAuthor(postAuthor);
+        const author = descriptionOfPostAuthor(postAuthor);
+        await this.login();
+        await this.api.app.bsky.graph.muteActor({"actor": actorDid})
+            .then(response => bs.logger.info(`mute ${author} (${reason}) - data:${response.data} - success:${response.success}`, context))
+            .catch(err => bs.logger.warn(`cant mute ${author} did:${actorDid} (${reason}) - err:${err.message}`, context));
+    }
+
+    async safeUnMuteMuted(mutedEntry, context) {
+        const bs = this;
+        const actorDid = didOfPostAuthor(mutedEntry);
+        const author = descriptionOfPostAuthor(mutedEntry);
+        await this.api.app.bsky.graph.unmuteActor({"actor": actorDid})
+            .then(response => bs.logger.info(`un-mute ${author} - data:${response.data} - success:${response.success}`, context))
+            .catch(err => bs.logger.warn(`cant un-mute ${author} did:${actorDid}- err:${err.message}`, context));
     }
 
     /*
