@@ -99,20 +99,11 @@ export const postImageOf = postImage => {
     return alt ? `${fullsize} --- ${alt}` : fullsize;
 }
 
-export const postHtmlOf = post => {
-    const {author: {handle, displayName}, record: {text, createdAt}} = post;
-    if (!post || !handle || !text || !createdAt) {
-        return "";
-    }
-    const username = isSet(displayName) ? displayName : handle;
-    const postDate = createdAt ? toLocaleDate(createdAt) : "";
-    const postLink = postLinkOf(post);
-    const handleLink = bskyAppHAndleUriBuilder(handle);
-    return `<a href="${postLink}">${postDate}</a> --- ` +
-        `<a href="${handleLink}">@${username}</a>: ${text}`;
-}
+export const postHtmlOf = post => postFormatterOf(post, "html");
+export const postTextOf = post => postFormatterOf(post, "text");
 
-export const postTextOf = post => {
+export const htmlLink = (label, href) => `<a href="${href}">${label}</a>`;
+export const postFormatterOf = (post, format = "text") => {
     const {author: {handle, displayName}, record: {text, createdAt}} = post;
     if (!post || !handle || !text || !createdAt) {
         return "";
@@ -121,7 +112,13 @@ export const postTextOf = post => {
     const postDate = createdAt ? toLocaleDate(createdAt) : "";
     const postLink = postLinkOf(post);
     const handleLink = bskyAppHAndleUriBuilder(handle);
-    return `${postLink} ${postDate} by @${username} (${handleLink}) --- ${text}`;
+    if (format === "text") {
+        return `${postLink} ${postDate} by @${username} (${handleLink}) --- ${text}`;
+    } else if (format === "html") {
+        return `${htmlLink(postDate, postLink)} --- ${htmlLink(username, handleLink)}: ${text}`;
+    } else {
+        throw new Error(`unsupported format ${format}`);
+    }
 }
 
 export const postAuthorOf = post => post?.author;
@@ -138,3 +135,58 @@ export const descriptionOfPostAuthor = postAuthor => {
 export const filterWithEmbedImageView = p => p?.embed?.$type === "app.bsky.embed.images#view"
 export const fiterWithNoReply = p => p?.replyCount === 0
 export const fiterWithNotMuted = p => p?.author?.viewer?.muted === false
+
+// Function to find all URLs in the text
+export const postFindUrls = text => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;// find http and https links
+    let match;
+    const urls = [];
+    while ((match = urlRegex.exec(text)) !== null) {
+        urls.push({url: match[0], start: match.index, end: match.index + match[0].length});
+    }
+    return urls;
+}
+
+// Function to find all hashtags in the text
+export const postFindHashtags = text => {
+    const hashtagRegex = /#[^\s#]+/g;// find hashtags
+    let match;
+    const hashtags = [];
+    while ((match = hashtagRegex.exec(text)) !== null) {
+        hashtags.push({hashtag: match[0], start: match.index, end: match.index + match[0].length});
+    }
+    return hashtags;
+}
+
+// Function to create facets
+export const postCreateFacets = (urls, hashtags) => {
+    const facets = [];
+
+    urls.forEach(url => {
+        facets.push({
+            index: {
+                start: url.start,
+                end: url.end
+            },
+            type: "link",
+            link: {
+                uri: url.url
+            }
+        });
+    });
+
+    hashtags.forEach(hashtag => {
+        facets.push({
+            index: {
+                start: hashtag.start,
+                end: hashtag.end
+            },
+            type: "mention",
+            mention: {
+                name: hashtag.hashtag
+            }
+        });
+    });
+
+    return facets;
+}
