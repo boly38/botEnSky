@@ -1,5 +1,5 @@
 import axios from "axios";
-import {isSet, nowISO8601, nowMinusHoursUTCISO, toHuman} from "../lib/Common.js";
+import {isSet, nowISO8601, nowMinusHoursUTCISO, toHuman, toHumanDay, toHumanTime} from "../lib/Common.js";
 import {NEWS_LABEL} from "./NewsService.js";
 
 /**
@@ -36,6 +36,21 @@ export default class LogtailService {
         });
     }
 
+    perDateMessage(logs) {
+        const {tz} = this
+        const resultMap = {};
+        logs.forEach(d => {
+            const dt = toHumanTime(d.dt, tz);
+            const day = toHumanDay(d.dt, tz);
+            const message = d.message;
+            if (!resultMap[day]) {
+                resultMap[day] = [];
+            }
+            resultMap[day].push({dt,message});
+        });
+        return resultMap;
+    }
+
     getRecentNews() {
         const service = this;
         const {logger, tz} = this
@@ -48,9 +63,7 @@ export default class LogtailService {
             logger.debug(`querySource id=${logtail_source_id}, query=${query}, from=${from} to=${to} tz=${tz}`);
             service.querySource(logtail_source_id, query, from, to)
                 .then(result => {
-                    const data = result.data.map(d => {
-                        return {"dt": toHuman(d.dt, tz), "message": d.message}
-                    });
+                    const data = this.perDateMessage(result.data);
                     const logtailNews = {
                         "from": toHuman(from, tz),
                         "to": toHuman(to, tz),

@@ -1,37 +1,90 @@
+html, body {
+    margin: 0px !important;
+    padding: 0px !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    width: 100%;
+}
+
 .panel-input {
-  border: 1px solid green;
-  width: 400px;
-  margin-left: 30px;
+    border: 1px solid green;
 }
 
 .panel-heading {
-  padding-left: 10px !important;
-  padding-bottom: 0px !important;
-  padding-top: 10px !important;
+    padding-left: 10px !important;
+    padding-bottom: 10px !important;
+    padding-top: 10px !important;
+    font-size: 1.4em;
 }
 
 .panel-info {
-  margin-top: 4px !important;
-  margin-left: 10px !important;
-  margin-right: 10px !important;
+    margin-top: 0 !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+
+.panel-body {
+    font-size: 1.2em;
 }
 
 #sendResult {
-  margin-left: 30px;
+    margin-left: 30px;
 }
 
 #sendTweet {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .illustrateTxt {
-  float: right;
+    float: right;
+}
+
+.logDate {
+    font-size: 0.8em;
+}
+
+li.msgContainer {
+    list-style-type: circle;
+    padding-bottom: 4px;
 }
 
 .msgContainer {
-  border: 2px solid yellow;
-  padding: 20px;
+    padding-left: 6px;
+    font-size: 1.0em;
 }
-.msgTitle {
-  font-size: 20px;
+
+/* Responsive adjustments */
+@media screen and (max-width: 1200px) {
+    .panel-heading {
+        padding-left: 10px !important;
+        padding-bottom: 10px !important;
+        padding-top: 10px !important;
+        font-size: 1.2em;
+    }
+
+    .panel-body {
+        font-size: 1.0em;
+    }
+
+    .panel-input {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .panel-info {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .logDate {
+        font-size: 0.8em;
+    }
+
+    .msgContainer {
+        padding-left: 3px;
+        font-size: 1.0em;
+    }
 }
