@@ -55,6 +55,12 @@ export const nowHuman = tz => dayjs().tz(tz).format(BES_DATE_FORMAT);
 export const toHuman = (utcDateTimeString, tz) => {
     return dayjs.utc(utcDateTimeString).tz(tz).format(BES_DATE_FORMAT);
 };
+export const toHumanDay = (utcDateTimeString, tz) => {
+    return dayjs.utc(utcDateTimeString).tz(tz).format("YYYY-MM-DD");
+};
+export const toHumanTime = (utcDateTimeString, tz) => {
+    return dayjs.utc(utcDateTimeString).tz(tz).format("HH:mm:ss");
+};
 /*
   getParisNowDate() {
     return new Date().toLocaleString('fr-FR', {

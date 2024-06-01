@@ -1,22 +1,43 @@
-  <div class="panel panel-info" id="logs">
+<div class="panel panel-info" id="logs">
     <div class="panel-heading">Les logs du robot</div>
     <div class="panel-body">
         <p>
             Bienvenue sur la page du <a href="<%- blueskyAccount %>"
                                         data-umami-event="{blueskyAccount link}" id="blueskyAccount-link"
                                         class="umami--click--profile-button">@<%- blueskyDisplayName %></a>
-              - un robot BlueSky <a href="https://nodejs.org/"
+              : un robot BlueSky <a href="https://nodejs.org/"
                                     data-umami-event="{nodejs link}" id="nodejs-link"
-                                    class="umami--click--nodejs-button">NodeJS</a>.<br/>
+                                    class="umami--click--nodejs-button">NodeJS</a>
+                                    <sup>version <%- version %></sup>.<br/>
             <br/>
-            🧾 activités récentes <a href="/" data-umami-event="{logs-refresh link}" id="logs-refresh-link">🔄</a> <sup>Fraîcheur : <%- news.to %> - TZ : <%- tz %></sup>:<br/>
-              <ul>
-                <% news.data.forEach(function(newsEntry){ %>
-                  <li><%- newsEntry.dt  %> | <%- newsEntry.message  %></li>
-                <% }); %>
-               <!-- <li><small><%- news.from %></small></li> -->
-                <li>version <%- version %></li>
-              </ul>
-        </>
+            <a href="/" data-umami-event="{logs-refresh link}" id="logs-refresh-link">🔄</a> 🧾 activités récentes<br/>
+            <small>Fraîcheur : <%- news.to %> - TZ : <%- tz %></small><br/>
+        </p>
+
+        <div class="panel-heading">
+          <ul class="nav nav-tabs">
+            <% Object.keys(news.data).forEach((item, index) => { %>
+              <li id="logDate-<%- index %>-menu" class="logDate">
+                <a href="#" onClick="toggleLogDateContent('logDate-<%- index %>')"
+                                data-umami-event="{home logs <%- item %>}" id="home-logs-<%- index %>"
+                                ><%- item %></a>
+              </li>
+            <% }) %>
+          </ul>
+        </div>
     </div>
+
+
+    <% Object.keys(news.data).forEach((item, index) => { %>
+
+    <div class="panel" id="logDate-<%- index %>">
+        <!-- <div class="panel-heading">Les logs du <%- item %></div> -->
+        <ul class="logLine">
+           <% news.data[item].forEach(function(newsEntry){ %>
+             <li class="msgContainer"><%- newsEntry.dt  %> | <%- newsEntry.message  %></li>
+           <% }); %>
+        </ul>
+    </div>
+
+    <% }) %>
   </div>

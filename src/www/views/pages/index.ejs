@@ -4,8 +4,21 @@
   <%- include ('../partials/header') %>
     <script type="text/javascript">
       const contentIds = ["logs", "principes", "faq"]
-      function toggleContent(content) {
+      window.toggleContent = function(content) {
         contentIds.forEach( id => {
+          const idMenu = `${id}-menu`;
+          if (id === content) {
+            $(`#${id}`).show();
+            $(`#${idMenu}`).addClass("active");
+          } else {
+            $(`#${id}`).hide();
+            $(`#${idMenu}`).removeClass("active");
+          }
+        })
+      }
+      const logDateIds = [<%- Object.keys(news.data).map((item, index) => "\"logDate-" + index + "\"") %>];
+      window.toggleLogDateContent = function(content) {
+        logDateIds.forEach( id => {
           const idMenu = `${id}-menu`;
           if (id === content) {
             $(`#${id}`).show();
@@ -18,13 +31,14 @@
       }
 
       $(document).ready(function () {
-         toggleContent('logs');
+         window.toggleContent(contentIds[0]);
+         window.toggleLogDateContent(logDateIds[0]);
       });
     </script>
 </head>
 
 <body>
-<div>
+<div class="container-fluid">
 
   <div class="panel-heading">
     <ul class="nav nav-tabs">
