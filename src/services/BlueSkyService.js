@@ -6,6 +6,9 @@ import {
     fiterWithNoReply,
     fiterWithNotMuted,
     fromBlueskyPosts,
+    postCreateFacets,
+    postFindHashtags,
+    postFindUrls,
     postLinkOf
 } from "../domain/post.js";
 import {getEncodingBufferAndBase64FromUri, isSet, nowISO8601, nowMinusHoursUTCISO} from "../lib/Common.js";
@@ -99,10 +102,18 @@ export default class BlueSkyService {
         const bs = this;
         return new Promise((resolve, reject) => {
             const {uri, cid} = post;
+
+            //~ rich format
+            // Find URLs and hashtags in the message
+            const urls = postFindUrls(text);
+            const hashtags = postFindHashtags(text);
+            // Create facets for the URLs and hashtags
+            const facets = postCreateFacets(urls, hashtags);
+
             const replyPost = {
                 "reply": {"root": {uri, cid}, "parent": {uri, cid}},
                 "$type": "app.bsky.feed.post",
-                text,
+                text, facets,
                 "createdAt": nowISO8601(), // ex. "2023-08-07T05:49:40.501974Z" OR new Date().toISOString()
             };
             if (embed !== null) {
