@@ -1,4 +1,4 @@
-import {BskyAgent} from '@atproto/api'
+import {BskyAgent, RichText} from '@atproto/api'
 import {
     descriptionOfPostAuthor,
     didOfPostAuthor,
@@ -6,9 +6,6 @@ import {
     fiterWithNoReply,
     fiterWithNotMuted,
     fromBlueskyPosts,
-    postCreateFacets,
-    postFindHashtags,
-    postFindUrls,
     postLinkOf
 } from "../domain/post.js";
 import {getEncodingBufferAndBase64FromUri, isSet, nowISO8601, nowMinusHoursUTCISO} from "../lib/Common.js";
@@ -92,6 +89,9 @@ export default class BlueSkyService {
     /**
      * reply to a given POST with a given TEXT
      * bluesky replyTo doc : https://docs.bsky.app/docs/tutorials/creating-a-post#replies
+     * To create facets, we may use dedicated tooling.
+     *  - https://docs.bsky.app/docs/advanced-guides/posts#mentions-and-links
+     *  - https://docs.bsky.app/docs/advanced-guides/post-richtext
      * @param post
      * @param text
      * @param doSimulate
@@ -100,20 +100,21 @@ export default class BlueSkyService {
      */
     replyTo(post, text, doSimulate, embed = null) {
         const bs = this;
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const {uri, cid} = post;
 
             //~ rich format
-            // Find URLs and hashtags in the message
-            const urls = postFindUrls(text);
-            const hashtags = postFindHashtags(text);
-            // Create facets for the URLs and hashtags
-            const facets = postCreateFacets(urls, hashtags);
-
+            const rt = new RichText({text})
+            try {
+                await rt.detectFacets(bs.agent) // automatically detects mentions and links
+            } catch (err) {
+                bs.logger.error(`detectFacets error ${err.message}`);
+            }
             const replyPost = {
                 "reply": {"root": {uri, cid}, "parent": {uri, cid}},
                 "$type": "app.bsky.feed.post",
-                text, facets,
+                text: rt.text,
+                facets: rt.facets,
                 "createdAt": nowISO8601(), // ex. "2023-08-07T05:49:40.501974Z" OR new Date().toISOString()
             };
             if (embed !== null) {
@@ -123,8 +124,9 @@ export default class BlueSkyService {
             if (doSimulate) {
                 const embedDesc = embed !== null ? `\n[${embed["$type"]}|alt:${embed?.images[0]?.alt}]` : '';
                 bs.logger.info(`SIMULATE REPLY TO ${postLinkOf(post)} : ${text}${embedDesc}`);
-                return resolve({"uri": "simulated_reply_uri", "cid": "simulated_reploy_cid"});
+                return resolve({"uri": "simulated_reply_uri", "cid": "simulated_reply_cid"});
             }
+            bs.logger.debug("POST SENT:\n" + JSON.stringify(replyPost, null, 2))
             bs.agent.post(replyPost)
                 .then(postReplyResponse => {
                     bs.logger.info(`replyTo response : ${JSON.stringify(postReplyResponse)}`);
