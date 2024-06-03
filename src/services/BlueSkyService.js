@@ -27,7 +27,6 @@ export default class BlueSkyService {
         return new Promise((resolve, reject) => {
             bs.agent.login(this.agentConfig)
                 .then(loginResponse => {
-                    bs.logger.debug("loginResponse", loginResponse);
                     bs.agent.getProfile({"actor": loginResponse.data.did})
                         .then(profileResponse => {
                             bs.profile = profileResponse;
@@ -72,7 +71,6 @@ export default class BlueSkyService {
                     this.logger.info(`searchPosts ${JSON.stringify(params)}`);
                     this.api.app.bsky.feed.searchPosts(params, {})
                         .then(response => {
-                            this.logger.info(`response`, JSON.stringify(response, null, 2));
                             let posts = fromBlueskyPosts(response.data.posts);
                             posts = hasImages ? posts.filter(filterWithEmbedImageView) : posts;
                             posts = hasNoReply ? posts.filter(fiterWithNoReply) : posts;
@@ -195,6 +193,15 @@ export default class BlueSkyService {
         await this.api.app.bsky.graph.unmuteActor({"actor": actorDid})
             .then(response => bs.logger.info(`un-mute ${author} - data:${response.data} - success:${response.success}`, context))
             .catch(err => bs.logger.warn(`cant un-mute ${author} did:${actorDid}- err:${err.message}`, context));
+    }
+
+    // https://docs.bsky.app/docs/api/app-bsky-feed-get-post-thread
+    async getParentPostOf(uri/* Reference (AT-URI) to post record.*/) {
+        const response = await this.api.app.bsky.feed.getPostThread({uri}, {})
+        const {data} = response;
+        const parent = data?.thread?.parent;
+        return parent && parent["$type"] === "app.bsky.feed.defs#threadViewPost" && isSet(parent["post"]) ?
+            parent["post"] : null;
     }
 
     /*
