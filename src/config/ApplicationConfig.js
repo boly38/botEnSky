@@ -3,12 +3,14 @@ import ApplicationProperties from './ApplicationProperties.js';
 import ExpressServer from '../services/ExpressServer.js';
 import BlueSkyService from "../services/BlueSkyService.js";
 import Plantnet from "../plugins/Plantnet.js";
-import PlantnetService from "../services/PlantnetService.js";
+import PlantnetApiService from "../services/PlantnetApiService.js";
 import BotService from "../services/BotService.js";
 import NewsService from "../services/NewsService.js";
 import LoggerService from "../services/LoggerService.js";
 import LogtailService from "../services/LogtailService.js";
 import UnMute from "../plugins/UnMute.js";
+import AskPlantnet from "../plugins/AskPlantnet.js";
+import PlantnetCommonService from "../services/PlantnetCommonService.js";
 
 export default class ApplicationConfig {
     constructor() {
@@ -38,7 +40,11 @@ export default class ApplicationConfig {
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'));
 
-        container.register('plantnetService', PlantnetService)
+        container.register('plantnetCommonService', PlantnetCommonService)
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('blueskyService'));
+
+        container.register('plantnetApiService', PlantnetApiService)
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'));
     }
@@ -51,8 +57,19 @@ export default class ApplicationConfig {
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('blueskyService'))
-            .addArgument(container.get('plantnetService'));
+            .addArgument(container.get('plantnetCommonService'))
+            .addArgument(container.get('plantnetApiService'));
         this.plugins.push(container.get('plantnet'));
+
+        container.register('askPlantnet', AskPlantnet)
+            .addArgument(container.get('config'))
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('blueskyService'))
+            .addArgument(container.get('plantnetCommonService'))
+            .addArgument(container.get('plantnetApiService'));
+
+        this.plugins.push(container.get('plantnet'));
+        this.plugins.push(container.get('askPlantnet'));
 
         container.register('unmute', UnMute)
             .addArgument(container.get('config'))

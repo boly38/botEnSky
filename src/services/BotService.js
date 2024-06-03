@@ -89,3 +89,11 @@ export default class BotService {
         return arr[Math.floor(Math.random() * arr.length)];
     }
 }
+
+
+export const pluginResolve = (text, html, status = 200) => {
+    return {text, html, status};
+}
+export const pluginReject = (text, html, status, shortResponseMessage) => {
+    return {text, html, status, message: shortResponseMessage};
+}

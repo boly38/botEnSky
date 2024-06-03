@@ -1,4 +1,4 @@
-/* jshint expr: true */                                                                // for to.be.empty
+/* jshint expr: true */  // for to.be.empty
 import {before, describe, it} from 'mocha';
 import {expect} from 'chai';
 import ApplicationConfig from '../src/config/ApplicationConfig.js';
@@ -7,36 +7,74 @@ import {_expectNoError, initEnv, testLogger} from "./libTest.js";
 initEnv();
 const appConfig = ApplicationConfig.getInstance();
 const pluginConfigDoSimulate = {doSimulate: true, doSimulateSearch: true};
-const defaultTags = "#BeSPlantnet #IndentificationDePlantes";
+const plantnetPluginDefaultTag = "#BeSPlantnet #IndentificationDePlantes";
+const plantnetAskPluginDefaultTag = "#BeSAskPlantnet #IndentificationDePlantes";
 let plantnetPlugin;
+let askPlantnetPlugin;
 let unmutePlugin;
 
 // v2 tests example : https://github.com/PLhery/node-twitter-api-v2/blob/master/test/tweet.v2.test.ts
-describe("🧪🧪 30 - Plugins\n", function () {
+describe("🧪🧩 30 - Pl@ntNet Plugin\n", function () {
 
     before(() => {
-        console.info(`plugin test :: before`);
         plantnetPlugin = appConfig.get('plantnet');
-        unmutePlugin = appConfig.get('unmute');
     });
 
-    it("Pl@ntNet plugin - simulate id. with good score and images", async () => {
+    it("Pl@ntNet plugin - id. OK images", async () => {
         await verifyPluginProcessResult(plantnetPlugin, pluginConfigDoSimulate,
-            [": Pl@ntNet identifie (à 85.09%) Pancratium SIMULATINIUM", defaultTags]);
+            [": Pl@ntNet identifie (à 85.09%) Pancratium SIMULATINIUM", plantnetPluginDefaultTag]);
     }).timeout(60 * 1000);
 
-    it("Pl@ntNet plugin - simulate id. with good score no image", async () => {
-        await verifyPluginProcessResult(plantnetPlugin, {...pluginConfigDoSimulate, simulateIdentifyCase: "GoodScoreNoImage"},
-            [": Pl@ntNet identifie (à 82.23%) NoImagium SIMULATINIUM", defaultTags]);
+    it("Pl@ntNet plugin - id. OK no image", async () => {
+        await verifyPluginProcessResult(plantnetPlugin, {
+                ...pluginConfigDoSimulate,
+                simulateIdentifyCase: "GoodScoreNoImage"
+            },
+            [": Pl@ntNet identifie (à 82.23%) NoImagium SIMULATINIUM", plantnetPluginDefaultTag]);
     }).timeout(60 * 1000);
 
-    it("Pl@ntNet plugin - simulate id. with bad score", async () => {
+    it("Pl@ntNet plugin - id. BAD_SCORE", async () => {
         await verifyPluginProcessResult(plantnetPlugin, {...pluginConfigDoSimulate, simulateIdentifyCase: "BadScore"},
             ["identification par Pl@ntNet n'a pas donné de résultat assez concluant"]);
     }).timeout(60 * 1000);
 
+});
+describe("🧪🧩 31 - Ask-Pl@ntNet Plugin\n", function () {
+
+    before(() => {
+        askPlantnetPlugin = appConfig.get('askPlantnet');
+    });
+
+    it("Ask-Pl@ntNet plugin - id. OK images", async () => {
+        await verifyPluginProcessResult(askPlantnetPlugin, pluginConfigDoSimulate,
+            [": Pl@ntNet identifie (à 85.09%) Pancratium SIMULATINIUM", plantnetAskPluginDefaultTag]);
+    }).timeout(60 * 1000);
+
+    it("Ask-Pl@ntNet plugin - id. OK no image", async () => {
+        await verifyPluginProcessResult(askPlantnetPlugin, {
+                ...pluginConfigDoSimulate,
+                simulateIdentifyCase: "GoodScoreNoImage"
+            },
+            [": Pl@ntNet identifie (à 82.23%) NoImagium SIMULATINIUM", plantnetAskPluginDefaultTag]);
+    }).timeout(60 * 1000);
+
+    it("Ask-Pl@ntNet plugin - id. BAD_SCORE", async () => {
+        await verifyPluginProcessResult(askPlantnetPlugin, {
+                ...pluginConfigDoSimulate,
+                simulateIdentifyCase: "BadScore"
+            },
+            ["identification par Pl@ntNet n'a pas donné de résultat assez concluant"]);
+    }).timeout(60 * 1000);
+
+});
+describe("🧪🧩 32 - UnMute Plugin\n", function () {
+
+    before(() => {
+        unmutePlugin = appConfig.get('unmute');
+    });
+
     it("UnMute plugin", async () => {
-        await verifyPluginProcessResult(unmutePlugin, {},["Démasqué martijnrijk"]);
+        await verifyPluginProcessResult(unmutePlugin, {}, ["Démasqué martijnrijk"]);
     }).timeout(60 * 1000);
 
 });

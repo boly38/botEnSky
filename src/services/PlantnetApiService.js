@@ -1,20 +1,35 @@
 import fs from 'fs';
 import superagent from 'superagent';
-import TinyURL from 'tinyurl';
 import {isSet} from "../lib/Common.js";
 
 const MY_API_PLANTNET_V2_URL = 'https://my-api.plantnet.org/v2/identify/all';
-
+export const PLANTNET_MINIMAL_PERCENT = 20;
+const PLANTNET_MINIMAL_RATIO = PLANTNET_MINIMAL_PERCENT / 100;
 // Pl@ntNet API : https://github.com/plantnet/my.plantnet/blob/master/README.md
-export default class PlantnetService {
+export const IDENTIFY_RESULT = {
+    /**
+     * Pl@ntNet result with good enough score
+     */
+    OK: "OK",
+    /**
+     * Pl@ntNet result with too poor score that must not be undertaken
+     */
+    BAD_SCORE: "BAD_SCORE",
+    /**
+     * Pl@ntNet were unable to identify something
+     */
+    NONE: "NONE"
+};
+
+export default class PlantnetApiService {
 
     constructor(config, loggerService) {
         this.isAvailable = false;
-        this.logger = loggerService.getLogger().child({label: 'PlantnetService'});
+        this.logger = loggerService.getLogger().child({label: 'PlantnetApiService'});
 
         this.apiKey = config.plantnet.apiKey;
         if (!isSet(this.apiKey)) {
-            this.logger.error("PlantnetService, please setup your environment");
+            this.logger.error("PlantnetApiService, please setup your environment");
             return;
         }
         this.isAvailable = true;
@@ -25,7 +40,32 @@ export default class PlantnetService {
         return this.isAvailable;
     }
 
-    identify(options) {
+    async plantnetIdentify(options) {
+        const {imageUrl, doSimulateIdentify, simulateIdentifyCase, context} = options;
+        this.logger.debug(`identifyOptions : ${{imageUrl, doSimulateIdentify, simulateIdentifyCase}}`, context);
+        let plantResult;
+        try {
+            plantResult = await this.plantnetIdentifyApi({imageUrl, doSimulateIdentify, simulateIdentifyCase});
+        } catch (err) {
+            if (err?.status === 404) {
+                return {"result": IDENTIFY_RESULT.NONE, err}
+            }
+            throw err;
+        }
+        this.logger.debug(`plantnetResult : ${JSON.stringify(plantResult)}`, context);
+        const firstScoredResult = this.hasScoredResult(plantResult, PLANTNET_MINIMAL_RATIO);
+        if (!firstScoredResult) {
+            return {"result": IDENTIFY_RESULT.BAD_SCORE};
+        }
+        const scoredResult = 'Pl@ntNet identifie ' + this.resultInfoOf(firstScoredResult);
+        const firstImage = this.resultFirstImage(firstScoredResult);
+        const firstImageOriginalUrl = this.resultImageOriginalUrl(firstImage);
+        const firstImageText = this.resultImageToText(firstImage);
+        return {"result": IDENTIFY_RESULT.OK, "plantnetResult": {scoredResult, firstImageOriginalUrl, firstImageText}};
+    }
+
+    // may be private
+    plantnetIdentifyApi(options) {
         const service = this;
         let {imageUrl, doSimulateIdentify, simulateIdentifyCase} = options;
         doSimulateIdentify = !(doSimulateIdentify === false) || imageUrl === undefined;
@@ -101,12 +141,10 @@ export default class PlantnetService {
         return imageUrl.o ? imageUrl.o : imageUrl.m ? imageUrl.m : imageUrl.s;
     }
 
-    resultImageToAlternateText(firstImage, contextDetail) {
-        const imageText = this.resultImageToText(firstImage);
-        return `${imageText} comme image exemple pour le résultat suivant: ${contextDetail}`
-    }
-
     resultImageToText(firstImage) {
+        if (!isSet(firstImage)) {
+            return null;
+        }
         let imageCredits = firstImage.author; // firstImage.citation is too long for a tweet constraint
         let imageOrgan = firstImage.organ === 'flower' ? "fleur" :
             firstImage.organ === 'leaf' ? 'feuille' : false;

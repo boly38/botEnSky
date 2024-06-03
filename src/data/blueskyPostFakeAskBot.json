@@ -1,0 +1,25 @@
+{
+  "author": {
+    "did": "did:plc:iy7q3r5p5jagqaznuudppucr",
+    "avatar": "https://cdn.bsky.app/img/avatar/plain/did:plc:iy7q3r5p5jagqaznuudppucr/bafkreignropk7wuesbc4levrkxtzbh3l554mxduheh4htfkvr6afforkaq@jpeg",
+    "displayName": "Boly38",
+    "handle": "boly38.bsky.social",
+    "viewer": {
+      "muted": false
+    }
+  },
+  "indexedAt": "2024-06-02T18:14:25.788Z",
+  "likeCount": 1,
+  "replyCount": 0,
+  "repostCount": 0,
+  "uri": "at://did:plc:iy7q3r5p5jagqaznuudppucr/app.bsky.feed.post/3ktxkrxw6ls2x",
+  "cid": "bafyreiavzj53jpxwsccdeywsqgbi4vreezxf7hz3ku5c4kc6etv62gtfp4",
+  "record": {
+    "$type": "app.bsky.feed.post",
+    "createdAt": "2024-06-02T18:14:25.788Z",
+    "langs": [
+      "fr"
+    ],
+    "text": "nice ^^\n\ncc. @botensky.bsky.social"
+  }
+}
