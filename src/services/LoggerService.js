@@ -46,15 +46,19 @@ export default class LoggerService {
                 })
             )
         });
+        let isDebugLevelActivated = process.env["BES_DEBUG"] === "true";
+        if (isDebugLevelActivated) {
+            consoleTransport.level = 'debug';
+        }
 
         if (isSet(this.logtail)) { // https://logs.betterstack.com
             const transports = [new LogtailTransport(this.logtail), consoleTransport];
             this._winstonLogger = winston.createLogger({transports});
-            console.log(` ☑  winston logtail logger`);
+            console.log(` ☑  winston logtail logger${isDebugLevelActivated ? " with console in debug level" : ""}`);
         } else {
             const transports = [consoleTransport];
             this._winstonLogger = winston.createLogger({transports});
-            console.log(` ☑  winston console logger`);
+            console.log(` ☑  winston console logger${isDebugLevelActivated ? " with console in debug level" : ""}`);
         }
     }
 

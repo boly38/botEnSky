@@ -3,7 +3,6 @@ import {pluginResolve} from "../services/BotService.js";
 export default class UnMute {
     constructor(config, loggerService, blueskyService) {
         this.logger = loggerService.getLogger().child({label: 'UnMute'});
-        this.logger.level = "INFO"; // DEBUG will show search results
         this.blueskyService = blueskyService;
         this.isAvailable = true;
     }

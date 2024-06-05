@@ -99,7 +99,9 @@ export default class BlueSkyService {
     replyTo(post, text, doSimulate, embed = null) {
         const bs = this;
         return new Promise(async (resolve, reject) => {
-            const {uri, cid} = post;
+            const {"uri":parentUri, "cid":parentCid} = post;
+            const rootUri = post?.record?.reply?.root?.uri || parentUri;
+            const rootCid = post?.record?.reply?.root?.cid || parentCid;
 
             //~ rich format
             const rt = new RichText({text})
@@ -109,7 +111,10 @@ export default class BlueSkyService {
                 bs.logger.error(`detectFacets error ${err.message}`);
             }
             const replyPost = {
-                "reply": {"root": {uri, cid}, "parent": {uri, cid}},
+                "reply": {
+                    "root": {"uri":rootUri, "cid":rootCid},
+                    "parent": {"uri":parentUri, "cid":parentCid}
+                },
                 "$type": "app.bsky.feed.post",
                 text: rt.text,
                 facets: rt.facets,
