@@ -51,7 +51,8 @@ export const fromBlueskyPost = post => {
             "$type": record["$type"],
             "createdAt": record.createdAt,
             "langs": record.langs,
-            "text": record.text
+            "text": record.text,
+            "reply": record.reply
         }
     };
     if (isSet(embed)) {

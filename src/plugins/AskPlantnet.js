@@ -7,7 +7,6 @@ export default class AskPlantnet {
     constructor(config, loggerService, blueskyService, plantnetCommonService, plantnetApiService) {
         this.isAvailable = false;
         this.logger = loggerService.getLogger().child({label: 'AskPl@ntNet'});
-        this.logger.level = "INFO"; // DEBUG will show search results
         this.blueskyService = blueskyService;
         this.plantnetSimulate = (config.bot.plantnetSimulate === true);
         this.plantnetCommonService = plantnetCommonService;
