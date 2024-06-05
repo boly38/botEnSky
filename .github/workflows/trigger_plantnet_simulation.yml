@@ -1,5 +1,5 @@
 # create bot simulation trigger
-name: BES_trigger_simulation
+name: BES_trigger_plantnet_simulation
 on:
   # every day at 15h15 and 15h20 UTC
   schedule:
@@ -14,10 +14,9 @@ jobs:
 
     environment: github_actions_bes
     steps:
-      - name: trigger botEnSky simulation
+      - name: trigger botEnSky PlantNet simulation
         env:
           BES_SIMULATION_TOKEN: ${{ secrets.BES_SIMULATION_TOKEN }}
-          BES_SIMULATION_PLUGIN: ${{ secrets.BES_SIMULATION_PLUGIN }}
           BES_SIMULATION_URL: ${{ secrets.BES_SIMULATION_URL }}
         run: |
-          curl -q -H "API-TOKEN: ${BES_SIMULATION_TOKEN}" -H "PLUGIN-NAME: ${BES_SIMULATION_PLUGIN}" "${BES_SIMULATION_URL}"
+          curl -q -H "API-TOKEN: ${BES_SIMULATION_TOKEN}" -H "PLUGIN-NAME: Plantnet" "${BES_SIMULATION_URL}"

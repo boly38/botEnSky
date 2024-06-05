@@ -1,9 +1,10 @@
-# create bot unmute trigger
-name: BES_trigger_unmute
+# create bot simulation trigger
+name: BES_trigger_askplantnet_simulation
 on:
-  # every day at 23 55 UTC
+  # every day at 09h57 and 14h55 UTC
   schedule:
-    - cron: "55 23 * * *"
+    - cron: "55 09 * * *"
+    - cron: "55 14 * * *"
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -13,9 +14,9 @@ jobs:
 
     environment: github_actions_bes
     steps:
-      - name: trigger botEnSky UnMute
+      - name: trigger botEnSky AskPlantNet simulation
         env:
           BES_SIMULATION_TOKEN: ${{ secrets.BES_SIMULATION_TOKEN }}
           BES_SIMULATION_URL: ${{ secrets.BES_SIMULATION_URL }}
         run: |
-          curl -q -H "API-TOKEN: ${BES_SIMULATION_TOKEN}" -H "PLUGIN-NAME: UnMute" "${BES_SIMULATION_URL}"
+          curl -q -H "API-TOKEN: ${BES_SIMULATION_TOKEN}" -H "PLUGIN-NAME: AskPlantnet" "${BES_SIMULATION_URL}"
