@@ -78,7 +78,7 @@ export default class AskPlantnet {
             } = await plantnetApiService.plantnetIdentify(identifyOptions);
             if (result === IDENTIFY_RESULT.OK) {
                 const {scoredResult, firstImageOriginalUrl, firstImageText} = plantnetResult;
-                return await plantnetCommonService.replyToWithIdentificationResult(parentPost,
+                return await plantnetCommonService.replyToWithIdentificationResult(candidate,
                     {tags, doSimulate, context},
                     {scoredResult, firstImageOriginalUrl, firstImageText}
                 );
