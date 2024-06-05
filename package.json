@@ -1,6 +1,6 @@
 {
   "name": "bot-en-sky",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "BlueSky botEnSky - a bot account that reply to bluesky post with Pla@ntNet identification",
   "scripts": {
     "audit": "npm audit&&npm outdated --depth=3",
