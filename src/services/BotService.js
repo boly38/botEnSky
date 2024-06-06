@@ -97,3 +97,5 @@ export const pluginResolve = (text, html, status = 200) => {
 export const pluginReject = (text, html, status, shortResponseMessage) => {
     return {text, html, status, message: shortResponseMessage};
 }
+
+export const dataSimulationDirectory = "src/data/simulation"

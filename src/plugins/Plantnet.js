@@ -1,6 +1,7 @@
 import {arrayIsNotEmpty, clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf} from "../domain/post.js";
 import {IDENTIFY_RESULT} from "../services/PlantnetApiService.js";
+import {dataSimulationDirectory} from "../services/BotService.js";
 
 export default class Plantnet {
     constructor(config, loggerService, blueskyService, plantnetCommonService, plantnetApiService) {
@@ -107,7 +108,7 @@ export default class Plantnet {
         const {context, doSimulateSearch} = config;
         if (doSimulateSearch) {
             await blueskyService.login();
-            return Promise.resolve(loadJsonResource("src/data/blueskyPostFakeFlower.json"));
+            return Promise.resolve(loadJsonResource(`${dataSimulationDirectory}/blueskyPostFakeFlower.json`));
         }
         const candidatePosts = await blueskyService.searchPosts({
             searchQuery: questions[bookmark],
