@@ -1,7 +1,10 @@
 <div class="panel panel-info" id="logs">
-    <div class="panel-heading">Les logs du robot</div>
+    <div class="panel-heading">Activités du robot</div>
     <div class="panel-body">
-        <p>
+
+        <!-- Logs intro -->
+        <div class="card bes-card">
+          <div class="card-body">
             Bienvenue sur la page du <a href="<%- blueskyAccount %>"
                                         data-umami-event="{blueskyAccount link}" id="blueskyAccount-link"
                                         class="umami--click--profile-button">@<%- blueskyDisplayName %></a>
@@ -9,37 +12,48 @@
                                     data-umami-event="{nodejs link}" id="nodejs-link"
                                     class="umami--click--nodejs-button">NodeJS</a>
                                     <sup>version <%- version %></sup>.<br/>
-            <br/>
-            <br/>
-            <h3>Activités du robot</h3>
-            <a href="/" data-umami-event="{logs-refresh link}" id="logs-refresh-link">🔄</a> 🧾 activités récentes<br/>
-            <small>Fraîcheur : <%- news.to %> - TZ : <%- tz %></small><br/>
-        </p>
+          </div>
+        </div>
 
-        <div class="panel-heading">
-          <ul class="nav nav-tabs">
+    </div>
+    <br/>
+
+
+    <!-- Part A -->
+    <div class="card bes-card">
+      <div class="card-body">
+
+          <a href="/" data-umami-event="{logs-refresh link}" id="logs-refresh-link">🔄</a> 🧾 <b>activités récentes</b><br/>
+            <small>Fraîcheur : <%- news.to %> - TZ : <%- tz %></small>
+            <br/>
+            <br/>
+
+          <!-- Logs per date MENU - tabs https://getbootstrap.com/docs/5.3/components/navs-tabs/ -->
+          <ul class="nav nav-pills">
             <% Object.keys(news.data).forEach((item, index) => { %>
-              <li id="logDate-<%- index %>-menu" class="logDate">
-                <a href="#" onClick="toggleLogDateContent('logDate-<%- index %>')"
+              <li class="nav-item logDate">
+                <a id="logDate-<%- index %>-menu" class="nav-link" href="#" onClick="toggleLogDateContent('logDate-<%- index %>')"
                                 data-umami-event="{home logs <%- item %>}" id="home-logs-<%- index %>"
                                 ><%- item %></a>
               </li>
             <% }) %>
           </ul>
-        </div>
+
+
+          <!-- Logs list-->
+          <% Object.keys(news.data).forEach((item, index) => { %>
+          <div class="panel" id="logDate-<%- index %>">
+              <!-- <div class="panel-heading">Les logs du <%- item %></div> -->
+              <ul class="logLine list-group home-logs">
+                 <% news.data[item].forEach(function(newsEntry){ %>
+                   <li class="list-group-item home-log msgContainer"><%- newsEntry.dt  %> | <%- newsEntry.message  %></li>
+                 <% }); %>
+              </ul>
+          </div>
+          <% }) %>
+
+      </div>
     </div>
+    <br/>
 
-
-    <% Object.keys(news.data).forEach((item, index) => { %>
-
-    <div class="panel" id="logDate-<%- index %>">
-        <!-- <div class="panel-heading">Les logs du <%- item %></div> -->
-        <ul class="logLine">
-           <% news.data[item].forEach(function(newsEntry){ %>
-             <li class="msgContainer"><%- newsEntry.dt  %> | <%- newsEntry.message  %></li>
-           <% }); %>
-        </ul>
-    </div>
-
-    <% }) %>
-  </div>
+    </div><!-- panel-body -->

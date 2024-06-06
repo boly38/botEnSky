@@ -1,6 +1,6 @@
 import {arrayIsNotEmpty, clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf, postHtmlOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
-import {pluginReject, pluginResolve} from "../services/BotService.js";
+import {dataSimulationDirectory, pluginReject, pluginResolve} from "../services/BotService.js";
 import {IDENTIFY_RESULT} from "../services/PlantnetApiService.js";
 
 export default class AskPlantnet {
@@ -124,7 +124,7 @@ export default class AskPlantnet {
         const {asks, blueskyService, logger} = this;
         if (doSimulateSearch) {
             await blueskyService.login();
-            return Promise.resolve(loadJsonResource("src/data/blueskyPostFakeAskBot.json"));
+            return Promise.resolve(loadJsonResource(`${dataSimulationDirectory}/blueskyPostFakeAskBot.json`));
         }
         let searchQuery = asks[bookmark];
         const hasNoReply = true;

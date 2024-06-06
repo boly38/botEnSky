@@ -7,6 +7,13 @@ html, body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     width: 100%;
+
+    --bes-text-background-first: rgba(236, 227, 227, 0.6);
+    --bes-text-background-second: rgba(236, 227, 227, 0.8);
+}
+
+.bes-card {
+    --bs-card-bg: transparent !important;
 }
 
 .panel-input {
@@ -30,6 +37,16 @@ html, body {
     font-size: 1.2em;
 }
 
+.card-body {
+    background-color: var(--bes-text-background-first);
+    background-image: url('/botensky_bg.jpg');
+    background-position: bottom right;
+}
+
+.list-group-item  {
+    background-color: var(--bes-text-background-first);
+}
+
 #sendResult {
     margin-left: 30px;
 }
@@ -51,9 +68,33 @@ li.msgContainer {
     padding-bottom: 4px;
 }
 
+.home-logs {
+    padding: 5px;
+}
+
+.home-log {
+    background-color: var(--bes-text-background-first);
+    border-right: 3px solid rgba(236, 227, 227, 0.4);
+    border-bottom: 3px solid rgba(236, 227, 227, 0.4);
+    padding-top: 5px;
+    padding-left: 10px;
+    margin-bottom: 2px;
+    border-radius: 5px;
+}
+
 .msgContainer {
     padding-left: 6px;
     font-size: 1.0em;
+}
+
+/** backend news injected styles **/
+.bg-info {
+    margin-left: 20px;
+    margin-right: 100px;
+    padding: 10px;
+    border: 1px solid lightgrey;
+    border-radius: 15px;
+    background-color: var(--bes-text-background-second) !important;
 }
 
 /* Responsive adjustments */
