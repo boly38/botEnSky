@@ -10,6 +10,7 @@ import axios from "axios"; // dependent on utc plugin
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
+export const DEFAULT_TZ = 'Europe/Paris'
 export const BES_DATE_FORMAT = "YYYY-MM-DD HH:mm:ss";
 const __dirname = path.resolve();
 
@@ -51,14 +52,14 @@ export const assumePropertyIsSet = (expectedValue, name) => {
 export const nowISO8601 = () => dayjs().toISOString(); // '2019-01-25T02:00:00.000Z'
 // dayjs doc: https://day.js.org/docs/en/manipulate/subtract
 export const nowMinusHoursUTCISO = (nbHours = 1) => dayjs.utc().subtract(nbHours, 'hour').toISOString()
-export const nowHuman = tz => dayjs().tz(tz).format(BES_DATE_FORMAT);
-export const toHuman = (utcDateTimeString, tz) => {
+export const nowHuman = (tz = DEFAULT_TZ) => dayjs().tz(tz).format(BES_DATE_FORMAT);
+export const toHuman = (utcDateTimeString, tz= DEFAULT_TZ) => {
     return dayjs.utc(utcDateTimeString).tz(tz).format(BES_DATE_FORMAT);
 };
-export const toHumanDay = (utcDateTimeString, tz) => {
+export const toHumanDay = (utcDateTimeString, tz= DEFAULT_TZ) => {
     return dayjs.utc(utcDateTimeString).tz(tz).format("YYYY-MM-DD");
 };
-export const toHumanTime = (utcDateTimeString, tz) => {
+export const toHumanTime = (utcDateTimeString, tz= DEFAULT_TZ) => {
     return dayjs.utc(utcDateTimeString).tz(tz).format("HH:mm:ss");
 };
 /*

@@ -5,8 +5,9 @@ import TinyURL from "tinyurl";
 import {PLANTNET_MINIMAL_PERCENT} from "./PlantnetApiService.js";
 
 export default class PlantnetCommonService {
-    constructor(loggerService, blueskyService) {
+    constructor(loggerService, auditLogsService, blueskyService) {
         this.logger = loggerService.getLogger().child({label: 'PlantnetCommonService'});
+        this.auditLogsService = auditLogsService;
         this.blueskyService = blueskyService;
     }
 
@@ -156,9 +157,11 @@ export default class PlantnetCommonService {
     logError(action, err, context) {
         if (Object.keys(err) && Object.keys(err).length > 0) {
             this.logger.error(`${action} ${JSON.stringify(err, null, 2)}`, {...context, action});
+            this.auditLogsService.createAuditLog(`${action} ${JSON.stringify(err, null, 2)}`);
             return;
         }
         this.logger.error(`${action} ${err}`, {...context, action});
+        this.auditLogsService.createAuditLog(`${action} ${err} ${JSON.stringify(context)}`);
     }
 
 }
