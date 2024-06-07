@@ -1,5 +1,6 @@
-import express from 'express';
 import path from 'node:path';
+import express from 'express';
+import createError from 'http-errors';
 import {
     cacheGetProjectBugsUrl,
     cacheGetProjectHomepage,
@@ -7,7 +8,7 @@ import {
     cacheGetVersion
 } from "../lib/MemoryCache.js";
 import {unauthorized} from "../lib/CommonApi.js";
-import {generateErrorId, isSet} from "../lib/Common.js";
+import {generateErrorId} from "../lib/Common.js";
 import {StatusCodes} from "http-status-codes";
 
 const __dirname = path.resolve();
@@ -15,14 +16,16 @@ const wwwPath = path.join(__dirname, './src/www');
 
 const BES_ISSUES = cacheGetProjectBugsUrl();
 
+const HEALTH_ENDPOINT = '/health';
 const UNAUTHORIZED_FRIENDLY = "Le milieu autorisé c'est un truc, vous y êtes pas vous hein !";// (c) Coluche
 export default class ExpressServer {
     constructor(services) {
-        const {config, loggerService, blueskyService, botService, newsService} = services;
+        const {config, loggerService, blueskyService, botService, newsService, auditLogsService} = services;
         this.config = config;
         this.blueskyService = blueskyService;
         this.botService = botService;
         this.newsService = newsService;
+        this.auditLogsService = auditLogsService;
 
         this.logger = loggerService.getLogger().child({label: 'ExpressServer'});
 
@@ -31,28 +34,27 @@ export default class ExpressServer {
         this.tokenAction = config.bot.tokenAction;
         this.version = cacheGetVersion();
         this.logger.debug("build", this.version);
+        this.sendAutditLogs = auditLogsService.notifyLogs.bind(auditLogsService);
     }
 
-    init() {
+    async init() {
         const expressServer = this;
-
         expressServer.logger.debug("init()");
-        return new Promise(resolve => {
-            expressServer.app = express();
-            expressServer.app.use(express.static(path.join(wwwPath, './public')));
-            expressServer.app.set('views', path.join(wwwPath, './views'));
-            expressServer.app.set('view engine', 'ejs');
-            expressServer.app.get('/api/about', expressServer.aboutResponse.bind(this));
-            expressServer.app.get('/api/hook', expressServer.hookResponse.bind(this));
-            expressServer.app.get('/*', expressServer.webPagesResponse.bind(this));// default
-            expressServer.listeningServer = expressServer.app.listen(
-                expressServer.port,
-                () => expressServer.logger.info(
-                    `Bot ${expressServer.version} listening on ${expressServer.port}`
-                )
-            );
-            resolve(expressServer.listeningServer);
-        });
+        expressServer.app = express();
+
+        expressServer.app.use(express.static(path.join(wwwPath, './public')));
+        expressServer.app.set('views', path.join(wwwPath, './views'));
+        expressServer.app.set('view engine', 'ejs');
+        expressServer.app.get('/api/about', expressServer.aboutResponse.bind(this));
+        expressServer.app.get('/api/hook', expressServer.hookResponse.bind(this));
+        expressServer.app.get(HEALTH_ENDPOINT, (req, res) => res.status(200));
+        expressServer.app.get('/*', expressServer.webPagesResponse.bind(this));// default
+        expressServer.app.use((req, res, next) => next(createError(404)));// catch 404 and forward to error handler
+        expressServer.app.use(expressServer.errorHandlerMiddleware.bind(this));// error handler
+
+        expressServer.listeningServer = await expressServer.app.listen(expressServer.port);
+        expressServer.logger.info(`Bot ${expressServer.version} listening on ${expressServer.port} with health on ${HEALTH_ENDPOINT}`);
+        return expressServer.listeningServer;
     }
 
     getRemoteAddress(request) {
@@ -75,29 +77,33 @@ export default class ExpressServer {
     async hookResponse(req, res) {
         const expressServer = this;
         try {
-            let remoteAdd = expressServer.getRemoteAddress(req);
+            let remoteAddress = expressServer.getRemoteAddress(req);
             let apiToken = req.get('API-TOKEN');
             let pluginName = req.get('PLUGIN-NAME');
             let doSimulate = expressServer.tokenSimulation && apiToken === expressServer.tokenSimulation;
+            expressServer.context = {remoteAddress, pluginName, doSimulate};
             let doAction = !doSimulate && expressServer.tokenAction && apiToken === expressServer.tokenAction;
+            if ("simulateError" === pluginName) {
+                throw new Error("oops");
+            }
             if (doSimulate || doAction) {
-                expressServer.botService.process(remoteAdd, doSimulate, pluginName)
-                    .then(() => res.status(200).json({success: true}))
-                    .catch(err => {
-                        const status = isSet(err.status) ? err.status : 500;
-                        res.status(status).json({success: false, status}); // do not include details in response
-                    });
+                await expressServer.botService.process(remoteAddress, doSimulate, pluginName);
+                res.status(200).json({success: true});
             } else {
                 this.logger.debug(StatusCodes.UNAUTHORIZED, JSON.stringify({code: 401, doSimulate, doAction}));
                 unauthorized(res, UNAUTHORIZED_FRIENDLY);
             }
         } catch (error) {
             let errId = generateErrorId();
-            this.logger.error(errId, error);
-            res.status(500).json({
-                success: false,
-                message: `Erreur inattendue, merci de la signaler sur ${BES_ISSUES} - ${errId}`
-            });
+            // internal
+            let errorInternalDetails = `Error id:${errId} msg:${error.message} stack:${error.stack}`;
+            this.logger.error(errorInternalDetails);
+            this.auditLogsService.createAuditLog(errorInternalDetails);
+            // user
+            let userErrorTxt = `Erreur inattendue, merci de la signaler sur ${BES_ISSUES} - ${errId}`;
+            let userErrorHtml = `Erreur inattendue, merci de la signaler sur <a href="${BES_ISSUES}">les issues</a> (dans les 3 j) - ${errId}`;
+            this.newsService.add(userErrorHtml);
+            res.status(500).json({success: false, message: userErrorTxt});
         }
     }
 
@@ -111,10 +117,31 @@ export default class ExpressServer {
         newsService.getNews()
             .then(news => {
                 res.render('pages/index', {// page data
-                    news, "tz":config.tz,
+                    news, "tz": config.tz,
                     version, projectHomepage, projectIssues, projectDiscussions,
                     blueskyAccount, blueskyDisplayName
                 });
             });
     }
+
+    async errorHandlerMiddleware(err, req, res) {
+        const {logger, context} = this;
+        const url = req.url;
+        const status = err.status || 500;
+        try {
+            const src_ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            const method = req.method;
+            if (status === 404) {
+                logger.info(`SEC ${err} - ip:${src_ip} - ${method} ${url} - ${status}`,
+                    {...context, status, url, "security": true}
+                );
+            } else {
+                logger.error(`${err} - ip:${src_ip} - ${method} ${url} - ${status}`, {...context, status, url});
+            }
+        } catch (e) {
+            logger.error(`errorHandlerMiddleware unexpected error: ${e.message}`, {...context, status, url});
+        }
+        res.status(status).send();
+    }
+
 }

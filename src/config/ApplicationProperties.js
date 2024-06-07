@@ -15,6 +15,7 @@ export default class ApplicationProperties {
         this.port = getEnvInt("PORT", 5000);
         this.isProd = this.nodeEnv === 'production';
 
+        this.discordWebhookUrl = getEnv("BOT_DISCORD_WEBHOOK_URL", null);
         this.log = {
             logtailToken: getEnv("LOG_LOGTAIL_TOKEN", null),
             logtailApiV1: "https://logs.betterstack.com/api/v1",

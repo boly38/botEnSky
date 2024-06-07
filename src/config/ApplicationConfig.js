@@ -11,6 +11,9 @@ import LogtailService from "../services/LogtailService.js";
 import UnMute from "../plugins/UnMute.js";
 import AskPlantnet from "../plugins/AskPlantnet.js";
 import PlantnetCommonService from "../services/PlantnetCommonService.js";
+import {nowHuman} from "../lib/Common.js";
+import DiscordSendService from "../servicesExternal/DiscordSendService.js";
+import AuditLogsService from "../services/AuditLogsService.js";
 
 export default class ApplicationConfig {
     constructor() {
@@ -35,6 +38,10 @@ export default class ApplicationConfig {
         container.register('newsService', NewsService)
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('logtailService'));
+        container.register('discordService', DiscordSendService)
+            .addArgument(container.get('config'));
+        container.register('auditLogsService', AuditLogsService)
+            .addArgument(container.get('discordService'));
 
         container.register('blueskyService', BlueSkyService)
             .addArgument(container.get('config'))
@@ -42,6 +49,7 @@ export default class ApplicationConfig {
 
         container.register('plantnetCommonService', PlantnetCommonService)
             .addArgument(container.get('loggerService'))
+            .addArgument(container.get('auditLogsService'))
             .addArgument(container.get('blueskyService'));
 
         container.register('plantnetApiService', PlantnetApiService)
@@ -84,6 +92,7 @@ export default class ApplicationConfig {
         container.register('botService', BotService)
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'))
+            .addArgument(container.get('auditLogsService'))
             .addArgument(container.get('newsService'))
             .addArgument(this.plugins)
         ;
@@ -93,8 +102,8 @@ export default class ApplicationConfig {
         return this.container.get(beanName);
     }
 
-    initExpressServer() {
-        const {container, logger} = this;
+    async initExpressServer() {
+        const {container} = this;
         container
             .register('expressServer', ExpressServer)
             .addArgument({
@@ -102,18 +111,13 @@ export default class ApplicationConfig {
                 loggerService: container.get('loggerService'),
                 botService: container.get('botService'),
                 blueskyService: container.get('blueskyService'),
-                newsService: container.get('newsService')
+                newsService: container.get('newsService'),
+                auditLogsService: container.get('auditLogsService')
             });
 
         const expressServer = container.get('expressServer');
-        return new Promise((resolve, reject) => {
-            ApplicationConfig.listeningServer = expressServer.init()
-                .then(resolve)
-                .catch(errInitServer => {
-                    logger.error("Error, unable to init express server:" + errInitServer);
-                    reject(new Error("Init failed"));
-                });
-        });
+        ApplicationConfig.listeningServer = await expressServer.init();
+        return ApplicationConfig.listeningServer;
     }
 }
 
@@ -125,9 +129,26 @@ ApplicationConfig.getInstance = function getInstance() {
     }
     return ApplicationConfig.singleton;
 };
-ApplicationConfig.startServerMode = () => ApplicationConfig.getInstance().initExpressServer();
-ApplicationConfig.stopServerMode = () => {
+ApplicationConfig.sendAuditLogs = async () => {
+    await ApplicationConfig.getInstance().get("auditLogsService").notifyLogs();
+}
+ApplicationConfig.startServerMode = async () => {
+    // https://nodejs.org/api/process.html#process_process_kill_pid_signal
+    process.on('exit', () => console.log(`exit les pointes sèches`));
+    process.on('SIGINT', () => ApplicationConfig.stopServerMode("SIGINT"));
+    // render.com sequence of events : https://docs.render.com/deploys#sequence-of-events
+    process.on('SIGTERM', () => ApplicationConfig.stopServerMode("SIGTERM"));
+
+    // adding handler for SIGKILL produces  Error: uv_signal_start EINVAL issue
+    // - https://stackoverflow.com/questions/16311347/node-script-throws-uv-signal-start-einval
+    // - https://github.com/nodejs/node-v0.x-archive/issues/6339
+    // process.on('SIGKILL', () => ApplicationConfig.stopServerMode("SIGKILL"));
+    return ApplicationConfig.getInstance().initExpressServer();
+}
+ApplicationConfig.stopServerMode = async (origin = "unknown") => {
+    console.log(`${nowHuman()} stopServerMode (origin:${origin})`);
     if (ApplicationConfig.listeningServer !== undefined) {
         ApplicationConfig.listeningServer.close();
     }
+    await ApplicationConfig.sendAuditLogs();
 };
