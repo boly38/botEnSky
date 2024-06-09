@@ -1,7 +1,7 @@
 import {arrayIsNotEmpty, clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf, postHtmlOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
 import {dataSimulationDirectory, pluginReject, pluginResolve} from "../services/BotService.js";
-import {IDENTIFY_RESULT} from "../services/PlantnetApiService.js";
+import {IDENTIFY_RESULT} from "../servicesExternal/PlantnetApiService.js";
 
 export default class AskPlantnet {
     constructor(config, loggerService, blueskyService, plantnetCommonService, plantnetApiService) {

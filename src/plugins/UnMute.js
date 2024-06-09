@@ -22,7 +22,7 @@ export default class UnMute {
         if (result === null) {
             return Promise.resolve(pluginResolve(`Aucun compte masqué`, `Aucun compte masqué`));
         }
-        return Promise.resolve(pluginResolve(`Démasqué ${result}`, `Démasqué ${result}`, 200));
+        return Promise.resolve(pluginResolve(`Démasqué ${result}`, `Démasqué ${result}`));
     }
 
     async unMuteMutedActors(context) {

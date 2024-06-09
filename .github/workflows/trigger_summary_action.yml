@@ -1,0 +1,22 @@
+# create bot summary trigger
+name: BES_trigger_summary_action
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Lundi matin 6h00 UTC
+    - cron: "0 10 * * 3" # Mercredi midi 10h00 UTC
+    - cron: "0 16 * * 5" # Vendredi soir 16h00 UTC
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    environment: github_actions_bes
+    steps:
+      - name: trigger botEnSky Summary
+        env:
+          BES_SIMULATION_TOKEN: ${{ secrets.BES_SIMULATION_TOKEN }}
+          BES_SIMULATION_URL: ${{ secrets.BES_SIMULATION_URL }}
+        run: |
+          curl -q -H "API-TOKEN: ${BES_SIMULATION_TOKEN}" -H "PLUGIN-NAME: Summary" "${BES_SIMULATION_URL}"

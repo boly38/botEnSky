@@ -37,7 +37,13 @@
                                 ><%- item %></a>
               </li>
             <% }) %>
+            <li class="nav-item logDate">
+              <a id="logDate-week-menu" class="nav-link" href="#" onClick="toggleLogDateContent('logDate-week')"
+                              data-umami-event="{home logs week}" id="home-logs-week"
+                              >7 jours analytics</a>
+            </li>
           </ul>
+          <br/>
 
 
           <!-- Logs list-->
@@ -51,6 +57,13 @@
               </ul>
           </div>
           <% }) %>
+
+          <!-- 7 jours -->
+          <div class="panel" id="logDate-week">
+              <b>7 jours</b> : <a href="https://bsky.app/search?q=from%3Abotensky.bsky.social">posts</a>: <%- summary.posts %>, likes: <%- summary.likes %>, replies: <%- summary.replies %>, reposts: <%- summary.reposts %>
+              <br/><br/><b>Meilleur score</b> : <%- summary.bestScore %> (<%- summary.bestScorePosts?.length %> posts) - exemples : <br/><%- summary.bestScorePostsHtml %>
+              <br/><br/><b>+ de 'j'aime'</b> :<%- summary.bestLikes %> (<%- summary.bestLikesPosts?.length %> posts) - exemples : <br/><%- summary.bestLikesPostsHtml %>
+          </div>
 
       </div>
     </div>

@@ -1,6 +1,6 @@
 import {arrayIsNotEmpty, clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf} from "../domain/post.js";
-import {IDENTIFY_RESULT} from "../services/PlantnetApiService.js";
+import {IDENTIFY_RESULT} from "../servicesExternal/PlantnetApiService.js";
 import {dataSimulationDirectory} from "../services/BotService.js";
 
 export default class Plantnet {

@@ -1,19 +1,21 @@
 import {ContainerBuilder} from 'node-dependency-injection';
+import {nowHuman} from "../lib/Common.js";
 import ApplicationProperties from './ApplicationProperties.js';
+import LogtailService from "../servicesExternal/LogtailService.js";
+import PlantnetApiService from "../servicesExternal/PlantnetApiService.js";
+import BlueSkyService from "../servicesExternal/BlueSkyService.js";
+import DiscordSendService from "../servicesExternal/DiscordSendService.js";
 import ExpressServer from '../services/ExpressServer.js';
-import BlueSkyService from "../services/BlueSkyService.js";
-import Plantnet from "../plugins/Plantnet.js";
-import PlantnetApiService from "../services/PlantnetApiService.js";
 import BotService from "../services/BotService.js";
 import NewsService from "../services/NewsService.js";
 import LoggerService from "../services/LoggerService.js";
-import LogtailService from "../services/LogtailService.js";
-import UnMute from "../plugins/UnMute.js";
-import AskPlantnet from "../plugins/AskPlantnet.js";
-import PlantnetCommonService from "../services/PlantnetCommonService.js";
-import {nowHuman} from "../lib/Common.js";
-import DiscordSendService from "../servicesExternal/DiscordSendService.js";
 import AuditLogsService from "../services/AuditLogsService.js";
+import PlantnetCommonService from "../services/PlantnetCommonService.js";
+import SummaryService from "../services/SummaryService.js";
+import Plantnet from "../plugins/Plantnet.js";
+import AskPlantnet from "../plugins/AskPlantnet.js";
+import UnMute from "../plugins/UnMute.js";
+import Summary from "../plugins/Summary.js";
 
 export default class ApplicationConfig {
     constructor() {
@@ -55,6 +57,12 @@ export default class ApplicationConfig {
         container.register('plantnetApiService', PlantnetApiService)
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'));
+
+        container.register('summaryService', SummaryService)
+            .addArgument(container.get('config'))
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('blueskyService'));
+
     }
 
     constructPlugins() {
@@ -84,6 +92,13 @@ export default class ApplicationConfig {
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('blueskyService'));
         this.plugins.push(container.get('unmute'));
+
+        container.register('summary', Summary)
+            .addArgument(container.get('config'))
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('summaryService'))
+            .addArgument(container.get('discordService'));
+        this.plugins.push(container.get('summary'));
     }
 
     constructBot() {
@@ -112,7 +127,8 @@ export default class ApplicationConfig {
                 botService: container.get('botService'),
                 blueskyService: container.get('blueskyService'),
                 newsService: container.get('newsService'),
-                auditLogsService: container.get('auditLogsService')
+                auditLogsService: container.get('auditLogsService'),
+                summaryService: container.get('summaryService')
             });
 
         const expressServer = container.get('expressServer');

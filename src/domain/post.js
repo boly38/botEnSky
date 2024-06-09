@@ -136,3 +136,6 @@ export const descriptionOfPostAuthor = postAuthor => {
 export const filterWithEmbedImageView = p => p?.embed?.$type === "app.bsky.embed.images#view"
 export const fiterWithNoReply = p => p?.replyCount === 0
 export const fiterWithNotMuted = p => p?.author?.viewer?.muted === false
+
+export const txtOfPosts = (posts, max = 5) => posts.slice(0,max).map(postTextOf).join("\n\n")
+export const htmlOfPosts = (posts, max = 5) => posts.slice(0,max).map(postHtmlOf).join("<br/><br/>")

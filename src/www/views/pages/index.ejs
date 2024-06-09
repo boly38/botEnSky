@@ -31,7 +31,8 @@
           }
         })
       }
-      const logDateIds = [<%- Object.keys(news.data).map((item, index) => "\"logDate-" + index + "\"") %>];
+      let logDateIds = [<%- Object.keys(news.data).map((item, index) => "\"logDate-" + index + "\"") %>];
+      logDateIds.push("logDate-week");
       window.toggleLogDateContent = function(content) {
         logDateIds.forEach( id => {
           const idMenu = `${id}-menu`;
