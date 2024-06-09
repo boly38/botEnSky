@@ -10,6 +10,7 @@ import {
 import {unauthorized} from "../lib/CommonApi.js";
 import {generateErrorId} from "../lib/Common.js";
 import {StatusCodes} from "http-status-codes";
+import ApplicationConfig from "../config/ApplicationConfig.js";
 
 const __dirname = path.resolve();
 const wwwPath = path.join(__dirname, './src/www');
@@ -23,7 +24,7 @@ export default class ExpressServer {
         const {
             config, loggerService, blueskyService,
             botService, newsService,
-            auditLogsService, summaryService
+            auditLogsService, summaryService, inactivityDetector
         } = services;
         this.config = config;
         this.blueskyService = blueskyService;
@@ -31,6 +32,7 @@ export default class ExpressServer {
         this.newsService = newsService;
         this.auditLogsService = auditLogsService;
         this.summaryService = summaryService;
+        this.inactivityDetector = inactivityDetector;
 
         this.logger = loggerService.getLogger().child({label: 'ExpressServer'});
 
@@ -48,6 +50,7 @@ export default class ExpressServer {
         expressServer.app = express();
 
         expressServer.app.use(express.static(path.join(wwwPath, './public')));
+        expressServer.app.use(expressServer.handleActivityTic.bind(this));
         expressServer.app.set('views', path.join(wwwPath, './views'));
         expressServer.app.set('view engine', 'ejs');
         expressServer.app.get('/api/about', expressServer.aboutResponse.bind(this));
@@ -60,6 +63,11 @@ export default class ExpressServer {
         // build initial cache
         await this.summaryService.cacheGetWeekSummary({})
 
+        // register inactivity listener
+        this.inactivityDetector.registerOnInactivityListener(
+            async ()=>{await ApplicationConfig.sendAuditLogs();}
+        )
+
         expressServer.listeningServer = await expressServer.app.listen(expressServer.port);
         expressServer.logger.info(`Bot ${expressServer.version} listening on ${expressServer.port} with health on ${HEALTH_ENDPOINT}`);
         return expressServer.listeningServer;
@@ -70,6 +78,11 @@ export default class ExpressServer {
             request.headers['x-forwarded-for']
             : request.connection?.remoteAddress
             || "???";
+    }
+
+    handleActivityTic(req, res, next) {
+        this.inactivityDetector.activityTic();
+        next();
     }
 
     aboutResponse(req, res) {
