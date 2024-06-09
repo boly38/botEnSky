@@ -57,6 +57,9 @@ export default class ExpressServer {
         expressServer.app.use((req, res, next) => next(createError(404)));// catch 404 and forward to error handler
         expressServer.app.use(expressServer.errorHandlerMiddleware.bind(this));// error handler
 
+        // build initial cache
+        await this.summaryService.cacheGetWeekSummary({})
+
         expressServer.listeningServer = await expressServer.app.listen(expressServer.port);
         expressServer.logger.info(`Bot ${expressServer.version} listening on ${expressServer.port} with health on ${HEALTH_ENDPOINT}`);
         return expressServer.listeningServer;
