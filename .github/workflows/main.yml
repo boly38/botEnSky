@@ -52,4 +52,5 @@ jobs:
           BOT_PLANTNET_SIMULATE: ${{ secrets.BOT_PLANTNET_SIMULATE }}
           BOT_TOKEN_SIMULATION: ${{ secrets.BOT_TOKEN_SIMULATION }}
           PLANTNET_API_PRIVATE_KEY: ${{ secrets.PLANTNET_API_PRIVATE_KEY }}
+          BOT_INACTIVITY_DELAY_MIN: 1
         run: npm run ci-test

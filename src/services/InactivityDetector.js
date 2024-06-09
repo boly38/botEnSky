@@ -5,8 +5,9 @@ export default class InactivityDetector {
     constructor(config, loggerService) {
         this.config = config;
         this.logger = loggerService.getLogger().child({label: 'InactivityDetector'});
-        this.INACTIVITY_DELAY_MIN = 3;
+        this.INACTIVITY_DELAY_MIN = this.config.inactivityDelayMin || 3;
     }
+
     onInactivity() {
         InactivityDetector.timer = null;
         for (const handler of InactivityDetector.onInactivityListeners) {
@@ -23,11 +24,14 @@ export default class InactivityDetector {
         if (InactivityDetector.timer !== null) {
             clearTimeout(InactivityDetector.timer);
         }
-        if (InactivityDetector.onInactivityListeners.length > 0){
-            logger.debug(`setTimeout(${INACTIVITY_DELAY_MIN} min, ...) with ${InactivityDetector.onInactivityListeners.length} listeners`)
-            InactivityDetector.timer = setTimeout(onInactivity.bind(this), INACTIVITY_DELAY_MIN*60000);
+        if (InactivityDetector.onInactivityListeners.length > 0) {
+            if (InactivityDetector.timer === null) { // first time only
+                logger.info(`setTimeout(${INACTIVITY_DELAY_MIN} min, ...) with ${InactivityDetector.onInactivityListeners.length} listeners`)
+            }
+            InactivityDetector.timer = setTimeout(onInactivity.bind(this), INACTIVITY_DELAY_MIN * 60000);
         }
     }
+
     registerOnInactivityListener(listener) {
         InactivityDetector.onInactivityListeners.push(listener)
     }
