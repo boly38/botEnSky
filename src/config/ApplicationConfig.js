@@ -16,6 +16,7 @@ import Plantnet from "../plugins/Plantnet.js";
 import AskPlantnet from "../plugins/AskPlantnet.js";
 import UnMute from "../plugins/UnMute.js";
 import Summary from "../plugins/Summary.js";
+import InactivityDetector from "../services/InactivityDetector.js";
 
 export default class ApplicationConfig {
     constructor() {
@@ -46,6 +47,10 @@ export default class ApplicationConfig {
             .addArgument(container.get('discordService'));
 
         container.register('blueskyService', BlueSkyService)
+            .addArgument(container.get('config'))
+            .addArgument(container.get('loggerService'));
+
+        container.register('inactivityDetector', InactivityDetector)
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'));
 
@@ -128,7 +133,8 @@ export default class ApplicationConfig {
                 blueskyService: container.get('blueskyService'),
                 newsService: container.get('newsService'),
                 auditLogsService: container.get('auditLogsService'),
-                summaryService: container.get('summaryService')
+                summaryService: container.get('summaryService'),
+                inactivityDetector: container.get('inactivityDetector')
             });
 
         const expressServer = container.get('expressServer');
