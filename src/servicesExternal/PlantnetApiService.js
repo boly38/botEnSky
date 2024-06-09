@@ -1,7 +1,7 @@
 import fs from 'fs';
 import superagent from 'superagent';
 import {isSet} from "../lib/Common.js";
-import {dataSimulationDirectory} from "./BotService.js";
+import {dataSimulationDirectory} from "../services/BotService.js";
 
 const MY_API_PLANTNET_V2_URL = 'https://my-api.plantnet.org/v2/identify/all';
 export const PLANTNET_MINIMAL_PERCENT = 20;

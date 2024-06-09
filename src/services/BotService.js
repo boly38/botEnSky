@@ -1,3 +1,5 @@
+import {clearSummaryCache} from "./SummaryService.js";
+
 export default class BotService {
 
     constructor(config, loggerService, auditLogsService, newsService, plugins) {
@@ -54,19 +56,25 @@ export default class BotService {
     async process(remoteAddress, doSimulate, pluginName) {
         const bot = this;
         const context = {remoteAddress, pluginName};
-        this.assumeProcessRateLimit(bot, remoteAddress);
-        const plugin = this.assumeBotReadyPlugin(pluginName, remoteAddress);
-        bot.logger.info(`${(doSimulate ? "Simulation" : "Exécution")} du plugin - ${pluginName}`, context);
         try {
+            this.assumeProcessRateLimit(remoteAddress);
+            const plugin = this.assumeBotReadyPlugin(pluginName, remoteAddress);
+            bot.logger.info(`${(doSimulate ? "Simulation" : "Exécution")} du plugin - ${pluginName}`, context);
             const result = await plugin.process({"doSimulate": doSimulate, context});
-            bot.logger.info(`plugin result ${result.text}`, context);
+            // DEBUG // bot.logger.info(`plugin result ${result.text}`, context);
             bot.newsService.add(result.html);
+            if (result.post > 0) {
+                clearSummaryCache();
+            }
             return result;
-        } catch (err) {
-            bot.logger.warn(`plugin error: ${err.message}`, context);
-            bot.auditLogsService.createAuditLog(`${err.message} ${JSON.stringify(context)}`);
-            bot.newsService.add(err.html ? err.html : err.message);
-            throw err;
+        } catch (error) {
+            if (error.status && error.message) {
+                throw error;
+            }
+            bot.logger.warn(`plugin error: ${error.message}`, context);
+            bot.auditLogsService.createAuditLog(`${error.message} ${JSON.stringify(context)}`);
+            bot.newsService.add(error.html ? error.html : error.message);
+            throw error;
         }
     }
 
@@ -99,8 +107,8 @@ export default class BotService {
 }
 
 
-export const pluginResolve = (text, html, status = 200) => {
-    return {text, html, status};
+export const pluginResolve = (text, html, status = 200, post = 0) => {
+    return {text, html, status, post};
 }
 export const pluginReject = (text, html, status, shortResponseMessage) => {
     return {text, html, status, message: shortResponseMessage};

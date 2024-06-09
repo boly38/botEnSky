@@ -20,12 +20,17 @@ const HEALTH_ENDPOINT = '/health';
 const UNAUTHORIZED_FRIENDLY = "Le milieu autorisé c'est un truc, vous y êtes pas vous hein !";// (c) Coluche
 export default class ExpressServer {
     constructor(services) {
-        const {config, loggerService, blueskyService, botService, newsService, auditLogsService} = services;
+        const {
+            config, loggerService, blueskyService,
+            botService, newsService,
+            auditLogsService, summaryService
+        } = services;
         this.config = config;
         this.blueskyService = blueskyService;
         this.botService = botService;
         this.newsService = newsService;
         this.auditLogsService = auditLogsService;
+        this.summaryService = summaryService;
 
         this.logger = loggerService.getLogger().child({label: 'ExpressServer'});
 
@@ -60,7 +65,8 @@ export default class ExpressServer {
     getRemoteAddress(request) {
         return request.headers['x-forwarded-for'] ?
             request.headers['x-forwarded-for']
-            : request.connection.remoteAddress;
+            : request.connection?.remoteAddress
+            || "???";
     }
 
     aboutResponse(req, res) {
@@ -94,6 +100,11 @@ export default class ExpressServer {
                 unauthorized(res, UNAUTHORIZED_FRIENDLY);
             }
         } catch (error) {
+            if (error.status && error.message) {
+                const {status, message} = error;
+                res.status(status).json({success: false, message});
+                return;
+            }
             let errId = generateErrorId();
             // internal
             let errorInternalDetails = `Error id:${errId} msg:${error.message} stack:${error.stack}`;
@@ -107,19 +118,21 @@ export default class ExpressServer {
         }
     }
 
-    webPagesResponse(req, res) {
-        const {version, newsService, config} = this;
+    async webPagesResponse(req, res) {
+        const {version, newsService, config, summaryService} = this;
         const projectHomepage = cacheGetProjectHomepage();
         const projectIssues = cacheGetProjectBugsUrl();
         const projectDiscussions = cacheGetProjectMetadata("projectDiscussions");
         const blueskyAccount = cacheGetProjectMetadata("blueskyAccount");
         const blueskyDisplayName = cacheGetProjectMetadata("blueskyDisplayName");
+        const summary = await summaryService.cacheGetWeekSummary({});
         newsService.getNews()
             .then(news => {
                 res.render('pages/index', {// page data
                     news, "tz": config.tz,
                     version, projectHomepage, projectIssues, projectDiscussions,
-                    blueskyAccount, blueskyDisplayName
+                    blueskyAccount, blueskyDisplayName,
+                    summary
                 });
             });
     }

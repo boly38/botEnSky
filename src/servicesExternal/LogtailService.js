@@ -1,6 +1,6 @@
 import axios from "axios";
 import {isSet, nowISO8601, nowMinusHoursUTCISO, toHuman, toHumanDay, toHumanTime} from "../lib/Common.js";
-import {NEWS_LABEL} from "./NewsService.js";
+import {NEWS_LABEL} from "../services/NewsService.js";
 
 /**
  * autonomous gist : https://gist.github.com/boly38/e853a1d83b63481fd5a97e4b7822813e

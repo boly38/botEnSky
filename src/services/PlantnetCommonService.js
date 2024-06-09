@@ -2,7 +2,7 @@ import {pluginReject, pluginResolve} from "./BotService.js";
 import {postAuthorOf, postHtmlOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
 import {isSet} from "../lib/Common.js";
 import TinyURL from "tinyurl";
-import {PLANTNET_MINIMAL_PERCENT} from "./PlantnetApiService.js";
+import {PLANTNET_MINIMAL_PERCENT} from "../servicesExternal/PlantnetApiService.js";
 
 export default class PlantnetCommonService {
     constructor(loggerService, auditLogsService, blueskyService) {
@@ -115,7 +115,9 @@ export default class PlantnetCommonService {
             const replySent = doSimulate ? "SIMULATION - Réponse prévue" : "Réponse émise";
             return Promise.resolve(pluginResolve(
                 `Post:\n\t${replyToTextOf}\n\t${replySent} : ${replyMessage}${authorAction}`,
-                `<b>Post</b>:<div class="bg-info">${replyToHtmlOf}</div><b>${replySent}</b>: ${replyMessage}${authorAction}`
+                `<b>Post</b>:<div class="bg-info">${replyToHtmlOf}</div><b>${replySent}</b>: ${replyMessage}${authorAction}`,
+                200,
+                doSimulate ? 0 : 1
             ));
         } catch (err) {
             this.logError("replyTo", err, {...context, doSimulate, candidate, replyMessage});
@@ -144,7 +146,9 @@ export default class PlantnetCommonService {
                     const replySent = doSimulate ? "SIMULATION - Réponse prévue" : "Réponse émise";
                     resolve(pluginResolve(
                         `Post:\n\t${candidateTextOf}\n\t${replySent} : ${replyMessage}`,
-                        `<b>Post</b>:<div class="bg-info">${candidateHtmlOf}</div><b>${replySent}</b>: ${replyMessage}`
+                        `<b>Post</b>:<div class="bg-info">${candidateHtmlOf}</div><b>${replySent}</b>: ${replyMessage}`,
+                        200,
+                        doSimulate ? 0 : 1
                     ));
                 })
                 .catch(err => {
