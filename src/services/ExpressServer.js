@@ -1,5 +1,7 @@
 import path from 'node:path';
 import express from 'express';
+import i18n from 'i18n';
+
 import createError from 'http-errors';
 import {
     cacheGetProjectBugsUrl,
@@ -47,10 +49,22 @@ export default class ExpressServer {
     async init() {
         const expressServer = this;
         expressServer.logger.debug("init()");
+
+        // doc: https://github.com/mashpie/i18n-node
+        // as singleton // https://github.com/mashpie/i18n-node?tab=readme-ov-file#as-singleton
+        i18n.configure({
+            locales: ['fr', 'en'],
+            directory: path.join(__dirname, 'src','locales'),
+            defaultLocale: 'en',
+            queryParameter: 'lang',// query parameter to switch locale (ie. /home?lang=ch) - defaults to NULL
+            cookie: 'lang'
+        });
+
         expressServer.app = express();
 
         expressServer.app.use(express.static(path.join(wwwPath, './public')));
         expressServer.app.use(expressServer.handleActivityTic.bind(this));
+        expressServer.app.use(expressServer.i18n.bind(this));
         expressServer.app.set('views', path.join(wwwPath, './views'));
         expressServer.app.set('view engine', 'ejs');
         expressServer.app.get('/api/about', expressServer.aboutResponse.bind(this));
@@ -65,7 +79,9 @@ export default class ExpressServer {
 
         // register inactivity listener
         this.inactivityDetector.registerOnInactivityListener(
-            async ()=>{await ApplicationConfig.sendAuditLogs();}
+            async () => {
+                await ApplicationConfig.sendAuditLogs();
+            }
         )
 
         expressServer.listeningServer = await expressServer.app.listen(expressServer.port);
@@ -85,6 +101,11 @@ export default class ExpressServer {
         next();
     }
 
+    i18n(req, res, next) {
+        i18n.init(req, res);
+        return next();
+    }
+
     aboutResponse(req, res) {
         const {version} = this;
         res.json({version});
@@ -99,14 +120,15 @@ export default class ExpressServer {
     async hookResponse(req, res) {
         const expressServer = this;
         try {
-            let remoteAddress = expressServer.getRemoteAddress(req);
-            let apiToken = req.get('API-TOKEN');
-            let pluginName = req.get('PLUGIN-NAME');
-            let doSimulate = expressServer.tokenSimulation && apiToken === expressServer.tokenSimulation;
-            expressServer.context = {remoteAddress, pluginName, doSimulate};
+            const currentLocale = i18n.getLocale();
+            const remoteAddress = expressServer.getRemoteAddress(req);
+            const apiToken = req.get('API-TOKEN');
+            const pluginName = req.get('PLUGIN-NAME');
+            const doSimulate = expressServer.tokenSimulation && apiToken === expressServer.tokenSimulation;
+            expressServer.context = {currentLocale, remoteAddress, pluginName, doSimulate};
             let doAction = !doSimulate && expressServer.tokenAction && apiToken === expressServer.tokenAction;
             if ("simulateError" === pluginName) {
-                throw new Error("oops");
+                throw new Error("simulateError");
             }
             if (doSimulate || doAction) {
                 await expressServer.botService.process(remoteAddress, doSimulate, pluginName);
@@ -127,8 +149,11 @@ export default class ExpressServer {
             this.logger.error(errorInternalDetails);
             this.auditLogsService.createAuditLog(errorInternalDetails);
             // user
-            let userErrorTxt = `Erreur inattendue, merci de la signaler sur ${BES_ISSUES} - ${errId}`;
-            let userErrorHtml = `Erreur inattendue, merci de la signaler sur <a href="${BES_ISSUES}">les issues</a> (dans les 3 j) - ${errId}`;
+            const unexpectedError = res.__('server.error.unexpected');
+            const pleaseReportIssue = res.__('server.pleaseReportIssue');
+            const issueLink = res.__('server.issueLinkLabel');
+            let userErrorTxt =  `${unexpectedError}, ${pleaseReportIssue} ${BES_ISSUES} - ${errId}`;
+            let userErrorHtml = `${unexpectedError},${pleaseReportIssue} <a href="${BES_ISSUES}">${issueLink}</a> - ${errId}`;
             this.newsService.add(userErrorHtml);
             res.status(500).json({success: false, message: userErrorTxt});
         }
@@ -145,6 +170,8 @@ export default class ExpressServer {
         newsService.getNews()
             .then(news => {
                 res.render('pages/index', {// page data
+                    __: res.__,
+                    // locale: res.currentLocale,
                     news, "tz": config.tz,
                     version, projectHomepage, projectIssues, projectDiscussions,
                     blueskyAccount, blueskyDisplayName,

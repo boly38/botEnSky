@@ -1,4 +1,6 @@
 import {clearSummaryCache} from "./SummaryService.js";
+import ServiceUnavailableException from "../exceptions/ServiceUnavailableException.js";
+import TooManyRequestsException from "../exceptions/TooManyRequestsException.js";
 
 export default class BotService {
 
@@ -38,7 +40,7 @@ export default class BotService {
         const needToWaitSec = Math.floor((allowedTs - nowMs) / 1000);
         if (bot.lastProcess && allowedTs > nowMs) {
             bot.logger.info(`${remoteAddress} | need to wait ${needToWaitSec} sec`);
-            throw {"message": "Demande trop rapprochée, retentez plus tard", "status": 429};
+            throw new TooManyRequestsException();
         }
         bot.lastProcess = nowMs;
     }
@@ -48,7 +50,7 @@ export default class BotService {
         const plugin = bot.getPluginByName(pluginName);
         if (!plugin || !plugin.isReady()) {
             bot.logger.info(`${remoteAddress} | no plugin '${pluginName}' available`);
-            throw {"message": "je suis actuellement en maintenance, retentez plus tard", "status": 503};
+            throw new ServiceUnavailableException();
         }
         return plugin;
     }

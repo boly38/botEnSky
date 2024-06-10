@@ -1,5 +1,5 @@
   <div class="panel panel-info" id="faq">
-    <div class="panel-heading">Questions fréquentes</div>
+    <div class="panel-heading"><%= __('faq.title') %></div>
     <div class="panel-body">
             <!-- Part A -->
             <div class="card bes-card">
@@ -9,25 +9,25 @@
 
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                   <div class="ms-2 me-auto">
-                    <div class="fw-bold">Sur ce site Web, c'est très long à s'afficher</div>
-                    Je m'endors quand je ne suis pas stimulé, il s'agit d'un hébergement gratuit qui optimise les temps du serveur.
-                    <br/> <small>(oui, penser aussi à sauver la planète 🌍)</small>.
+                    <div class="fw-bold"><%= __('faq.head1') %></div>
+                    <%= __('faq.body1') %>
+                    <br/> <small>(<%= __('faq.body1b') %>)</small>.
                     <br/>
-                    Il faut un peu de temps (parfois jusque 6 minutes) pour réveiller le serveur, mais ensuite il répond normalement.
+                    <%= __('faq.body1c') %>
                   </div>
-                  <span class="badge text-bg-primary rounded-pill">😴</span>
+                  <span class="badge text-bg-primary rounded-pill"><%= __('faq.tag1') %></span>
                 </li>
 
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                   <div class="ms-2 me-auto">
-                    <div class="fw-bold">A quelle heure te réveilles-tu ?</div>
+                    <div class="fw-bold"><%= __('faq.head2') %></div>
 
-                    Pour le moment ce n'est pas encore trop figé. en dehors des tirs manuels,<br/>
-                    Pour le plugin <b>PlantNet</b> : je simule à ~ 17h15/17h25, et pratique à 17h30, 19h30 (FR).<br/>
-                    Pour le plugin <b>AskPlantnet</b> (en phase de test): je pratique à 12h00 et 17h00 (FR).
+                    <%- __('faq.body2') %><br/>
+                    <%- __('faq.body2a') %><br/>
+                    <%- __('faq.body2b') %>
 
                   </div>
-                  <span class="badge text-bg-primary rounded-pill">🕐</span>
+                  <span class="badge text-bg-primary rounded-pill"><%= __('faq.tag2') %></span>
                 </li>
 
               </ul>

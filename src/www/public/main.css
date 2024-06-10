@@ -12,6 +12,11 @@ html, body {
     --bes-text-background-second: rgba(236, 227, 227, 0.8);
 }
 
+.flag-img {
+    width: 1.33333333em;
+    cursor: pointer;
+}
+
 .bes-card {
     --bs-card-bg: transparent !important;
 }

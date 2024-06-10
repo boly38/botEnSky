@@ -1,17 +1,17 @@
 <div class="panel panel-info" id="logs">
-    <div class="panel-heading">Activités du robot</div>
+    <div class="panel-heading"><%= __('home.bot_activities') %></div>
     <div class="panel-body">
 
         <!-- Logs intro -->
         <div class="card bes-card">
           <div class="card-body">
-            Bienvenue sur la page du <a href="<%- blueskyAccount %>"
+            <%= __('home.welcome_on_bot_page') %> <a href="<%- blueskyAccount %>"
                                         data-umami-event="{blueskyAccount link}" id="blueskyAccount-link"
                                         class="umami--click--profile-button">@<%- blueskyDisplayName %></a>
-              : un robot BlueSky <a href="https://nodejs.org/"
+              : <%= __('home.a_bluesky_bot') %> <a href="https://nodejs.org/"
                                     data-umami-event="{nodejs link}" id="nodejs-link"
-                                    class="umami--click--nodejs-button">NodeJS</a>
-                                    <sup>version <%- version %></sup>.<br/>
+                                    class="umami--click--nodejs-button">Node.js</a>
+                                    <sup><%= __('home.version') %><%- version %></sup>.<br/>
           </div>
         </div>
 
@@ -23,8 +23,8 @@
     <div class="card bes-card">
       <div class="card-body">
 
-          <a href="/" data-umami-event="{logs-refresh link}" id="logs-refresh-link">🔄</a> 🧾 <b>activités récentes</b><br/>
-            <small>Fraîcheur : <%- news.to %> - TZ : <%- tz %></small>
+          <a href="/" data-umami-event="{logs-refresh link}?lang=<%= locale %>" id="logs-refresh-link">🔄</a> 🧾 <b><%= __('home.activities') %></b><br/>
+            <small><%= __('home.freshness') %> : <%- news.to %> - TZ : <%- tz %></small>
             <br/>
             <br/>
 
@@ -40,7 +40,7 @@
             <li class="nav-item logDate">
               <a id="logDate-week-menu" class="nav-link" href="#" onClick="toggleLogDateContent('logDate-week')"
                               data-umami-event="{home logs week}" id="home-logs-week"
-                              >7 jours analytics</a>
+                              ><%- __('home.seven_days_analytics') %></a>
             </li>
           </ul>
           <br/>
@@ -60,9 +60,9 @@
 
           <!-- 7 jours -->
           <div class="panel" id="logDate-week">
-              <b>7 jours</b> : <a href="https://bsky.app/search?q=from%3Abotensky.bsky.social">posts</a>: <%- summary.posts %>, likes: <%- summary.likes %>, replies: <%- summary.replies %>, reposts: <%- summary.reposts %>
-              <br/><br/><b>Meilleur score</b> : <%- summary.bestScore %> (<%- summary.bestScorePosts?.length %> posts) - exemples : <br/><%- summary.bestScorePostsHtml %>
-              <br/><br/><b>+ de 'j'aime'</b> :<%- summary.bestLikes %> (<%- summary.bestLikesPosts?.length %> posts) - exemples : <br/><%- summary.bestLikesPostsHtml %>
+              <b><%- __('home.seven_days_analytics') %></b> : <a href="https://bsky.app/search?q=from%3Abotensky.bsky.social"><%- summary.posts %> <%- __('home.posts') %></a>, <%- summary.likes %> ❤️ <%- summary.replies %> ⬅️,  <%- summary.reposts %> 🔁
+              <br/><br/><b><%- __('home.best_score') %></b> : <%- summary.bestScore %> (<%- summary.bestScorePosts?.length %> posts) - <%- __('home.examples') %> : <br/><%- summary.bestScorePostsHtml %>
+              <br/><br/><b><%- __('home.best_likes') %></b> :<%- summary.bestLikes %> (<%- summary.bestLikesPosts?.length %> posts) - <%- __('home.examples') %> : <br/><%- summary.bestLikesPostsHtml %>
           </div>
 
       </div>
