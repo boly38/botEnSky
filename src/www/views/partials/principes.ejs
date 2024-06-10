@@ -1,5 +1,5 @@
   <div class="panel panel-info" id="principes">
-    <div class="panel-heading">Les principes du robot</div>
+    <div class="panel-heading"><%= __('principles.bot_principles') %></div>
     <div class="panel-body">
             <!-- Part A -->
             <div class="card bes-card">
@@ -7,21 +7,20 @@
               <!-- examples commons -->
               <script async src="https://embed.bsky.app/static/embed.js" charset="utf-8"></script>
 
-              <b>Fonctions</b>
+              <b><%= __('principles.functions') %></b>
               <ul>
-              <li><b><a href="https://bsky.app/hashtag/BeSPlantnet" target="_bluesky">#BeSPlantnet</a></b> - le robot réponds à certains posts ! : <br/><br/>
-                  A certains moments de la journée, le robot recherche des images de fleur/plante.
-                  Ensuite il tente d'identifier la plante, et en cas de réussite répond à l'auteur du post avec une image en exemple</li>
+              <li><b><a href="https://bsky.app/hashtag/BeSPlantnet" target="_bluesky">#BeSPlantnet</a></b> - <%= __('principles.besplantnet.head') %> : <br/><br/>
+                   <%= __('principles.besplantnet.body') %>
+              </li>
 
                   <!-- BeSPlantnet example -->
                   <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:jkvb3exm4wg3jt5veu75qppn/app.bsky.feed.post/3ktx4qhfvc227" data-bluesky-cid="bafyreibwp6gho7wvitskupronhcx4gju6ntjioe4cz5wrgb6y2tmprfl4u"><p lang="">Pl@ntNet identifie (à 39.98%) Paeonia lactiflora (fam Paeoniaceae) com. Pivoine de Chine, Pivoine rouge
                   #BeSPlantnet #IndentificationDePlantes<br><br><a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3ktx4qhfvc227?ref_src=embed">[image or embed]</a></p>&mdash; botEnSky (<a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn?ref_src=embed">@botensky.bsky.social</a>) <a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3ktx4qhfvc227?ref_src=embed">Jun 2, 2024 at 16:03</a></blockquote>
                   <br/><br/>
 
-              <li><b><a href="https://bsky.app/hashtag/BeSAskPlantnet" target="_bluesky">#BeSAskPlantnet</a></b> - le robot réponds à certaines mentions ! : <br/><br/>
-                  Pour le moment il est possible de demander au robot d'identifier une fleur/plante.<br/>
-                  Pour cela, répondez à un post comportant une image de fleur/plante avec la mention <code>@botensky.bsky.social</code>.<br/>
-                  Ensuite vous devez attendre le réveil du robot pour le plugin <b>AskPlantnet</b> (cf. FAQ)</li>
+              <li><b><a href="https://bsky.app/hashtag/BeSAskPlantnet" target="_bluesky">#BeSAskPlantnet</a></b> - <%= __('principles.besaskplantnet.head') %> : <br/><br/>
+                  <%- __('principles.besaskplantnet.body') %>
+              </li>
 
                   <!-- BeSAskPlantnet example -->
                   <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:jkvb3exm4wg3jt5veu75qppn/app.bsky.feed.post/3ku6iaatchs2p" data-bluesky-cid="bafyreiabrta4kznizsvxu7iokw5kxiselc7d7wdphal4ihskfoqf45j3ua"><p lang="">Pl@ntNet identifie (à 39.13%) Viola glabella (fam Violaceae) com. Violette glabre
@@ -38,15 +37,16 @@
               <div class="card-body">
                 <b>Projet</b>
                 <ul>
-                    <li>BotEnSky est un projet open-source qui tente d'<b>identifier des plantes ou fleurs</b> (cliquez sur le coin noir GitHub).</li>
-                    <li>C'est un jeune bot, mais qui apprends de ses
-                     <a href="<%- projectIssues %>" data-umami-event="{projectIssues link}" id="projectIssues-link">erreurs</a>.</li>
-                    <li>Le projet est ouvert aux bidouilleurs qui veulent améliorer le bot.</li>
-                    <li>Un web designer pourrait apporter beaucoup par exemple...</li>
-                    <li>Si quelqu'un est en train de travailler, alors il est possible que le bot post plus souvent ou bizarrement.</li>
-                    <li>Vous voulez parler du bot et de ces fonctionnalités ailleurs que sur BlueSky,
-                        ouvrez une <a href="<%- projectDiscussions %>"
-                                      data-umami-event="{projectDiscussions link}" id="projectDiscussions-link">discussion</a> !
+                    <li><%= __('project.line1') %></li>
+                    <li><%= __('project.line2') %>
+                     <a href="<%- projectIssues %>"
+                        data-umami-event="{projectIssues link}" id="projectIssues-link"><%= __('project.line2link') %></a></li>
+                    <li><%= __('project.line3') %></li>
+                    <li><%= __('project.line4') %></li>
+                    <li><%= __('project.line5') %></li>
+                    <li><%= __('project.line6') %>
+                      <a href="<%- projectDiscussions %>"
+                         data-umami-event="{projectDiscussions link}" id="projectDiscussions-link"><%= __('project.line6link') %></a> !
                 </ul>
 
               </div>
