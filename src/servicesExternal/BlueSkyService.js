@@ -1,13 +1,5 @@
 import {BskyAgent, RichText} from '@atproto/api'
-import {
-    descriptionOfPostAuthor,
-    didOfPostAuthor,
-    filterWithEmbedImageView,
-    fiterWithNoReply,
-    fiterWithNotMuted,
-    fromBlueskyPosts,
-    postLinkOf
-} from "../domain/post.js";
+import {descriptionOfPostAuthor, didOfPostAuthor, postLinkOf, postsFilterSearchResults} from "../domain/post.js";
 import {getEncodingBufferAndBase64FromUri, isSet, nowISO8601, nowMinusHoursUTCISO} from "../lib/Common.js";
 
 export default class BlueSkyService {
@@ -53,35 +45,25 @@ export default class BlueSkyService {
     async searchPosts(options = {}) {
         const {
             searchQuery = "boly38",
-            limit = 5,
+            limit = 20,
             sort = "latest",// recent first
             hasImages = false,// does post include embed image
             hasNoReply = false,// does post has 0 reply
             isNotMuted = true,// is post muted by bot
             maxHoursOld = 1// restrict search time window "since" limit
         } = options;
-        return new Promise((resolve, reject) => {
-            const since = isSet(maxHoursOld) ? nowMinusHoursUTCISO(maxHoursOld) : null;
-            this.login()
-                .then(() => {
-                    let params = {q: searchQuery, sort, limit};
-                    if (isSet(since)) {
-                        params["since"] = since;
-                    }
-                    this.logger.info(`searchPosts ${JSON.stringify(params)}`);
-                    this.api.app.bsky.feed.searchPosts(params, {})
-                        .then(response => {
-                            let posts = fromBlueskyPosts(response.data.posts);
-                            posts = hasImages ? posts.filter(filterWithEmbedImageView) : posts;
-                            posts = hasNoReply ? posts.filter(fiterWithNoReply) : posts;
-                            posts = isNotMuted ? posts.filter(fiterWithNotMuted) : posts;
-                            this.logger.debug(`posts`, JSON.stringify(posts, null, 2));
-                            resolve(posts);
-                        })
-                        .catch(reject);
-                })
-                .catch(reject);
-        });
+        const since = isSet(maxHoursOld) ? nowMinusHoursUTCISO(maxHoursOld) : null;
+        await this.login();
+        let params = {q: searchQuery, sort, limit};
+        if (isSet(since)) {
+            params["since"] = since;
+            params["until"] = nowMinusHoursUTCISO(0);
+        }
+        this.logger.info(`searchPosts ${JSON.stringify(params)}`);
+        const response = await this.api.app.bsky.feed.searchPosts(params, {});
+        const posts = postsFilterSearchResults(response.data.posts, hasImages, hasNoReply, isNotMuted);
+        this.logger.debug(`posts`, JSON.stringify(posts, null, 2));
+        return posts;
     }
 
     /**
@@ -99,7 +81,7 @@ export default class BlueSkyService {
     replyTo(post, text, doSimulate, embed = null) {
         const bs = this;
         return new Promise(async (resolve, reject) => {
-            const {"uri":parentUri, "cid":parentCid} = post;
+            const {"uri": parentUri, "cid": parentCid} = post;
             const rootUri = post?.record?.reply?.root?.uri || parentUri;
             const rootCid = post?.record?.reply?.root?.cid || parentCid;
 
@@ -112,8 +94,8 @@ export default class BlueSkyService {
             }
             const replyPost = {
                 "reply": {
-                    "root": {"uri":rootUri, "cid":rootCid},
-                    "parent": {"uri":parentUri, "cid":parentCid}
+                    "root": {"uri": rootUri, "cid": rootCid},
+                    "parent": {"uri": parentUri, "cid": parentCid}
                 },
                 "$type": "app.bsky.feed.post",
                 text: rt.text,
