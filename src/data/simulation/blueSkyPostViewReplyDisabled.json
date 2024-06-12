@@ -1,0 +1,167 @@
+{
+  "uri": "at://did:plc:7hdwhhuvneujbqteyg73atep/app.bsky.feed.post/3kuos7dgvmj25",
+  "cid": "bafyreiapmg5gsvkdfb5ngjlzebct3cpwa5y5b3vtf4he6lrl5z6s4tkc4e",
+  "author": {
+    "did": "did:plc:7hdwhhuvneujbqteyg73atep",
+    "handle": "fukuneko-photo.bsky.social",
+    "displayName": "福ねこ",
+    "avatar": "https://cdn.bsky.app/img/avatar/plain/did:plc:7hdwhhuvneujbqteyg73atep/bafkreigyovoogej2wv6mofbchj2wps5jkc2d7fwqgji7iymya3i27ndcam@jpeg",
+    "associated": {
+      "chat": {
+        "allowIncoming": "none"
+      }
+    },
+    "viewer": {
+      "muted": false,
+      "blockedBy": false
+    },
+    "labels": [
+      {
+        "src": "did:plc:7hdwhhuvneujbqteyg73atep",
+        "uri": "at://did:plc:7hdwhhuvneujbqteyg73atep/app.bsky.actor.profile/self",
+        "cid": "bafyreidkbhoi66kuy3ce3l3f7ytwrbt2r4iqmhqnkfyh5vcazc47dmeffa",
+        "val": "!no-unauthenticated",
+        "cts": "1970-01-01T00:00:00.000Z"
+      }
+    ]
+  },
+  "record": {
+    "$type": "app.bsky.feed.post",
+    "createdAt": "2024-06-11T23:58:23.623Z",
+    "embed": {
+      "$type": "app.bsky.embed.images",
+      "images": [
+        {
+          "alt": "",
+          "aspectRatio": {
+            "height": 1332,
+            "width": 2000
+          },
+          "image": {
+            "$type": "blob",
+            "ref": {
+              "$link": "bafkreidc3sawyw5z6x7wvtrpjuijrmkq4vvjgbtxytgokm2a7gfbqzlfbi"
+            },
+            "mimeType": "image/jpeg",
+            "size": 258624
+          }
+        }
+      ]
+    },
+    "facets": [
+      {
+        "features": [
+          {
+            "$type": "app.bsky.richtext.facet#tag",
+            "tag": "ハルジオン"
+          }
+        ],
+        "index": {
+          "byteEnd": 16,
+          "byteStart": 0
+        }
+      },
+      {
+        "features": [
+          {
+            "$type": "app.bsky.richtext.facet#tag",
+            "tag": "photo"
+          }
+        ],
+        "index": {
+          "byteEnd": 23,
+          "byteStart": 17
+        }
+      },
+      {
+        "features": [
+          {
+            "$type": "app.bsky.richtext.facet#tag",
+            "tag": "photography"
+          }
+        ],
+        "index": {
+          "byteEnd": 36,
+          "byteStart": 24
+        }
+      },
+      {
+        "features": [
+          {
+            "$type": "app.bsky.richtext.facet#tag",
+            "tag": "flower"
+          }
+        ],
+        "index": {
+          "byteEnd": 44,
+          "byteStart": 37
+        }
+      },
+      {
+        "features": [
+          {
+            "$type": "app.bsky.richtext.facet#tag",
+            "tag": "キリトリセカイ"
+          }
+        ],
+        "index": {
+          "byteEnd": 67,
+          "byteStart": 45
+        }
+      },
+      {
+        "features": [
+          {
+            "$type": "app.bsky.richtext.facet#tag",
+            "tag": "カメラ好きな人と繋がりたい"
+          }
+        ],
+        "index": {
+          "byteEnd": 108,
+          "byteStart": 68
+        }
+      }
+    ],
+    "langs": [
+      "ja"
+    ],
+    "text": "#ハルジオン #photo #photography\n#flower #キリトリセカイ\n#カメラ好きな人と繋がりたい"
+  },
+  "embed": {
+    "$type": "app.bsky.embed.images#view",
+    "images": [
+      {
+        "thumb": "https://cdn.bsky.app/img/feed_thumbnail/plain/did:plc:7hdwhhuvneujbqteyg73atep/bafkreidc3sawyw5z6x7wvtrpjuijrmkq4vvjgbtxytgokm2a7gfbqzlfbi@jpeg",
+        "fullsize": "https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:7hdwhhuvneujbqteyg73atep/bafkreidc3sawyw5z6x7wvtrpjuijrmkq4vvjgbtxytgokm2a7gfbqzlfbi@jpeg",
+        "alt": "",
+        "aspectRatio": {
+          "height": 1332,
+          "width": 2000
+        }
+      }
+    ]
+  },
+  "replyCount": 2,
+  "repostCount": 1,
+  "likeCount": 24,
+  "indexedAt": "2024-06-11T23:58:23.623Z",
+  "viewer": {
+    "replyDisabled": true
+  },
+  "labels": [],
+  "threadgate": {
+    "uri": "at://did:plc:7hdwhhuvneujbqteyg73atep/app.bsky.feed.threadgate/3kuos7dgvmj25",
+    "cid": "bafyreift3bkprr6yt2oft5lw3ijbcdmhwh4kiie2dhclsvjtejhjvy2nrm",
+    "record": {
+      "$type": "app.bsky.feed.threadgate",
+      "allow": [
+        {
+          "$type": "app.bsky.feed.threadgate#followingRule"
+        }
+      ],
+      "createdAt": "2024-06-11T23:58:24.623Z",
+      "post": "at://did:plc:7hdwhhuvneujbqteyg73atep/app.bsky.feed.post/3kuos7dgvmj25"
+    },
+    "lists": []
+  }
+}

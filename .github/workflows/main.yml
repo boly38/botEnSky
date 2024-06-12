@@ -54,3 +54,24 @@ jobs:
           PLANTNET_API_PRIVATE_KEY: ${{ secrets.PLANTNET_API_PRIVATE_KEY }}
           BOT_INACTIVITY_DELAY_MIN: 1
         run: npm run ci-test
+
+      - name: Report coverage
+        continue-on-error: true
+        # uses: romeovs/lcov-reporter-action@v0.2.16 # https://github.com/romeovs/lcov-reporter-action/issues/10
+        uses: andybelltree/lcov-reporter-action@v1.7.0 # https://github.com/andybelltree/lcov-reporter-action/releases
+        with:
+          github-token: ${{ secrets.GH_ACTIONS_TOKEN }}
+          lcov-file: ./coverage/lcov.info
+          filter-changed-files: true
+
+      - name: Git deploy PROD coverage report
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/prod'
+        with:
+          github_token: ${{ secrets.GH_ACTIONS_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./coverage/lcov-report
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: ${{ github.event.head_commit.message }}
+          force_orphan: true

@@ -36,13 +36,13 @@ class Bluesky {
         this.api = agent.api;
     }
 
-    async postSearch(author) {
+    async postSearch(searchQuery) {
         let params = {
-            "q": author,
+            "q": searchQuery,
             "sort": "latest",
             "limit": 5,
-//        "since": nowMinusHoursUTCISO(720),
-//        "until": nowMinusHoursUTCISO(0)
+            "since": nowMinusHoursUTCISO(24),
+            "until": nowMinusHoursUTCISO(0)
         };
         console.log(`search ${JSON.stringify(params)}`);
         const response = await this.api.app.bsky.feed.searchPosts(params, {});

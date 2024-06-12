@@ -42,7 +42,7 @@ export const fromBlueskyPost = post => {
         "author": {did, avatar, displayName, handle, "viewer": {muted}},
         embed,
         indexedAt, likeCount, replyCount, repostCount, uri, cid,
-        record
+        record, viewer
     } = post;
     const result = {
         "author": {did, avatar, displayName, handle, "viewer": {muted}},
@@ -53,7 +53,8 @@ export const fromBlueskyPost = post => {
             "langs": record.langs,
             "text": record.text,
             "reply": record.reply
-        }
+        },
+        viewer
     };
     if (isSet(embed)) {
         result["embed"] = {
@@ -66,7 +67,7 @@ export const fromBlueskyPost = post => {
 /**
  * mapper for posts list
  */
-export const fromBlueskyPosts = posts => posts.map(fromBlueskyPost)
+export const fromBlueskyPosts = posts => posts?.map(fromBlueskyPost)
 
 export const firstImageOf = post => !isSet(post?.embed) ? null : post?.embed.images[0];
 export const postLinkOf = post => {
@@ -136,6 +137,17 @@ export const descriptionOfPostAuthor = postAuthor => {
 export const filterWithEmbedImageView = p => p?.embed?.$type === "app.bsky.embed.images#view"
 export const fiterWithNoReply = p => p?.replyCount === 0
 export const fiterWithNotMuted = p => p?.author?.viewer?.muted === false
+export const fiterWithNoReplyDisabled = p => p?.viewer?.replyDisabled !== true
+
+export const postsFilterSearchResults = (responsePosts, hasImages, hasNoReply, isNotMuted) => {
+    let posts = fromBlueskyPosts(responsePosts);
+    posts = hasImages ? posts?.filter(filterWithEmbedImageView) : posts;
+    posts = hasNoReply ? posts?.filter(fiterWithNoReply) : posts;
+    posts = isNotMuted ? posts?.filter(fiterWithNotMuted) : posts;
+    // undertakes public viewer replyDisabled rule // https://github.com/bluesky-social/atproto/discussions/2576
+    posts = posts?.filter(fiterWithNoReplyDisabled);
+    return posts;
+}
 
 export const txtOfPosts = (posts, max = 5) => posts.slice(0,max).map(postTextOf).join("\n\n")
 export const htmlOfPosts = (posts, max = 5) => posts.slice(0,max).map(postHtmlOf).join("<br/><br/>")
