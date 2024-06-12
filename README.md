@@ -42,6 +42,7 @@ His ambition is to **bring 😊 happiness to 🦋 Bluesky 👤 users**.
 
 ### Versions
 - [releases notes](https://github.com/boly38/botEnSky/releases)  - generated via `gren` [![Automated Release Notes by gren](https://img.shields.io/badge/%F0%9F%A4%96-release%20notes-00B2EE.svg)](https://github-tools.github.io/github-release-notes/)
+- [tests - code-coverage](https://boly38.github.io/botEnSky/)
 
 ### Credits
 Application and code structure:
