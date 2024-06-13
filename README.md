@@ -32,6 +32,10 @@ His ambition is to **bring 😊 happiness to 🦋 Bluesky 👤 users**.
 
 *remove bot all muted authors.*
 
+- 🧩 [Summary](src/plugins/Summary.js) plugin
+
+*get some analytics for last 7 days of bot activity.*
+
 ### Bot trigger
 - Github Actions [workflows](.github/workflows) (`trigger_*`) are used to trigger the bot, they are based on `schedule` directives (UTC time, [doc](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule))
 
