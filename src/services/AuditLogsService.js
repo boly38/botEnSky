@@ -36,7 +36,7 @@ export default class AuditLogsService {
 
     async notifyLogs() {
         const logs = this.retrieveAuditLogs(true);
-        console.log(`*${logs?.length}`);// debug
+        // DEBUG // console.log(`*${logs?.length}`);// debug
         if (logs === undefined || logs.length < 1) {
             return;
         }

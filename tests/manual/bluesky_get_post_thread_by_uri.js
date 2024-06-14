@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // https://gist.github.com/boly38/TODO
 import {BskyAgent} from '@atproto/api'
 import dayjs from "dayjs";

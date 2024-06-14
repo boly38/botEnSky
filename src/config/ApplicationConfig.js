@@ -1,3 +1,5 @@
+import console from "node:console";
+import process from "node:process";
 import {ContainerBuilder} from 'node-dependency-injection';
 import {nowHuman} from "../lib/Common.js";
 import ApplicationProperties from './ApplicationProperties.js';
@@ -124,6 +126,9 @@ export default class ApplicationConfig {
 
     async initExpressServer() {
         const {container} = this;
+        let inactivityDetector = container.get('inactivityDetector');
+        ApplicationConfig.inactivityDetector = inactivityDetector;
+
         container
             .register('expressServer', ExpressServer)
             .addArgument({
@@ -134,12 +139,20 @@ export default class ApplicationConfig {
                 newsService: container.get('newsService'),
                 auditLogsService: container.get('auditLogsService'),
                 summaryService: container.get('summaryService'),
-                inactivityDetector: container.get('inactivityDetector')
+                inactivityDetector: inactivityDetector
             });
-
         const expressServer = container.get('expressServer');
         ApplicationConfig.listeningServer = await expressServer.init();
         return ApplicationConfig.listeningServer;
+    }
+
+    static async shutdown() {
+        if (ApplicationConfig.inactivityDetector) {
+            await ApplicationConfig.inactivityDetector.shutdown();
+        }
+        if (ApplicationConfig.listeningServer !== undefined) {
+            await ApplicationConfig.listeningServer.close();
+        }
     }
 }
 
@@ -169,8 +182,5 @@ ApplicationConfig.startServerMode = async () => {
 }
 ApplicationConfig.stopServerMode = async (origin = "unknown") => {
     console.log(`${nowHuman()} stopServerMode (origin:${origin})`);
-    if (ApplicationConfig.listeningServer !== undefined) {
-        ApplicationConfig.listeningServer.close();
-    }
-    await ApplicationConfig.sendAuditLogs();
+    await ApplicationConfig.shutdown();
 };

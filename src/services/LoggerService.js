@@ -1,4 +1,5 @@
 import console from "node:console";
+import process from "node:process";
 // https://betterstack.com/docs/logs/javascript/winston/
 import winston from "winston";
 import {Logtail} from "@logtail/node";
