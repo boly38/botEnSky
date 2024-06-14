@@ -8,22 +8,27 @@ export default class InactivityDetector {
         this.INACTIVITY_DELAY_MIN = this.config.inactivityDelayMin || 3;
     }
 
-    onInactivity() {
+    async clearTimerIfAny() {
+        if (InactivityDetector.timer !== null) {
+            await clearTimeout(InactivityDetector.timer);
+        }
         InactivityDetector.timer = null;
+    }
+
+    async onInactivity() {
+        this.clearTimerIfAny();
         for (const handler of InactivityDetector.onInactivityListeners) {
             try {
-                handler();
+                await handler();
             } catch (exception) {
                 this.logger.warn(`onInactivity handler error : ${exception.message}`);
             }
         }
     }
 
-    activityTic() {
+    async activityTic() {
         const {onInactivity, INACTIVITY_DELAY_MIN, logger} = this;
-        if (InactivityDetector.timer !== null) {
-            clearTimeout(InactivityDetector.timer);
-        }
+        await this.clearTimerIfAny();
         if (InactivityDetector.onInactivityListeners.length > 0) {
             if (InactivityDetector.timer === null) { // first time only
                 logger.info(`setTimeout(${INACTIVITY_DELAY_MIN} min, ...) with ${InactivityDetector.onInactivityListeners.length} listeners`)
@@ -34,6 +39,11 @@ export default class InactivityDetector {
 
     registerOnInactivityListener(listener) {
         InactivityDetector.onInactivityListeners.push(listener)
+    }
+
+    async shutdown() {
+        this.logger.info(`shutdown`);
+        await this.onInactivity();
     }
 }
 InactivityDetector.timer = null;

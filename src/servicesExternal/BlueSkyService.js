@@ -78,48 +78,43 @@ export default class BlueSkyService {
      * @param embed
      * @returns {Promise<unknown>}
      */
-    replyTo(post, text, doSimulate, embed = null) {
-        const bs = this;
-        return new Promise(async (resolve, reject) => {
-            const {"uri": parentUri, "cid": parentCid} = post;
-            const rootUri = post?.record?.reply?.root?.uri || parentUri;
-            const rootCid = post?.record?.reply?.root?.cid || parentCid;
+    async replyTo(post, text, doSimulate, embed = null) {
+        const {logger} = this;
+        const {"uri": parentUri, "cid": parentCid} = post;
+        const rootUri = post?.record?.reply?.root?.uri || parentUri;
+        const rootCid = post?.record?.reply?.root?.cid || parentCid;
 
-            //~ rich format
-            const rt = new RichText({text})
-            try {
-                await rt.detectFacets(bs.agent) // automatically detects mentions and links
-            } catch (err) {
-                bs.logger.error(`detectFacets error ${err.message}`);
-            }
-            const replyPost = {
-                "reply": {
-                    "root": {"uri": rootUri, "cid": rootCid},
-                    "parent": {"uri": parentUri, "cid": parentCid}
-                },
-                "$type": "app.bsky.feed.post",
-                text: rt.text,
-                facets: rt.facets,
-                "createdAt": nowISO8601(), // ex. "2023-08-07T05:49:40.501974Z" OR new Date().toISOString()
-            };
-            if (embed !== null) {
-                replyPost["embed"] = embed;
-            }
+        //~ rich format
+        const rt = new RichText({text})
+        try {
+            await rt.detectFacets(this.agent) // automatically detects mentions and links
+        } catch (err) {
+            logger.error(`detectFacets error ${err.message}`);
+        }
+        const replyPost = {
+            "reply": {
+                "root": {"uri": rootUri, "cid": rootCid},
+                "parent": {"uri": parentUri, "cid": parentCid}
+            },
+            "$type": "app.bsky.feed.post",
+            text: rt.text,
+            facets: rt.facets,
+            "createdAt": nowISO8601(), // ex. "2023-08-07T05:49:40.501974Z" OR new Date().toISOString()
+        };
+        if (embed !== null) {
+            replyPost.embed = embed;
+        }
 
-            if (doSimulate) {
-                const embedDesc = embed !== null ? `\n[${embed["$type"]}|alt:${embed?.images[0]?.alt}]` : '';
-                bs.logger.info(`SIMULATE REPLY TO ${postLinkOf(post)} : ${text}${embedDesc}`);
-                return resolve({"uri": "simulated_reply_uri", "cid": "simulated_reply_cid"});
-            }
-            bs.logger.debug("POST SENT:\n" + JSON.stringify(replyPost, null, 2))
-            bs.agent.post(replyPost)
-                .then(postReplyResponse => {
-                    bs.logger.info(`replyTo response : ${JSON.stringify(postReplyResponse)}`);
-                    bs.logger.info(`replyTo ${postLinkOf(post)} : ${text}`);
-                    resolve(postReplyResponse);
-                })
-                .catch(reject)
-        });
+        if (doSimulate) {
+            const embedDesc = embed !== null ? `\n[${embed["$type"]}|alt:${embed?.images[0]?.alt}]` : '';
+            logger.info(`SIMULATE REPLY TO ${postLinkOf(post)} : ${text}${embedDesc}`);
+            return {"uri": "simulated_reply_uri", "cid": "simulated_reply_cid"};
+        }
+        logger.debug("POST SENT:\n" + JSON.stringify(replyPost, null, 2));
+        const postReplyResponse = await this.agent.post(replyPost)
+        logger.info(`replyTo response : ${JSON.stringify(postReplyResponse)}`);
+        logger.info(`replyTo ${postLinkOf(post)} : ${text}`);
+        return postReplyResponse;
     }
 
     prepareImageUrlAsBlueskyEmbed(imageUri, imageAltText) {
@@ -182,7 +177,7 @@ export default class BlueSkyService {
             .catch(err => bs.logger.warn(`cant un-mute ${author} did:${actorDid}- err:${err.message}`, context));
     }
 
-    // https://docs.bsky.app/docs/api/app-bsky-feed-get-post-thread
+// https://docs.bsky.app/docs/api/app-bsky-feed-get-post-thread
     async getParentPostOf(uri/* Reference (AT-URI) to post record.*/) {
         const response = await this.api.app.bsky.feed.getPostThread({uri}, {})
         const {data} = response;
