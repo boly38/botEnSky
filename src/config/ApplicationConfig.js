@@ -19,9 +19,14 @@ import AskPlantnet from "../plugins/AskPlantnet.js";
 import UnMute from "../plugins/UnMute.js";
 import Summary from "../plugins/Summary.js";
 import InactivityDetector from "../services/InactivityDetector.js";
+import GrBirdApiService from "../servicesExternal/GrBirdApiService.js";
+import AviBaseService from "../servicesExternal/AviBaseService.js";
+import BioClip from "../plugins/BioClip.js";
+import PluginsCommonService from "../services/PluginsCommonService.js";
 
 export default class ApplicationConfig {
     constructor() {
+        console.log("build config...")
         this.container = new ContainerBuilder();
         this.constructServicesAndLogger();
         this.constructPlugins();
@@ -56,10 +61,22 @@ export default class ApplicationConfig {
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'));
 
-        container.register('plantnetCommonService', PlantnetCommonService)
+        container.register('pluginsCommonService', PluginsCommonService)
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('auditLogsService'))
             .addArgument(container.get('blueskyService'));
+
+        container.register('plantnetCommonService', PlantnetCommonService)
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('blueskyService'))
+            .addArgument(container.get('pluginsCommonService'));
+
+        container.register('aviBaseService', AviBaseService)
+            .addArgument(container.get('loggerService'));
+
+        container.register('grBirdApiService', GrBirdApiService)
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('aviBaseService'));
 
         container.register('plantnetApiService', PlantnetApiService)
             .addArgument(container.get('config'))
@@ -80,6 +97,7 @@ export default class ApplicationConfig {
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('blueskyService'))
+            .addArgument(container.get('pluginsCommonService'))
             .addArgument(container.get('plantnetCommonService'))
             .addArgument(container.get('plantnetApiService'));
         this.plugins.push(container.get('plantnet'));
@@ -88,6 +106,7 @@ export default class ApplicationConfig {
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('blueskyService'))
+            .addArgument(container.get('pluginsCommonService'))
             .addArgument(container.get('plantnetCommonService'))
             .addArgument(container.get('plantnetApiService'));
 
@@ -106,6 +125,14 @@ export default class ApplicationConfig {
             .addArgument(container.get('summaryService'))
             .addArgument(container.get('discordService'));
         this.plugins.push(container.get('summary'));
+
+        container.register('bioclip', BioClip)
+            .addArgument(container.get('config'))
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('pluginsCommonService'))
+            .addArgument(container.get('grBirdApiService'));
+        this.plugins.push(container.get('bioclip'));
+
     }
 
     constructBot() {

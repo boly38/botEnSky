@@ -1,14 +1,15 @@
 import {arrayIsNotEmpty, clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf, postHtmlOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
 import {dataSimulationDirectory, pluginReject, pluginResolve} from "../services/BotService.js";
-import {IDENTIFY_RESULT} from "../servicesExternal/PlantnetApiService.js";
+import {IDENTIFY_RESULT, PLANTNET_MINIMAL_PERCENT} from "../servicesExternal/PlantnetApiService.js";
 
 export default class AskPlantnet {
-    constructor(config, loggerService, blueskyService, plantnetCommonService, plantnetApiService) {
+    constructor(config, loggerService, blueskyService, pluginsCommonService, plantnetCommonService, plantnetApiService) {
         this.isAvailable = false;
         this.logger = loggerService.getLogger().child({label: 'AskPl@ntNet'});
         this.blueskyService = blueskyService;
         this.plantnetSimulate = (config.bot.plantnetSimulate === true);
+        this.pluginsCommonService = pluginsCommonService;
         this.plantnetCommonService = plantnetCommonService;
         this.plantnetApiService = plantnetApiService;
         try {
@@ -40,13 +41,13 @@ export default class AskPlantnet {
     async process(config) {
         const pluginName = this.getName();
         let {doSimulate, simulateIdentifyCase, context} = config;
-        const {plantnetSimulate, plantnetCommonService, plantnetApiService, blueskyService, logger} = this;
+        const {plantnetSimulate, pluginsCommonService, plantnetCommonService, plantnetApiService, blueskyService, logger} = this;
         const doSimulateIdentify = plantnetSimulate || isSet(simulateIdentifyCase);// if at least one want to simulate then simulate
         let candidate = null;
         try {
             const candidate = await this.searchNextAsk(config);
             if (candidate === null) {
-                return plantnetCommonService.resultNoCandidate(pluginName, context);
+                return pluginsCommonService.resultNoCandidate(pluginName, context);
             }
             const parentPost = await blueskyService.getParentPostOf(candidate.uri);
             if (parentPost === null) {
@@ -82,14 +83,14 @@ export default class AskPlantnet {
                     {scoredResult, firstImageOriginalUrl, firstImageText}
                 );
             } else if (result === IDENTIFY_RESULT.BAD_SCORE) {
-                return await plantnetCommonService.handleWithoutScoredResult(
+                return await pluginsCommonService.handleWithoutScoredResult(pluginName, PLANTNET_MINIMAL_PERCENT,
                     {doSimulate, "candidate": parentPost, "replyTo": candidate, "muteAuthor": false, context}
                 );
             } else {
                 if (result !== IDENTIFY_RESULT.NONE) {
                     logger.warn(`unable to handle plantnetService.plantnetIdentify result:${result} so consider it as NONE`);
                 }
-                return await plantnetCommonService.handleWithNoIdentificationResult(
+                return await pluginsCommonService.handleWithNoIdentificationResult(
                     {doSimulate, "candidate": parentPost, "replyTo": candidate, "muteAuthor": false, context}
                 );
             }

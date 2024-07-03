@@ -2,7 +2,7 @@
 import axios from "axios";
 import {BskyAgent} from '@atproto/api'
 
-const identifier = process.env.BLUESKY_EMAIL;
+const identifier = process.env.BLUESKY_USERNAME;
 const password = process.env.BLUESKY_PASSWORD;
 const service = "https://api.bsky.social";
 const agent = new BskyAgent({service})
@@ -26,7 +26,9 @@ const getImageUriEncodingAndBase64 = imageUri => {
         })
 };
 
-const imageExample = "https://bs.plantnet.org/image/o/da65bab7ff4708f64db9d00ebb68b5dbfa2a4534";
+// const imageExampleLegacy = "https://bs.plantnet.org/image/o/da65bab7ff4708f64db9d00ebb68b5dbfa2a4534";
+const imageExample400 = "https://bs.plantnet.org/image/o/a1079db51c9eddcc35b184b759730d701db9bbac";
+const imageExample = imageExample400;
 const createdAt = new Date().toISOString();
 const text = "PoC post with embed image";
 const alt = "this is embed image alt text";
@@ -64,5 +66,6 @@ getImageUriEncodingAndBase64(imageExample)
                     .catch(err => {
                         console.error(`unable to post : ${err.message}`)
                     });
+
             });
     });

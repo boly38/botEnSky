@@ -1,0 +1,136 @@
+{
+  "uri": "at://did:plc:mpkdekaeixyxxzpc4kwibfbl/app.bsky.feed.post/3kwfiws5nsa2l",
+  "cid": "bafyreif7htnuakqvlhy6xu2zpgfvhmifscej2ji4erpogeqdm77bm5fgou",
+  "author": {
+    "did": "did:plc:mpkdekaeixyxxzpc4kwibfbl",
+    "handle": "daggerville.bsky.social",
+    "displayName": "Daggerville",
+    "avatar": "https://cdn.bsky.app/img/avatar/plain/did:plc:mpkdekaeixyxxzpc4kwibfbl/bafkreidw3ns5ghynw5jugnttxl3jz3gbqqvvyla6uabt74yccy6fz32tja@jpeg",
+    "viewer": {
+      "muted": false,
+      "blockedBy": false
+    },
+    "labels": [
+      {
+        "src": "did:plc:mpkdekaeixyxxzpc4kwibfbl",
+        "uri": "at://did:plc:mpkdekaeixyxxzpc4kwibfbl/app.bsky.actor.profile/self",
+        "cid": "bafyreigouvpdmsd5g7tiiodutngdggpib363axtn65bmr66nbov3boogzm",
+        "val": "!no-unauthenticated",
+        "cts": "1970-01-01T00:00:00.000Z"
+      }
+    ],
+    "createdAt": "2023-07-03T17:54:40.500Z"
+  },
+  "record": {
+    "$type": "app.bsky.feed.post",
+    "createdAt": "2024-07-03T18:08:59.696Z",
+    "embed": {
+      "$type": "app.bsky.embed.images",
+      "images": [
+        {
+          "alt": "Bald Eagle flying over a field.",
+          "aspectRatio": {
+            "height": 1499,
+            "width": 2000
+          },
+          "image": {
+            "$type": "blob",
+            "ref": {
+              "$link": "bafkreidwi6hlnvo4gobapvhrwqzuqdxbmgrxcuh6bepsji3wwv5atyixva"
+            },
+            "mimeType": "image/jpeg",
+            "size": 566723
+          }
+        }
+      ]
+    },
+    "facets": [
+      {
+        "features": [
+          {
+            "$type": "app.bsky.richtext.facet#tag",
+            "tag": "Bird"
+          }
+        ],
+        "index": {
+          "byteEnd": 26,
+          "byteStart": 21
+        }
+      },
+      {
+        "features": [
+          {
+            "$type": "app.bsky.richtext.facet#tag",
+            "tag": "Birds"
+          }
+        ],
+        "index": {
+          "byteEnd": 33,
+          "byteStart": 27
+        }
+      },
+      {
+        "features": [
+          {
+            "$type": "app.bsky.richtext.facet#tag",
+            "tag": "Nature"
+          }
+        ],
+        "index": {
+          "byteEnd": 41,
+          "byteStart": 34
+        }
+      },
+      {
+        "features": [
+          {
+            "$type": "app.bsky.richtext.facet#tag",
+            "tag": "Wildlife"
+          }
+        ],
+        "index": {
+          "byteEnd": 51,
+          "byteStart": 42
+        }
+      },
+      {
+        "features": [
+          {
+            "$type": "app.bsky.richtext.facet#tag",
+            "tag": "Photography"
+          }
+        ],
+        "index": {
+          "byteEnd": 64,
+          "byteStart": 52
+        }
+      }
+    ],
+    "langs": [
+      "en"
+    ],
+    "text": "Fly like an Eagle... #Bird #Birds #Nature #Wildlife #Photography"
+  },
+  "embed": {
+    "$type": "app.bsky.embed.images#view",
+    "images": [
+      {
+        "thumb": "https://cdn.bsky.app/img/feed_thumbnail/plain/did:plc:mpkdekaeixyxxzpc4kwibfbl/bafkreidwi6hlnvo4gobapvhrwqzuqdxbmgrxcuh6bepsji3wwv5atyixva@jpeg",
+        "fullsize": "https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:mpkdekaeixyxxzpc4kwibfbl/bafkreidwi6hlnvo4gobapvhrwqzuqdxbmgrxcuh6bepsji3wwv5atyixva@jpeg",
+        "alt": "Bald Eagle flying over a field.",
+        "aspectRatio": {
+          "height": 1499,
+          "width": 2000
+        }
+      }
+    ]
+  },
+  "replyCount": 0,
+  "repostCount": 0,
+  "likeCount": 1,
+  "indexedAt": "2024-07-03T18:08:59.696Z",
+  "viewer": {
+    "threadMuted": false
+  },
+  "labels": []
+}
