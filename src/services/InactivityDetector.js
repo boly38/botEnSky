@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /**
  * handle app inactivity trigger
  */
@@ -31,7 +32,7 @@ export default class InactivityDetector {
         await this.clearTimerIfAny();
         if (InactivityDetector.onInactivityListeners.length > 0) {
             if (InactivityDetector.timer === null) { // first time only
-                logger.info(`setTimeout(${INACTIVITY_DELAY_MIN} min, ...) with ${InactivityDetector.onInactivityListeners.length} listeners`)
+                logger.debug(`setTimeout(${INACTIVITY_DELAY_MIN} min, ...) with ${InactivityDetector.onInactivityListeners.length} listeners`)
             }
             InactivityDetector.timer = setTimeout(onInactivity.bind(this), INACTIVITY_DELAY_MIN * 60000);
         }

@@ -1,14 +1,15 @@
 import {arrayIsNotEmpty, clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf} from "../domain/post.js";
-import {IDENTIFY_RESULT} from "../servicesExternal/PlantnetApiService.js";
+import {IDENTIFY_RESULT, PLANTNET_MINIMAL_PERCENT} from "../servicesExternal/PlantnetApiService.js";
 import {dataSimulationDirectory} from "../services/BotService.js";
 
 export default class Plantnet {
-    constructor(config, loggerService, blueskyService, plantnetCommonService, plantnetApiService) {
+    constructor(config, loggerService, blueskyService, pluginsCommonService, plantnetCommonService, plantnetApiService) {
         this.isAvailable = false;
         this.logger = loggerService.getLogger().child({label: 'Pl@ntNet'});
         this.blueskyService = blueskyService;
         this.plantnetSimulate = (config.bot.plantnetSimulate === true);
+        this.pluginsCommonService = pluginsCommonService;
         this.plantnetCommonService = plantnetCommonService;
         this.plantnetApiService = plantnetApiService;
         try {
@@ -39,20 +40,20 @@ export default class Plantnet {
 
     async process(config) {
         const pluginName = this.getName();
-        const {plantnetSimulate, plantnetCommonService, plantnetApiService, logger} = this;
+        const {plantnetSimulate, pluginsCommonService, plantnetCommonService, plantnetApiService, logger} = this;
         let {doSimulate, simulateIdentifyCase, context} = config;
         const doSimulateIdentify = plantnetSimulate || isSet(simulateIdentifyCase);// if at least one want to simulate then simulate
         let candidate = null;
         try {
             candidate = await this.searchNextCandidate(config);
             if (candidate === null) {
-                return plantnetCommonService.resultNoCandidate(pluginName, context);
+                return pluginsCommonService.resultNoCandidate(pluginName, context);
             }
             const candidatePhoto = firstImageOf(candidate);
             if (!candidatePhoto) {
-                return plantnetCommonService.rejectNoCandidateImage(pluginName, candidate, context);
+                return pluginsCommonService.rejectNoCandidateImage(pluginName, candidate, context);
             }
-            plantnetCommonService.logCandidate(pluginName, candidate, candidatePhoto, context);
+            pluginsCommonService.logCandidate(pluginName, candidate, candidatePhoto, context);
 
             const tags = this.getPluginTags();
             const {
@@ -74,19 +75,19 @@ export default class Plantnet {
                     {scoredResult, firstImageOriginalUrl, firstImageText}
                 );
             } else if (result === IDENTIFY_RESULT.BAD_SCORE) {
-                return await plantnetCommonService.handleWithoutScoredResult(
+                return await pluginsCommonService.handleWithoutScoredResult(pluginName, PLANTNET_MINIMAL_PERCENT,
                     {doSimulate, candidate, "replyTo": null, "muteAuthor": true, context}
                 );
             } else {
                 if (result !== IDENTIFY_RESULT.NONE) {
                     logger.warn(`unable to handle plantnetService.plantnetIdentify result:${result} so consider it as NONE`);
                 }
-                return await plantnetCommonService.handleWithNoIdentificationResult(
+                return await pluginsCommonService.handleWithNoIdentificationResult(
                     {doSimulate, candidate, "replyTo": null, "muteAuthor": true, context}
                 );
             }
         } catch (err) {
-            return plantnetCommonService.rejectWithIdentifyError(pluginName, candidate, err, context);
+            return pluginsCommonService.rejectWithIdentifyError(pluginName, candidate, err, context);
         }
     }
 

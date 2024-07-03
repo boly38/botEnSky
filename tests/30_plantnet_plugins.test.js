@@ -1,9 +1,8 @@
-/* jshint expr: true */  // for to.be.empty
+/* jshint expr: true */    // for to.be.empty
 /* eslint-disable mocha/max-top-level-suites */
 import {before, describe, it} from 'mocha';
-import {expect} from 'chai';
 import ApplicationConfig from '../src/config/ApplicationConfig.js';
-import {_expectNoError, initEnv, testLogger} from "./libTest.js";
+import {initEnv, verifyPluginProcessResult} from "./libTest.js";
 
 initEnv();
 const appConfig = ApplicationConfig.getInstance();
@@ -36,7 +35,7 @@ describe("🧪🧩 30 - Pl@ntNet Plugin\n", function () {
 
     it("Pl@ntNet plugin - id. BAD_SCORE", async () => {
         await verifyPluginProcessResult(plantnetPlugin, {...pluginConfigDoSimulate, simulateIdentifyCase: "BadScore"},
-            ["identification par Pl@ntNet n'a pas donné de résultat assez concluant"]);
+            ["L'identification par Plantnet n'a pas donné de résultat assez concluant 😩 (score<20%)"]);
     }).timeout(60 * 1000);
 
 });
@@ -64,7 +63,7 @@ describe("🧪🧩 31 - Ask-Pl@ntNet Plugin\n", function () {
                 ...pluginConfigDoSimulate,
                 simulateIdentifyCase: "BadScore"
             },
-            ["identification par Pl@ntNet n'a pas donné de résultat assez concluant"]);
+            ["L'identification par AskPlantnet n'a pas donné de résultat assez concluant 😩 (score<20%)"]);
     }).timeout(60 * 1000);
 
 });
@@ -79,23 +78,3 @@ describe("🧪🧩 32 - UnMute Plugin\n", function () {
     }).timeout(60 * 1000);
 
 });
-
-async function verifyPluginProcessResult(plugin, config, expectedResultTexts) {
-    const result = await plugin.process(config).catch(err => {
-        if (err.status === 202) {
-            testLogger.warn("plugin.process : no result - this use case should no more happens because bs search may be simulated");
-        } else {
-            _expectNoError(err);
-        }
-    });
-
-    if (result) {
-        testLogger.debug("plugin.process", result);
-        expect(result.html).not.to.be.empty;
-        expect(result.text).not.to.be.empty;
-        // testLogger.debug(result.text)
-        for (const text of expectedResultTexts) {
-            expect(result.text, `expected: ${result.text}`).to.contains(text);
-        }
-    }
-}

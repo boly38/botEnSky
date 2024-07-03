@@ -43,7 +43,7 @@ export default class PlantnetApiService {
 
     async plantnetIdentify(options) {
         const {imageUrl, doSimulateIdentify, simulateIdentifyCase, context} = options;
-        this.logger.debug(`identifyOptions : ${{imageUrl, doSimulateIdentify, simulateIdentifyCase}}`, context);
+        this.logger.debug(`identifyOptions : ${JSON.stringify({imageUrl, doSimulateIdentify, simulateIdentifyCase})}`, context);
         let plantResult;
         try {
             plantResult = await this.plantnetIdentifyApi({imageUrl, doSimulateIdentify, simulateIdentifyCase});

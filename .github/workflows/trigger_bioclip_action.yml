@@ -1,12 +1,12 @@
 # create bot action trigger
-name: BES_trigger_askplantnet_action
+name: BES_trigger_bioclip_action
 on:
   # cf. readme
-  schedule: # 08h40, 11h40, 14h40, 16h40, 17h40 et 20h40 (FR timezone)
+  schedule: # 08h50, 11h50, 14h50, 16h50, 17h50 et 20h50 (FR timezone)
     # (CET) Standard time (UTC+1)
-    - cron: '40 7,10,13,15,16,19 * 11-12,1-3 *'
+    - cron: '50 7,10,13,15,16,19 * 11-12,1-3 *'
     # (CET) Daylight saving time (UTC+2)
-    - cron: '40 6,9,12,14,15,18 * 4-10 *'
+    - cron: '50 6,9,12,14,15,18 * 4-10 *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -16,9 +16,9 @@ jobs:
 
     environment: github_actions_bes
     steps:
-      - name: trigger botEnSky AskPlantNet ACTION
+      - name: trigger botEnSky Bioclip ACTION
         env:
           BES_ACTION_TOKEN: ${{ secrets.BES_ACTION_TOKEN }}
           BES_ACTION_URL: ${{ secrets.BES_ACTION_URL }}
         run: |
-          curl -q -H "API-TOKEN: ${BES_ACTION_TOKEN}" -H "PLUGIN-NAME: AskPlantnet" "${BES_ACTION_URL}"
+          curl -q -H "API-TOKEN: ${BES_ACTION_TOKEN}" -H "PLUGIN-NAME: BioClip" "${BES_ACTION_URL}"

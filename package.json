@@ -9,7 +9,7 @@
     "setupDev": "npm install -g jshint",
     "lint": "eslint .",
     "jshint": "jshint .",
-    "tst": "echo windows %TST% test&& set NODE_ENV=test&& mocha --trace-warnings --timeout 180000 --unhandled-rejections=strict tests/all-root.test.js tests/%TST%.test.js",
+    "tst": "echo windows %TST% test&& set NODE_ENV=test&& mocha --trace-warnings --timeout 180000 --unhandled-rejections=strict tests/%TST%.test.js",
     "test": "echo ci-test&& set NODE_ENV=test&&c8 mocha --exit --unhandled-rejections=strict tests/*.test.js --timeout 50000",
     "ci-test": "echo ci-test&& export NODE_ENV=test&& c8 --reporter text --reporter=lcov --lines 66 mocha --unhandled-rejections=strict tests/*.test.js --timeout 50000",
     "c8-test": "echo c8-test&& set NODE_ENV=test&& c8 --reporter text --reporter=lcov --lines 66 mocha --unhandled-rejections=strict tests/*.test.js --timeout 50000",
@@ -41,9 +41,10 @@
   "type": "module",
   "dependencies": {
     "@atproto/api": "^0.12.11",
+    "@gradio/client": "^1.2.1",
     "@logtail/node": "^0.4.21",
     "@logtail/winston": "^0.4.21",
-    "axios": "^1.6.8",
+    "axios": "^1.7.2",
     "dayjs": "^1.11.11",
     "discord.js": "^14.15.3",
     "dotenv-flow": "^4.1.0",
@@ -68,6 +69,6 @@
     "eslint-plugin-eslint-plugin": "^6.0.0",
     "eslint-plugin-mocha": "^10.4.2",
     "eslint-plugin-node": "^11.1.0",
-    "mocha": "^10.4.0"
+    "mocha": "^10.5.2"
   }
 }

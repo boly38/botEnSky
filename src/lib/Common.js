@@ -6,7 +6,8 @@ import dayjs from "dayjs";
 
 import utc from "dayjs/plugin/utc.js"
 import timezone from "dayjs/plugin/timezone.js"
-import axios from "axios"; // dependent on utc plugin
+import axios from "axios";
+import TinyURL from "tinyurl"; // dependent on utc plugin
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -87,3 +88,18 @@ export const getEncodingBufferAndBase64FromUri = imageUri => {
             .catch(reject)
     });
 };
+
+
+export const buildShortUrlWithText = (logger, imageUrl, text) => {
+    return new Promise(resolve => {
+        if (imageUrl === null) {
+            return resolve(false);
+        }
+        TinyURL.shorten(imageUrl)
+            .then(shortenUrl => resolve(`${text}\n${shortenUrl}`))
+            .catch(err => {
+                logger.warn(`Unable to use tinyUrl for this url : ${imageUrl} - details: ${err?.message}`);
+                resolve(`${text}\n${imageUrl}`);
+            });
+    });
+}

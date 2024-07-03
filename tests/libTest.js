@@ -28,8 +28,11 @@ const buildTestLogger = () => {
     });
 
     const transports = [consoleTransport];
-    console.log(` ☑  test: winston console logger`);
-    return winston.createLogger({transports}).child({label: 'Test 🧪'});
+    const level = process.env.DEBUG_TEST === 'true' ? 'debug' : 'info';
+    console.log(` ☑  test: winston console logger (${level})`);
+    return winston.createLogger({
+        transports, level
+    }).child({label: 'Test 🧪'});
 }
 export const testLogger = buildTestLogger();
 export const initEnv = () => {
@@ -49,4 +52,25 @@ export const assumeSuccess = (err, res) => {
         console.log("res status:", res.status, "body:", res.body);
     }
     expect(res.status).to.be.within(200, 299, `response status 2xx success expected`);
+}
+
+
+export const verifyPluginProcessResult = async (plugin, config, expectedResultTexts)=> {
+    const result = await plugin.process(config).catch(err => {
+        if (err.status === 202) {
+            testLogger.warn("plugin.process : no result - this use case should no more happens because bs search may be simulated");
+        } else {
+            _expectNoError(err);
+        }
+    });
+
+    if (result) {
+        testLogger.debug("plugin.process", result);
+        expect(result.html).not.to.be.empty;
+        expect(result.text).not.to.be.empty;
+        // testLogger.debug(result.text)
+        for (const text of expectedResultTexts) {
+            expect(result.text, `expected: ${result.text}`).to.contains(text);
+        }
+    }
 }
