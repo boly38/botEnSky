@@ -1,6 +1,6 @@
-import {arrayIsNotEmpty, clone, isSet, loadJsonResource} from "../lib/Common.js";
+import {clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf, postHtmlOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
-import {dataSimulationDirectory, pluginReject, pluginResolve} from "../services/BotService.js";
+import {pluginReject, pluginResolve} from "../services/BotService.js";
 import {IDENTIFY_RESULT, PLANTNET_MINIMAL_PERCENT} from "../servicesExternal/PlantnetApiService.js";
 
 export default class AskPlantnet {
@@ -41,17 +41,21 @@ export default class AskPlantnet {
     async process(config) {
         const pluginName = this.getName();
         let {doSimulate, simulateIdentifyCase, context} = config;
-        const {plantnetSimulate, pluginsCommonService, plantnetCommonService, plantnetApiService, blueskyService, logger} = this;
+        const {
+            plantnetSimulate, pluginsCommonService, plantnetCommonService, plantnetApiService, blueskyService,
+            logger, "asks": questions
+        } = this;
         const doSimulateIdentify = plantnetSimulate || isSet(simulateIdentifyCase);// if at least one want to simulate then simulate
         let candidate = null;
         try {
-            const candidate = await this.searchNextAsk(config);
+            const maxHoursOld = 72;
+            const candidate = await pluginsCommonService.searchNextCandidate({...config, questions, maxHoursOld});
             if (candidate === null) {
                 return pluginsCommonService.resultNoCandidate(pluginName, context);
             }
             const parentPost = await blueskyService.getParentPostOf(candidate.uri);
             if (parentPost === null) {
-                return plantnetCommonService.resultNoCandidateParent(candidate, context);
+                return this.resultNoCandidateParent(candidate, context);
             }
             logger.debug(`CANDIDATE's PARENT:${parentPost ? postTextOf(parentPost) : "NONE"}`);
             const parentPhoto = firstImageOf(parentPost);
@@ -111,36 +115,6 @@ export default class AskPlantnet {
         const resultHtml = `aucun parent pour ${postHtmlOf(candidate)}`;
         this.logger.info(resultTxt, context);
         return Promise.resolve(pluginResolve(resultTxt, resultHtml, 202))
-    }
-
-    /**
-     * iterate through plugin.ask to search next candidate
-     *
-     * @param config
-     * @param bookmark
-     * @returns {Promise<unknown>}
-     */
-    async searchNextAsk(config, bookmark = 0) {
-        const {context, doSimulateSearch} = config;
-        const {asks, blueskyService, logger} = this;
-        if (doSimulateSearch) {
-            await blueskyService.login();
-            return Promise.resolve(loadJsonResource(`${dataSimulationDirectory}/blueskyPostFakeAskBot.json`));
-        }
-        let searchQuery = asks[bookmark];
-        const hasNoReply = true;
-        const isNotMuted = true;
-        const maxHoursOld = 72;// now-24h ... now
-        const askResults = await blueskyService.searchPosts({searchQuery, hasNoReply, isNotMuted, maxHoursOld});
-        logger.info(`${askResults.length} candidate(s)`, context);
-        if (arrayIsNotEmpty(askResults)) {
-            return Promise.resolve(askResults[0]);
-        }
-        if (bookmark + 1 < this.asks.length) {
-            const response = await this.searchNextAsk(config, bookmark + 1);
-            return Promise.resolve(response);
-        }
-        return Promise.resolve(null);
     }
 
     rejectWithIdentifyError(candidate, err, context) {

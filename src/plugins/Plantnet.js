@@ -1,7 +1,6 @@
-import {arrayIsNotEmpty, clone, isSet, loadJsonResource} from "../lib/Common.js";
+import {clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf} from "../domain/post.js";
 import {IDENTIFY_RESULT, PLANTNET_MINIMAL_PERCENT} from "../servicesExternal/PlantnetApiService.js";
-import {dataSimulationDirectory} from "../services/BotService.js";
 
 export default class Plantnet {
     constructor(config, loggerService, blueskyService, pluginsCommonService, plantnetCommonService, plantnetApiService) {
@@ -40,12 +39,19 @@ export default class Plantnet {
 
     async process(config) {
         const pluginName = this.getName();
-        const {plantnetSimulate, pluginsCommonService, plantnetCommonService, plantnetApiService, logger} = this;
+        const {
+            plantnetSimulate,
+            pluginsCommonService,
+            plantnetCommonService,
+            plantnetApiService,
+            logger,
+            questions
+        } = this;
         let {doSimulate, simulateIdentifyCase, context} = config;
         const doSimulateIdentify = plantnetSimulate || isSet(simulateIdentifyCase);// if at least one want to simulate then simulate
         let candidate = null;
         try {
-            candidate = await this.searchNextCandidate(config);
+            candidate = await pluginsCommonService.searchNextCandidate({...config, questions});
             if (candidate === null) {
                 return pluginsCommonService.resultNoCandidate(pluginName, context);
             }
@@ -89,43 +95,6 @@ export default class Plantnet {
         } catch (err) {
             return pluginsCommonService.rejectWithIdentifyError(pluginName, candidate, err, context);
         }
-    }
-
-    /**
-     * iterate through plugin.questions to search next candidate
-     *
-     * Bluesky advanced search may improve this stage :
-     * https://github.com/bluesky-social/social-app/issues/3378 (parent of advanced search)
-     * https://github.com/bluesky-social/social-app/issues/1522 (Use Boolean search operators AND and OR)
-     * https://github.com/bluesky-social/social-app/issues/4093 (ability to know supported keyword/search logic/tips)
-     * https://github.com/bluesky-social/social-app/issues/4094 (support has:images to filter only post having image)
-     *
-     * @param config
-     * @param bookmark
-     * @returns {Promise<unknown>}
-     */
-    async searchNextCandidate(config, bookmark = 0) {
-        const {questions, blueskyService, logger} = this;
-        const {context, doSimulateSearch} = config;
-        if (doSimulateSearch) {
-            await blueskyService.login();
-            return Promise.resolve(loadJsonResource(`${dataSimulationDirectory}/blueskyPostFakeFlower.json`));
-        }
-        const candidatePosts = await blueskyService.searchPosts({
-            searchQuery: questions[bookmark],
-            "hasImages": true,
-            "hasNoReply": true,
-            "isNotMuted": true,
-            "maxHoursOld": 24// now-24h ... now
-        })
-        logger.info(`${candidatePosts.length} candidate(s)`, context);
-        if (arrayIsNotEmpty(candidatePosts)) {
-            return Promise.resolve(candidatePosts[0]);
-        }
-        if (bookmark + 1 < questions.length) {
-            return await this.searchNextCandidate(config, bookmark + 1)
-        }
-        return Promise.resolve(null);
     }
 
 }

@@ -6,7 +6,8 @@ import {initEnv, verifyPluginProcessResult} from "./libTest.js";
 
 initEnv();
 const appConfig = ApplicationConfig.getInstance();
-const pluginConfigDoSimulate = {doSimulate: true, doSimulateSearch: true};
+const pluginConfigDoSimulate = {doSimulate: true, doSimulateSearch: true, searchSimulationFile: "blueskyPostFakeFlower"};
+const pluginConfigDoSimulateAsk = {doSimulate: true, doSimulateSearch: true, searchSimulationFile: "blueskyPostFakeAskBot"};
 const plantnetPluginDefaultTag = "#BeSPlantnet #IndentificationDePlantes";
 const plantnetAskPluginDefaultTag = "#BeSAskPlantnet #IndentificationDePlantes";
 let plantnetPlugin;
@@ -46,13 +47,13 @@ describe("🧪🧩 31 - Ask-Pl@ntNet Plugin\n", function () {
     });
 
     it("Ask-Pl@ntNet plugin - id. OK images", async () => {
-        await verifyPluginProcessResult(askPlantnetPlugin, pluginConfigDoSimulate,
+        await verifyPluginProcessResult(askPlantnetPlugin, pluginConfigDoSimulateAsk,
             [": Pl@ntNet identifie (à 85.09%) Pancratium SIMULATINIUM", plantnetAskPluginDefaultTag]);
     }).timeout(60 * 1000);
 
     it("Ask-Pl@ntNet plugin - id. OK no image", async () => {
         await verifyPluginProcessResult(askPlantnetPlugin, {
-                ...pluginConfigDoSimulate,
+                ...pluginConfigDoSimulateAsk,
                 simulateIdentifyCase: "GoodScoreNoImage"
             },
             [": Pl@ntNet identifie (à 82.23%) NoImagium SIMULATINIUM", plantnetAskPluginDefaultTag]);
@@ -60,7 +61,7 @@ describe("🧪🧩 31 - Ask-Pl@ntNet Plugin\n", function () {
 
     it("Ask-Pl@ntNet plugin - id. BAD_SCORE", async () => {
         await verifyPluginProcessResult(askPlantnetPlugin, {
-                ...pluginConfigDoSimulate,
+                ...pluginConfigDoSimulateAsk,
                 simulateIdentifyCase: "BadScore"
             },
             ["L'identification par AskPlantnet n'a pas donné de résultat assez concluant 😩 (score<20%)"]);
