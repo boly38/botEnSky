@@ -1,6 +1,6 @@
 import os from 'os';
 import console from 'node:console';
-import Buffer from 'node:buffer';
+import { Buffer } from 'buffer';
 
 import discordJs from 'discord.js';
 

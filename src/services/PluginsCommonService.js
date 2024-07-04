@@ -23,7 +23,8 @@ export default class PluginsCommonService {
      */
     async searchNextCandidate(config) {
         const {blueskyService, logger} = this;
-        const {
+        logger.debug(`searchNextCandidate:${JSON.stringify(config)}`)
+        let {
             context,
             questions,
             bookmark = 0,
@@ -49,8 +50,9 @@ export default class PluginsCommonService {
         if (arrayIsNotEmpty(candidatePosts)) {
             return Promise.resolve(candidatePosts[0]);
         }
-        config.bookmark = config.bookmark + 1;
-        if (config.bookmark < questions.length) {
+        bookmark++;
+        if (bookmark < questions.length) {
+            config.bookmark = bookmark;
             return await this.searchNextCandidate(config)
         }
         return Promise.resolve(null);
