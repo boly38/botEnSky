@@ -141,7 +141,11 @@ export default class PluginsCommonService {
 
     replyResult(replyTo, options, replyMessage, embed = null) {
         const plugin = this;
-        const {doSimulate, context} = options;
+        const {
+            doSimulate, context,
+            imageUrl = null,
+            imageAlt = "post-image"
+        } = options;
         plugin.logger.debug("reply result",
             JSON.stringify({doSimulate, replyMessage, replyTo}, null, 2)
         );
@@ -150,10 +154,11 @@ export default class PluginsCommonService {
                 .then(() => {
                     const candidateHtmlOf = postHtmlOf(replyTo);
                     const candidateTextOf = postTextOf(replyTo);
+                    const imageHtml = plugin.imageHtmlOf(imageUrl, imageAlt);
                     const replySent = doSimulate ? "SIMULATION - Réponse prévue" : "Réponse émise";
                     resolve(pluginResolve(
                         `Post:\n\t${candidateTextOf}\n\t${replySent} : ${replyMessage}`,
-                        `<b>Post</b>:<div class="bg-info">${candidateHtmlOf}</div><b>${replySent}</b>: ${replyMessage}`,
+                        `<b>Post</b>:<div class="bg-info">${candidateHtmlOf}</div>${imageHtml}<b>${replySent}</b>: ${replyMessage}`,
                         200,
                         doSimulate ? 0 : 1
                     ));
@@ -168,6 +173,13 @@ export default class PluginsCommonService {
     logError(action, err, context) {
         this.logger.error(`${action} ${err.message}`, {...context, action});
         this.auditLogsService.createAuditLog(`${action} ${err} ${JSON.stringify(context)}`);
+    }
+
+    imageHtmlOf(imageUrl = null, imageAlt = "post-image") {
+        if (imageUrl === null) {
+            return "";
+        }
+        return `<div class="post-image-container"><a href="${imageUrl}" target="_img"><img src="${imageUrl}" class="post-image" alt="${imageAlt}" title="${imageAlt}"/></a></div>`
     }
 
 }

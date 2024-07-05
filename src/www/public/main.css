@@ -134,3 +134,12 @@ li.msgContainer {
         font-size: 1.0em;
     }
 }
+
+.post-image {
+    width: 80px;
+}
+.post-image-container {
+    padding: 5px;
+    position: relative;
+    float: right;
+}

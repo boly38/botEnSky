@@ -52,20 +52,22 @@ export default class BioClip {
             pluginsCommonService.logCandidate(pluginName, candidate, candidatePhoto, context);
 
             const tags = this.getPluginTags();
+            const imageUrl = candidatePhoto?.fullsize;
             const {
                 result,
                 bioResult = null
             } = await grBirdApiService.birdIdentify({
-                "imageUrl": candidatePhoto?.fullsize,
+                imageUrl,
                 tags,
                 context
             });
+            const imageAlt = bioResult;
             logger.info(`result:${result} ${isSet(bioResult) ? JSON.stringify(bioResult) : ""}`);
             logger.info(`bioResult:${JSON.stringify(bioResult)}`);
             if (result === IDENTIFY_RESULT.OK) {
                 const {scoredResult} = bioResult;
                 return await this.replyToWithIdentificationResult(candidate,
-                    {tags, doSimulate, context},
+                    {tags, doSimulate, context, imageUrl, imageAlt},
                     {scoredResult}
                 );
             } else {
@@ -85,12 +87,12 @@ export default class BioClip {
 
     async replyToWithIdentificationResult(replyTo, options, pnResult) {
         const {pluginsCommonService} = this;
-        const {tags, doSimulate, context} = options;
+        const {tags, doSimulate, context, imageUrl, imageAlt} = options;
         const {scoredResult} = pnResult
 
         let replyMessage = `${scoredResult}\n\n${tags}`;
         // score result without image
-        return await pluginsCommonService.replyResult(replyTo, {doSimulate, context}, replyMessage);
+        return await pluginsCommonService.replyResult(replyTo, {doSimulate, context, imageUrl, imageAlt}, replyMessage);
     }
 
 }
