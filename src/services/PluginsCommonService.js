@@ -86,7 +86,7 @@ export default class PluginsCommonService {
                 `<b>Erreur</b>: impossible d'identifier l'image avec ${pluginName}`;
         }
         this.logger.error(`${plantnetTxtError} : ${err.message}`, context);
-        return Promise.reject(pluginReject(plantnetTxtError, plantnetHtmlError, 500, "unable to identify"));
+        return Promise.reject(pluginReject(plantnetTxtError, plantnetHtmlError, 500, `${pluginName} unexpected error`));
     }
 
     async handleWithoutScoredResult(pluginName, minimalPercent, options) {
@@ -166,12 +166,7 @@ export default class PluginsCommonService {
     }
 
     logError(action, err, context) {
-        if (Object.keys(err) && Object.keys(err).length > 0) {
-            this.logger.error(`${action} ${JSON.stringify(err, null, 2)}`, {...context, action});
-            this.auditLogsService.createAuditLog(`${action} ${JSON.stringify(err, null, 2)}`);
-            return;
-        }
-        this.logger.error(`${action} ${err}`, {...context, action});
+        this.logger.error(`${action} ${err.message}`, {...context, action});
         this.auditLogsService.createAuditLog(`${action} ${err} ${JSON.stringify(context)}`);
     }
 

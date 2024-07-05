@@ -45,6 +45,7 @@
 	"faq.body2c": "For the <b>BioClip</b> plugin (in test phase): I practice 20 min after the time of the shot.",
 	"server.error.unexpected": "Unexpected error",
 	"server.error.unavailable": "I am currently under maintenance, please try again later",
+	"server.error.internal": "an internal error has occurred, the team will be notified, try again in a few days or check the tickets",
 	"server.error.tooManyRequests": "Request too close together, please try again later",
 	"server.pleaseReportIssue": "please look for or report it on ",
 	"server.issueLinkLabel": "issues"

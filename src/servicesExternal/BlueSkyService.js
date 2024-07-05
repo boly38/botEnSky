@@ -1,6 +1,9 @@
 import {BskyAgent, RichText} from '@atproto/api'
 import {descriptionOfPostAuthor, didOfPostAuthor, postLinkOf, postsFilterSearchResults} from "../domain/post.js";
 import {getEncodingBufferAndBase64FromUri, isSet, nowISO8601, nowMinusHoursUTCISO} from "../lib/Common.js";
+import InternalServerErrorException from "../exceptions/ServerInternalErrorException.js";
+
+const BLUESKY_POST_LENGTH_MAX = 300;// https://github.com/bluesky-social/bsky-docs/issues/162
 
 export default class BlueSkyService {
     constructor(config, loggerService) {
@@ -78,8 +81,17 @@ export default class BlueSkyService {
      * @param embed
      * @returns {Promise<unknown>}
      */
-    async replyTo(post, text, doSimulate, embed = null) {
+    async replyTo(post, text, doSimulate, embed = null) { // TODO : , lang = "fr-FR"
         const {logger} = this;
+
+        if (!isSet(text)) {
+            throw new InternalServerErrorException(`Trying to replyTo with an empty content`);
+        }
+
+        if (text.length > BLUESKY_POST_LENGTH_MAX) {
+            throw new InternalServerErrorException(`Trying to replyTo with a content length over the limits (${text.length} > ${BLUESKY_POST_LENGTH_MAX}:${text}`);
+        }
+
         const {"uri": parentUri, "cid": parentCid} = post;
         const rootUri = post?.record?.reply?.root?.uri || parentUri;
         const rootCid = post?.record?.reply?.root?.cid || parentCid;
@@ -100,6 +112,7 @@ export default class BlueSkyService {
             text: rt.text,
             facets: rt.facets,
             "createdAt": nowISO8601(), // ex. "2023-08-07T05:49:40.501974Z" OR new Date().toISOString()
+            // TODO / "langs": [lang]
         };
         if (embed !== null) {
             replyPost.embed = embed;

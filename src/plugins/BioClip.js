@@ -1,6 +1,6 @@
 import {clone, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf} from "../domain/post.js";
-import {isSet} from "node:util/types";
+import {isSet} from "../lib/Common.js";
 import {GR_BIRD_MINIMAL_PERCENT, IDENTIFY_RESULT} from "../servicesExternal/GrBirdApiService.js";
 
 export default class BioClip {
