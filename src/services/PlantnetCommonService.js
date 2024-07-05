@@ -15,6 +15,8 @@ export default class PlantnetCommonService {
         let replyMessage = `${scoredResult}\n\n${tags}`;
         if (isSet(firstImageOriginalUrl)) {// score result with image
             const firstImageAltText = `${firstImageText} comme image exemple pour le résultat suivant: ${scoredResult}`;
+            const imageUrl = firstImageOriginalUrl;
+            const imageAlt = firstImageAltText;
             let embed;
             try {
                 embed = await this.blueskyService.prepareImageUrlAsBlueskyEmbed(firstImageOriginalUrl, firstImageAltText)
@@ -24,10 +26,10 @@ export default class PlantnetCommonService {
                 const illustrateImage = await buildShortUrlWithText(this.logger, firstImageOriginalUrl, firstImageText)
                 const withImageLink = (illustrateImage ? "\n\n" + illustrateImage : "")
                 replyMessage = `${scoredResult}\n${withImageLink} \n\n${tags}`;
-                return await pluginsCommonService.replyResult(replyTo, {doSimulate, context}, replyMessage);
+                return await pluginsCommonService.replyResult(replyTo, {doSimulate, context, imageUrl, imageAlt}, replyMessage);
             }
             // image embedded into reply post
-            return await pluginsCommonService.replyResult(replyTo, {doSimulate, context}, replyMessage, embed);
+            return await pluginsCommonService.replyResult(replyTo, {doSimulate, context, imageUrl, imageAlt}, replyMessage, embed);
         }
         // score result without image
         return await pluginsCommonService.replyResult(replyTo, {doSimulate, context}, replyMessage);
