@@ -1,6 +1,6 @@
 import {ReasonPhrases, StatusCodes} from "http-status-codes";
-import {isSet} from "node:util/types";
 import i18n from "i18n";
+import {isSet} from "../lib/Common.js";
 
 export default class ServiceUnavailableException {
     constructor(message = null) {

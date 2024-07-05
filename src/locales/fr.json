@@ -45,6 +45,7 @@
 	"faq.body2c": "Pour le plugin <b>BioClip</b> (en phase de test) : je pratique 20 min après le moment du tir.",
 	"server.error.unexpected": "Erreur inattendue",
 	"server.error.unavailable": "je suis actuellement en maintenance, retentez plus tard",
+	"server.error.internal": "une erreur interne s'est produite, l'équipe sera prévenue, retentez dans quelques jours ou consultez les tickets",
 	"server.error.tooManyRequests": "Demande trop rapprochée, retentez plus tard",
 	"server.pleaseReportIssue": "merci de la rechercher ou de la signaler sur ",
 	"server.issueLinkLabel": "les tickets"

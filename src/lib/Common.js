@@ -103,3 +103,9 @@ export const buildShortUrlWithText = (logger, imageUrl, text) => {
             });
     });
 }
+export const maxStringLength = (variable, max) => {
+    if (variable && variable.length > max) {
+        return variable.substring(0, max - 3) + "...";
+    }
+    return variable;
+}

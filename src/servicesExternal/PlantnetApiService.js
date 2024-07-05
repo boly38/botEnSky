@@ -1,6 +1,6 @@
 import fs from 'fs';
 import superagent from 'superagent';
-import {isSet} from "../lib/Common.js";
+import {isSet, maxStringLength} from "../lib/Common.js";
 import {dataSimulationDirectory} from "../services/BotService.js";
 
 const MY_API_PLANTNET_V2_URL = 'https://my-api.plantnet.org/v2/identify/all';
@@ -125,7 +125,7 @@ export default class PlantnetApiService {
         }
         if (this.arrayWithContent(commonNamesArray)) {
             let commonNamesArrayStr = commonNamesArray.join(', ');
-            infoOf += ` com. ${commonNamesArrayStr}`;
+            infoOf += ` com. ${maxStringLength(commonNamesArrayStr, 70)}`;
         }
         return infoOf;
     }

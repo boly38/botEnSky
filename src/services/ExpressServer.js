@@ -138,7 +138,7 @@ export default class ExpressServer {
                 unauthorized(res, UNAUTHORIZED_FRIENDLY);
             }
         } catch (error) {
-            if (error.status && error.message) {
+            if (error.status !== StatusCodes.INTERNAL_SERVER_ERROR && error.message) {
                 const {status, message} = error;
                 res.status(status).json({success: false, message});
                 return;
