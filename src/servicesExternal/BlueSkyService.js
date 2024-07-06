@@ -13,13 +13,22 @@ export default class BlueSkyService {
         this.agent = new BskyAgent({service})
         this.api = this.agent.api;// inspired from https://github.com/skyware-js/bot/blob/main/src/bot/Bot.ts#L324
         this.agentConfig = {identifier, password};
+        this.profile = null;
+    }
+
+    clearLogin() {
+        this.profile = null;
     }
 
     login() {
         const bs = this;
         const {identifier, service} = this.config.bluesky
-        this.logger.info(`login ${identifier}@${service}`);
+        if (bs.profile !== null) {
+            this.logger.info(`login ${identifier}@${service} exists`);
+            return Promise.resolve();// login already done
+        }
         return new Promise((resolve, reject) => {
+            this.logger.info(`login ${identifier}@${service}`);
             bs.agent.login(this.agentConfig)
                 .then(loginResponse => {
                     bs.agent.getProfile({"actor": loginResponse.data.did})

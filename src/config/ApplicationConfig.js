@@ -194,6 +194,9 @@ ApplicationConfig.getInstance = function getInstance() {
 ApplicationConfig.sendAuditLogs = async () => {
     await ApplicationConfig.getInstance().get("auditLogsService").notifyLogs();
 }
+ApplicationConfig.removeSessions = async () => {
+    await ApplicationConfig.getInstance().get("blueskyService").clearLogin();
+}
 ApplicationConfig.startServerMode = async () => {
     // https://nodejs.org/api/process.html#process_process_kill_pid_signal
     process.on('exit', () => console.log(`exit les pointes sèches`));

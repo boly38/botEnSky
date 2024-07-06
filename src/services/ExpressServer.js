@@ -81,6 +81,7 @@ export default class ExpressServer {
         this.inactivityDetector.registerOnInactivityListener(
             async () => {
                 await ApplicationConfig.sendAuditLogs();
+                await ApplicationConfig.removeSessions();
             }
         )
 
