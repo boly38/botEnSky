@@ -1,5 +1,7 @@
 import {pluginResolve} from "../services/BotService.js";
 
+const TEST_SIMULATION_HANDLE = "martijnrijk.bsky.social";
+
 export default class UnMute {
     constructor(config, loggerService, blueskyService) {
         this.logger = loggerService.getLogger().child({label: 'UnMute'});
@@ -17,28 +19,34 @@ export default class UnMute {
 
     async process(config) {
         const plugin = this;
-        let {context} = config;
-        const result = await plugin.unMuteMutedActors(context);
+        let {context, doSimulate} = config;
+        const result = await plugin.unMuteMutedActors({context, doSimulate});
         if (result === null) {
             return Promise.resolve(pluginResolve(`Aucun compte masqué`, `Aucun compte masqué`));
         }
         return Promise.resolve(pluginResolve(`Démasqué ${result}`, `Démasqué ${result}`));
     }
 
-    async unMuteMutedActors(context) {
+    async unMuteMutedActors(config) {
+        const {logger, blueskyService} = this;
+        const {context, doSimulate} = config;
         try {
-            const mutes = await this.blueskyService.getMutes();
+            let mutes = await blueskyService.getMutes();
+            logger.debug(`MUTES ARE: ${JSON.stringify(mutes)}`, context);
             let unMuted = [];
+            if (doSimulate === true) {
+                mutes = mutes.filter(m => TEST_SIMULATION_HANDLE === m?.handle);// for tests unmute is limited to one entry
+            }
             const result = await Promise.all(mutes.map(
-                m => this.blueskyService.safeUnMuteMuted(m, context)
+                m => blueskyService.safeUnMuteMuted(m, context)
                     .then(() => unMuted.push(m.handle))
             ));
             if (unMuted?.length > 0) {
-                this.logger.debug(`unMuteMutedActors result: ${result}`);
+                logger.debug(`${doSimulate === true ? "SIMULATE" : ""} unMuteMutedActors result: ${result}`, context);
                 return unMuted;
             }
         } catch (err) {
-            this.logger.warn(`unMuteMutedActors err: ${err.message}`, context);
+            logger.warn(`unMuteMutedActors err: ${err.message}`, context);
         }
         return null;
     }

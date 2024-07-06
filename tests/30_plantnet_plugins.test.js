@@ -75,7 +75,7 @@ describe("🧪🧩 32 - UnMute Plugin\n", function () {
     });
 
     it("UnMute plugin", async () => {
-        await verifyPluginProcessResult(unmutePlugin, {}, ["Démasqué martijnrijk"]);
+        await verifyPluginProcessResult(unmutePlugin, {doSimulate: true}, ["Démasqué martijnrijk"]);
     }).timeout(60 * 1000);
 
 });
