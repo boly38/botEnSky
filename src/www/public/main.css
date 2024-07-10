@@ -138,6 +138,9 @@ li.msgContainer {
 .post-image {
     width: 80px;
 }
+.medium-post-image {
+    width: 180px;
+}
 .post-image-container {
     padding: 5px;
     position: relative;
