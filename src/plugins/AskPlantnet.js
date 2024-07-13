@@ -94,7 +94,7 @@ export default class AskPlantnet {
                 if (result !== IDENTIFY_RESULT.NONE) {
                     logger.warn(`unable to handle plantnetService.plantnetIdentify result:${result} so consider it as NONE`);
                 }
-                return await pluginsCommonService.handleWithNoIdentificationResult(
+                return await pluginsCommonService.handleWithNoIdentificationResult(pluginName,
                     {doSimulate, "candidate": parentPost, "replyTo": candidate, "muteAuthor": false, context}
                 );
             }
