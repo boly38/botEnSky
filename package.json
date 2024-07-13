@@ -14,6 +14,7 @@
     "ci-test": "echo ci-test&& export NODE_ENV=test&& c8 --reporter text --reporter=lcov --lines 66 mocha --unhandled-rejections=strict tests/*.test.js --timeout 50000",
     "c8-test": "echo c8-test&& set NODE_ENV=test&& c8 --reporter text --reporter=lcov --lines 66 mocha --unhandled-rejections=strict tests/*.test.js --timeout 50000",
     "wipAPN": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: AskPlantnet' http://localhost:5000/api/hook",
+    "wipBio": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: BioClip' http://localhost:5000/api/hook",
     "wipPN": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: Plantnet' http://localhost:5000/api/hook",
     "wipUM": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: UnMute' http://localhost:5000/api/hook"
   },
