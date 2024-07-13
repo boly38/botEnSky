@@ -47,7 +47,10 @@ export default class GrBirdApiService {
         const {species} = firstScoredResult;
         let scoredResult = 'BioClip identify ' + this.resultInfoOf(firstScoredResult)
         if (isSet(species)) {
-            scoredResult += "\n\n" + await this.aviBaseService.getSpeciesLink(species)
+            const speciesLink = await this.aviBaseService.getSpeciesLink(species);
+            if (isSet(speciesLink)) {
+                scoredResult += `\n\n${speciesLink}`;
+            }
         }
         return {"result": IDENTIFY_RESULT.OK, "bioResult": {species, scoredResult}};
     }
