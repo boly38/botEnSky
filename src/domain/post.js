@@ -107,17 +107,18 @@ export const postTextOf = post => postFormatterOf(post, "text");
 export const htmlLink = (label, href) => `<a href="${href}">${label}</a>`;
 export const postFormatterOf = (post, format = "text") => {
     const {author: {handle, displayName}, record: {text, createdAt}} = post;
-    if (!post || !handle || !text || !createdAt) {
+    if (!post || !handle || !createdAt) {
         return "";
     }
+    const textToShow = isSet(text) ? text : "(no text)"
     const username = isSet(displayName) ? displayName : handle;
     const postDate = createdAt ? toLocaleDate(createdAt) : "";
     const postLink = postLinkOf(post);
     const handleLink = bskyAppHAndleUriBuilder(handle);
     if (format === "text") {
-        return `${postLink} ${postDate} by @${username} (${handleLink}) --- ${text}`;
+        return `${postLink} ${postDate} by @${username} (${handleLink}) --- ${textToShow}`;
     } else if (format === "html") {
-        return `${htmlLink(postDate, postLink)} --- ${htmlLink(username, handleLink)}: ${text}`;
+        return `${htmlLink(postDate, postLink)} --- ${htmlLink(username, handleLink)}: ${textToShow}`;
     } else {
         throw new Error(`unsupported format ${format}`);
     }
