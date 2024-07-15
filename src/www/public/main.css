@@ -9,7 +9,8 @@ html, body {
     width: 100%;
 
     --bes-text-background-first: rgba(236, 227, 227, 0.6);
-    --bes-text-background-second: rgba(236, 227, 227, 0.8);
+    --bes-text-background-second: rgb(167, 211, 167, 0.8);
+    --bes-text-background-negative: rgb(243, 202, 128);
 }
 
 .flag-img {
@@ -100,6 +101,14 @@ li.msgContainer {
     border: 1px solid lightgrey;
     border-radius: 15px;
     background-color: var(--bes-text-background-second) !important;
+}
+/** backend news negative result **/
+.news-negative{
+    padding: 10px;
+    border: 1px solid lightgrey;
+    border-radius: 15px;
+    background-color: var(--bes-text-background-negative) !important;
+    opacity: 0.5;
 }
 
 /* Responsive adjustments */
