@@ -11,11 +11,19 @@ export default class LogtailService {
         this.tz = config.tz;
         this.logger = loggerService.getLogger().child({label: 'LogtailService'});
         this.logtail_api_v1 = config.log?.logtailApiV1;
+        this.logtail_api_v2 = config.log?.logtailApiV2;
         this.logtail_api_token = config.log?.logtailApiToken;
         this.logtail_source_id = config.log?.logtailSourceId;
         if (isSet(this.logtail_api_v1) && isSet(this.logtail_api_token) && isSet(this.logtail_source_id)) {
-            this.logtailClient = axios.create({
+            this.logtailClientV1 = axios.create({
                 baseURL: this.logtail_api_v1,
+                timeout: 30000,
+                headers: {'Authorization': `Bearer ${this.logtail_api_token}`}
+            });
+        }
+        if (isSet(this.logtail_api_v2) && isSet(this.logtail_api_token) && isSet(this.logtail_source_id)) {
+            this.logtailClientV2 = axios.create({
+                baseURL: this.logtail_api_v2,
                 timeout: 30000,
                 headers: {'Authorization': `Bearer ${this.logtail_api_token}`}
             });
@@ -23,14 +31,14 @@ export default class LogtailService {
     }
 
     isAvailable() {
-        return isSet(this.logtailClient);
+        return isSet(this.logtailClientV1);
     }
 
     querySource(sourceIds/* coma separated ids */, query, from, to, batch = 100) {
         const service = this;
         return new Promise((resolve, reject) => {
-            // query source(s) - https://betterstack.com/docs/logs/query-api/
-            service.logtailClient.get('/query', {params: {source_ids: sourceIds, query, from, to, batch}})
+            // query source(s) via v2 /query/live-tail - https://betterstack.com/docs/logs/query-api/v2/live-tail/
+            service.logtailClientV2.get('/query/live-tail', {params: {source_ids: sourceIds, query, from, to, batch}})
                 .then(res => resolve(res?.data))
                 .catch(res => reject(res));
         });
@@ -42,7 +50,7 @@ export default class LogtailService {
         logs.forEach(d => {
             const dt = toHumanTime(d.dt, tz);
             const day = toHumanDay(d.dt, tz);
-            const message = d.message;
+            const message = d.message || d.msg;
             if (!resultMap[day]) {
                 resultMap[day] = [];
             }

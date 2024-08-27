@@ -18,9 +18,10 @@ const __dirname = path.resolve();
 const wwwPath = path.join(__dirname, './src/www');
 
 const BES_ISSUES = cacheGetProjectBugsUrl();
-
 const HEALTH_ENDPOINT = '/health';
+
 const UNAUTHORIZED_FRIENDLY = "Le milieu autorisé c'est un truc, vous y êtes pas vous hein !";// (c) Coluche
+const DEBUG_NEWS = false;
 export default class ExpressServer {
     constructor(services) {
         const {
@@ -170,6 +171,8 @@ export default class ExpressServer {
         const summary = await summaryService.cacheGetWeekSummary({});
         newsService.getNews()
             .then(news => {
+                DEBUG_NEWS && console.log(`NEWS:${JSON.stringify(news)}`)
+                // Example : {"from":"2024-08-24 13:26:40","to":"2024-08-27 13:26:40","data":{"2024-08-27":[{"dt":"09:04:14","message":"aucun candidat pour AskPlantnet"},{"dt":"09:01:45","message":"aucun candidat pour AskPlantnet"}]}}
                 res.render('pages/index', {// page data
                     __: res.__,
                     // locale: res.currentLocale,

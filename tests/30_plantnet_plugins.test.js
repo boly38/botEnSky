@@ -67,15 +67,7 @@ describe("🧪🧩 31 - Ask-Pl@ntNet Plugin\n", function () {
             ["L'identification par AskPlantnet n'a pas donné de résultat assez concluant 😩 (score<20%)"]);
     }).timeout(60 * 1000);
 
-});
-describe("🧪🧩 32 - UnMute Plugin\n", function () {
-
-    before(() => {
-        unmutePlugin = appConfig.get('unmute');
-    });
-
-    it("UnMute plugin", async () => {
-        await verifyPluginProcessResult(unmutePlugin, {doSimulate: true}, ["Démasqué martijnrijk"]);
-    }).timeout(60 * 1000);
+    //NB: AskPlugin DONT mute initial post author 
 
 });
+
