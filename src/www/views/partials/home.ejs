@@ -30,13 +30,14 @@
 
           <!-- Logs per date MENU - tabs https://getbootstrap.com/docs/5.3/components/navs-tabs/ -->
           <ul class="nav nav-pills">
-            <% Object.keys(news.data).forEach((item, index) => { %>
+            <% if (news?.data)  {
+             Object.keys(news.data).forEach((item, index) => { %>
               <li class="nav-item logDate">
                 <a id="logDate-<%- index %>-menu" class="nav-link" href="#" onClick="toggleLogDateContent('logDate-<%- index %>')"
                                 data-umami-event="{home logs <%- item %>}" id="home-logs-<%- index %>"
                                 ><%- item %></a>
               </li>
-            <% }) %>
+            <% }) } else { %> <!-- no activity = no menu--><br/> <% } %>
             <li class="nav-item logDate">
               <a id="logDate-week-menu" class="nav-link" href="#" onClick="toggleLogDateContent('logDate-week')"
                               data-umami-event="{home logs week}" id="home-logs-week"
@@ -45,9 +46,11 @@
           </ul>
           <br/>
 
-
           <!-- Logs list-->
-          <% Object.keys(news.data).forEach((item, index) => { %>
+          <% if (news?.data)  {
+          Object.keys(news.data).forEach((item, index) => {
+            if (news.data[item].length > 0) {
+            %>
           <div class="panel" id="logDate-<%- index %>">
               <!-- <div class="panel-heading">Les logs du <%- item %></div> -->
               <ul class="logLine list-group home-logs">
@@ -56,7 +59,9 @@
                  <% }); %>
               </ul>
           </div>
-          <% }) %>
+           <%
+           }
+          }) } else { %> &#160;<!-- no activity --><br/><% } %>
 
           <!-- 7 jours -->
           <div class="panel" id="logDate-week">

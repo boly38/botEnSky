@@ -20,6 +20,7 @@ export default class ApplicationProperties {
         this.log = {
             logtailToken: getEnv("LOG_LOGTAIL_TOKEN", null),
             logtailApiV1: "https://logs.betterstack.com/api/v1",
+            logtailApiV2: "https://logs.betterstack.com/api/v2",
             logtailApiToken: getEnv("LOGTAIL_API_TOKEN", null),
             logtailSourceId: getEnv("LOGTAIL_SOURCE_ID", null)
         }

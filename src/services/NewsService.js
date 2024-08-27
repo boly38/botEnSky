@@ -35,6 +35,7 @@ export default class NewsService {
         return new Promise(resolve => {
             const to = nowHuman();
             const oldSchoolNews = {"since": toHuman(since), to, "data": lastNews};
+            oldSchoolNews.data = logtailService.perDateMessage(oldSchoolNews.data);
             if (!logtailService.isAvailable()) {
                 loggerService.debug(`logtailService is not available`);
                 return resolve(oldSchoolNews);
@@ -44,7 +45,7 @@ export default class NewsService {
                     return isSet(cacheNews) ? resolve(cacheNews) : resolve(oldSchoolNews);
                 })
                 .catch(err => {
-                    loggerService.error(`unable to retrieve cached logtail news : ${err.message}`);
+                    loggerService.error(`unable to retrieve cached logtail news : ${err.message} - fallback using in-memory news`);
                     return resolve(oldSchoolNews);
                 });
         });
