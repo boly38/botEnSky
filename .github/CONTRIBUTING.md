@@ -45,7 +45,7 @@ cp ./env/.env.template ./env/.env.development
 
 Execute the application
 ```bash
-npm startDev
+npm run startDev
 ```
 or (production mode)
 ```bash
