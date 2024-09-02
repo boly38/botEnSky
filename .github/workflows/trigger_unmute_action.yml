@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: trigger botEnSky UnMute
         env:
-          BES_SIMULATION_TOKEN: ${{ secrets.BES_SIMULATION_TOKEN }}
-          BES_SIMULATION_URL: ${{ secrets.BES_SIMULATION_URL }}
+          BES_ACTION_TOKEN: ${{ secrets.BES_ACTION_TOKEN }}
+          BES_ACTION_URL: ${{ secrets.BES_ACTION_URL }}
         run: |
-          curl -q -H "API-TOKEN: ${BES_SIMULATION_TOKEN}" -H "PLUGIN-NAME: UnMute" "${BES_SIMULATION_URL}"
+          curl -q -H "API-TOKEN: ${BES_ACTION_TOKEN}" -H "PLUGIN-NAME: UnMute" "${BES_ACTION_URL}"
