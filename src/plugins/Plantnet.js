@@ -50,17 +50,21 @@ export default class Plantnet {
         let {doSimulate, simulateIdentifyCase, context} = config;
         const doSimulateIdentify = plantnetSimulate || isSet(simulateIdentifyCase);// if at least one want to simulate then simulate
         let candidate = null;
+        let step = "searchNextCandidate";
         try {
             candidate = await pluginsCommonService.searchNextCandidate({...config, questions});
             if (candidate === null) {
                 return pluginsCommonService.resultNoCandidate(pluginName, context);
             }
+            step = "firstImageOf";
             const candidatePhoto = firstImageOf(candidate);
             if (!candidatePhoto) {
                 return pluginsCommonService.rejectNoCandidateImage(pluginName, candidate, context);
             }
+            step = "logCandidate";
             pluginsCommonService.logCandidate(pluginName, candidate, candidatePhoto, context);
 
+            step = "plantnetIdentify";
             const tags = this.getPluginTags();
             const {
                 result,
@@ -74,6 +78,7 @@ export default class Plantnet {
                 tags,
                 context
             });
+            step = "handle plantnet identification";
             if (result === IDENTIFY_RESULT.OK) {
                 const {scoredResult, firstImageOriginalUrl, firstImageText} = plantnetResult;
                 return await plantnetCommonService.replyToWithIdentificationResult(candidate,
@@ -93,7 +98,7 @@ export default class Plantnet {
                 );
             }
         } catch (err) {
-            return pluginsCommonService.rejectWithIdentifyError(pluginName, candidate, err, context);
+            return pluginsCommonService.rejectWithIdentifyError(pluginName, step, candidate, err, context);
         }
     }
 
