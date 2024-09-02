@@ -77,13 +77,13 @@ export default class PluginsCommonService {
             `\t${postImageOf(candidatePhoto)}`, context);
     }
 
-    rejectWithIdentifyError(pluginName, candidate, err, context) {
-        let plantnetTxtError = `Impossible d'identifier l'image avec ${pluginName}`;
+    rejectWithIdentifyError(pluginName, step, candidate, err, context) {
+        let plantnetTxtError = `[${step}] Impossible d'identifier l'image avec ${pluginName}`;
         let plantnetHtmlError = plantnetTxtError;
         if (isSet(candidate)) {
-            plantnetTxtError = `Impossible d'identifier l'image de ${postLinkOf(candidate)} avec ${pluginName}`;
+            plantnetTxtError = `[${step}] Impossible d'identifier l'image de ${postLinkOf(candidate)} avec ${pluginName}`;
             plantnetHtmlError = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div>` +
-                `<b>Erreur</b>: impossible d'identifier l'image avec ${pluginName}`;
+                `<b>Erreur [${step}]</b>: impossible d'identifier l'image avec ${pluginName}`;
         }
         this.logger.error(`${plantnetTxtError} : ${err.message}`, context);
         return Promise.reject(pluginReject(plantnetTxtError, plantnetHtmlError, 500, `${pluginName} unexpected error`));

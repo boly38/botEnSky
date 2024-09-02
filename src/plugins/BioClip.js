@@ -39,18 +39,21 @@ export default class BioClip {
         const {logger, pluginsCommonService, grBirdApiService, questions} = this;
         let {doSimulate = true, context} = config;
         let candidate = null;
+        let step = "searchNextCandidate";
         try {
             const maxHoursOld = 48;
             candidate = await pluginsCommonService.searchNextCandidate({...config, questions, maxHoursOld});
             if (candidate === null) {
                 return pluginsCommonService.resultNoCandidate(pluginName, context);
             }
+            step = "firstImageOf";
             const candidatePhoto = firstImageOf(candidate);
             if (!candidatePhoto) {
                 return pluginsCommonService.rejectNoCandidateImage(pluginName, candidate, context);
             }
             pluginsCommonService.logCandidate(pluginName, candidate, candidatePhoto, context);
 
+            step = "birdIdentify";
             const tags = this.getPluginTags();
             const imageUrl = candidatePhoto?.fullsize;
             const {
@@ -61,6 +64,8 @@ export default class BioClip {
                 tags,
                 context
             });
+
+            step = "birdIdentify handle response";
             const imageAlt = bioResult;
             logger.info(`result:${result} ${isSet(bioResult) ? JSON.stringify(bioResult) : ""}`);
             logger.info(`bioResult:${JSON.stringify(bioResult)}`);
@@ -81,7 +86,7 @@ export default class BioClip {
         } catch (err) {
             // console.log(err.stack);// print stack
             // console.trace();// print stack
-            return pluginsCommonService.rejectWithIdentifyError(pluginName, candidate, err, context);
+            return pluginsCommonService.rejectWithIdentifyError(pluginName, step, candidate, err, context);
         }
     }
 

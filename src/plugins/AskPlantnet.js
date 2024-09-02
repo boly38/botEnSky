@@ -47,17 +47,20 @@ export default class AskPlantnet {
         } = this;
         const doSimulateIdentify = plantnetSimulate || isSet(simulateIdentifyCase);// if at least one want to simulate then simulate
         let candidate = null;
+        let step = "searchNextCandidate";
         try {
             const maxHoursOld = 72;
             const candidate = await pluginsCommonService.searchNextCandidate({...config, questions, maxHoursOld});
             if (candidate === null) {
                 return pluginsCommonService.resultNoCandidate(pluginName, context);
             }
+            step = "getParentPostOf";
             const parentPost = await blueskyService.getParentPostOf(candidate.uri);
             if (parentPost === null) {
                 return this.resultNoCandidateParent(candidate, context);
             }
             logger.debug(`CANDIDATE's PARENT:${parentPost ? postTextOf(parentPost) : "NONE"}`);
+            step = "firstImageOf";
             const parentPhoto = firstImageOf(parentPost);
             if (!parentPhoto) {
                 return this.rejectNoCandidateParentImage(parentPost, context);
@@ -66,6 +69,7 @@ export default class AskPlantnet {
                 `\t${postInfoOf(parentPost)}\n` +
                 `\t${postImageOf(parentPhoto)}`, context);
 
+            step = "plantnetIdentify";
             const tags = this.getPluginTags();
             const identifyOptions = {
                 "imageUrl": parentPhoto?.fullsize,
@@ -80,6 +84,9 @@ export default class AskPlantnet {
                 result,
                 plantnetResult = null
             } = await plantnetApiService.plantnetIdentify(identifyOptions);
+
+
+            step = "handle plantnetIdentification response";
             if (result === IDENTIFY_RESULT.OK) {
                 const {scoredResult, firstImageOriginalUrl, firstImageText} = plantnetResult;
                 return await plantnetCommonService.replyToWithIdentificationResult(candidate,
@@ -99,7 +106,7 @@ export default class AskPlantnet {
                 );
             }
         } catch (err) {
-            return this.rejectWithIdentifyError(candidate, err, context);
+            return this.rejectWithIdentifyError(step, candidate, err, context);
         }
     }
 
@@ -117,13 +124,13 @@ export default class AskPlantnet {
         return Promise.resolve(pluginResolve(resultTxt, resultHtml, 202))
     }
 
-    rejectWithIdentifyError(candidate, err, context) {
-        let plantnetTxtError = "Impossible d'identifier l'image avec Ask-Pl@ntNet";
+    rejectWithIdentifyError(step, candidate, err, context) {
+        let plantnetTxtError = `[${step}] Impossible d'identifier l'image avec Ask-Pl@ntNet`;
         let plantnetHtmlError = plantnetTxtError;
         if (isSet(candidate)) {
-            plantnetTxtError = `Impossible d'identifier l'image du parent de ${postLinkOf(candidate)} avec Ask-Pl@ntNet`;
+            plantnetTxtError = `[${step}] Impossible d'identifier l'image du parent de ${postLinkOf(candidate)} avec Ask-Pl@ntNet`;
             plantnetHtmlError = `<b>Post</b>: <div class="bg-warning">parent de ${postHtmlOf(candidate)}</div>` +
-                `<b>Erreur</b>: impossible d'identifier l'image avec Ask-Pl@ntNet`;
+                `<b>Erreur [${step}]</b>: impossible d'identifier l'image avec Ask-Pl@ntNet`;
         }
         this.logger.error(`${plantnetTxtError} : ${err.message}`, context);
         return Promise.reject(pluginReject(plantnetTxtError, plantnetHtmlError, 500, "unable to identify"));
