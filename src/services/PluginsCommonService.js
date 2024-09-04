@@ -78,6 +78,7 @@ export default class PluginsCommonService {
     }
 
     rejectWithIdentifyError(pluginName, step, candidate, err, context) {
+        const {status, message, mustBeReported} = err;
         let plantnetTxtError = `[${step}] Impossible d'identifier l'image avec ${pluginName}`;
         let plantnetHtmlError = plantnetTxtError;
         if (isSet(candidate)) {
@@ -85,8 +86,10 @@ export default class PluginsCommonService {
             plantnetHtmlError = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div>` +
                 `<b>Erreur [${step}]</b>: impossible d'identifier l'image avec ${pluginName}`;
         }
-        this.logger.error(`${plantnetTxtError} : ${err.message}`, context);
-        return Promise.reject(pluginReject(plantnetTxtError, plantnetHtmlError, 500, `${pluginName} unexpected error`));
+        this.logger.error(`${plantnetTxtError} : ${message}`, context);
+        return Promise.reject(pluginReject(plantnetTxtError, plantnetHtmlError,
+            isSet(status) ? status: 500,
+            `${pluginName} unexpected error`, mustBeReported));
     }
 
     async handleWithoutScoredResult(pluginName, minimalPercent, options) {

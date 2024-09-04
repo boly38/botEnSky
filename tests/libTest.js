@@ -41,6 +41,8 @@ export const initEnv = () => {
 }
 export const _expectNoError = (err) => {
     console.error("_expectNoError", err);
+    const {status,message,success,error} = err;
+    console.error("_expectNoError details attempt", {status,message,success,error} );
     console.trace();// print stack
     expect.fail(err);
 }
