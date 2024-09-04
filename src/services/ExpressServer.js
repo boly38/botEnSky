@@ -10,7 +10,7 @@ import {
     cacheGetVersion
 } from "../lib/MemoryCache.js";
 import {unauthorized} from "../lib/CommonApi.js";
-import {generateErrorId} from "../lib/Common.js";
+import {generateErrorId, isSet} from "../lib/Common.js";
 import {StatusCodes} from "http-status-codes";
 import ApplicationConfig from "../config/ApplicationConfig.js";
 
@@ -55,7 +55,7 @@ export default class ExpressServer {
         // as singleton // https://github.com/mashpie/i18n-node?tab=readme-ov-file#as-singleton
         i18n.configure({
             locales: ['fr', 'en'],
-            directory: path.join(__dirname, 'src','locales'),
+            directory: path.join(__dirname, 'src', 'locales'),
             defaultLocale: 'en',
             queryParameter: 'lang',// query parameter to switch locale (ie. /home?lang=ch) - defaults to NULL
             cookie: 'lang'
@@ -76,7 +76,11 @@ export default class ExpressServer {
         expressServer.app.use(expressServer.errorHandlerMiddleware.bind(this));// error handler
 
         // build initial cache
-        await this.summaryService.cacheGetWeekSummary({})
+        try {
+            await this.summaryService.cacheGetWeekSummary({})
+        } catch (summaryError) {
+            this.logger.error(`Initial getWeekSummary Error msg:${summaryError.message} stack:${summaryError.stack}`);
+        }
 
         // register inactivity listener
         this.inactivityDetector.registerOnInactivityListener(
@@ -140,7 +144,8 @@ export default class ExpressServer {
                 unauthorized(res, UNAUTHORIZED_FRIENDLY);
             }
         } catch (error) {
-            if (error.status !== StatusCodes.INTERNAL_SERVER_ERROR && error.message) {
+            const {status, message, mustBeReported} = error;
+            if (status !== StatusCodes.INTERNAL_SERVER_ERROR && isSet(message)) {
                 const {status, message} = error;
                 res.status(status).json({success: false, message});
                 return;
@@ -151,11 +156,15 @@ export default class ExpressServer {
             this.logger.error(errorInternalDetails);
             this.auditLogsService.createAuditLog(errorInternalDetails);
             // user
-            const unexpectedError = res.__('server.error.unexpected');
-            const pleaseReportIssue = res.__('server.pleaseReportIssue');
-            const issueLink = res.__('server.issueLinkLabel');
-            let userErrorTxt =  `${unexpectedError}, ${pleaseReportIssue} ${BES_ISSUES} - ${errId}`;
-            let userErrorHtml = `${unexpectedError},${pleaseReportIssue} <a href="${BES_ISSUES}">${issueLink}</a> - ${errId}`;
+            let unexpectedError = res.__('server.error.unexpected');
+            let userErrorTxt = unexpectedError;
+            let userErrorHtml = unexpectedError;
+            if (mustBeReported !== false) {
+                const pleaseReportIssue = res.__('server.pleaseReportIssue');
+                const issueLink = res.__('server.issueLinkLabel');
+                userErrorTxt = `${unexpectedError}, ${pleaseReportIssue} ${BES_ISSUES} - ${errId}`;
+                userErrorHtml = `${unexpectedError}, ${pleaseReportIssue} <a href="${BES_ISSUES}">${issueLink}</a> - ${errId}`;
+            }
             this.newsService.add(userErrorHtml);
             res.status(500).json({success: false, message: userErrorTxt});
         }

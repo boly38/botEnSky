@@ -2,6 +2,7 @@ import {BskyAgent, RichText} from '@atproto/api'
 import {descriptionOfPostAuthor, didOfPostAuthor, postLinkOf, postsFilterSearchResults} from "../domain/post.js";
 import {getEncodingBufferAndBase64FromUri, isSet, nowISO8601, nowMinusHoursUTCISO} from "../lib/Common.js";
 import InternalServerErrorException from "../exceptions/ServerInternalErrorException.js";
+import ServiceUnavailableException from "../exceptions/ServiceUnavailableException.js";
 
 const BLUESKY_POST_LENGTH_MAX = 300;// https://github.com/bluesky-social/bsky-docs/issues/162
 
@@ -72,10 +73,28 @@ export default class BlueSkyService {
             params["until"] = nowMinusHoursUTCISO(0);
         }
         this.logger.info(`searchPosts ${JSON.stringify(params)}`);
-        const response = await this.api.app.bsky.feed.searchPosts(params, {});
-        const posts = postsFilterSearchResults(response.data.posts, hasImages, hasNoReply, isNotMuted);
+        const response = await this.resilientSearchPostsWithRetry(params, {}, 2);
+        const posts = postsFilterSearchResults(response?.data?.posts, hasImages, hasNoReply, isNotMuted);
         this.logger.debug(`posts`, JSON.stringify(posts, null, 2));
         return posts;
+    }
+
+    // https://github.com/bluesky-social/atproto/issues/2786 - bluesky api client should provide more than `TypeError: fetch failed`
+    async resilientSearchPostsWithRetry(params, options, retryAttempts) {
+        if (retryAttempts === 0) {
+            throw new ServiceUnavailableException("Bluesky search service is not available for now.");
+        }
+        try {
+            return await this.api.app.bsky.feed.searchPosts(params, options);
+        } catch (error) {
+            this.logger.warn(`resilientSearchPostsWithRetry ${retryAttempts} error:${error}`);
+            if (error.message === "TypeError: fetch failed") {
+                await this.safeSleepMs(5000);// await 5 sec before retrying
+                return await this.resilientSearchPostsWithRetry(params, options, retryAttempts - 1);
+            } else {
+                throw error;
+            }
+        }
     }
 
     /**
@@ -227,4 +246,8 @@ export default class BlueSkyService {
         this.logger.info(`postsArray`, JSON.stringify(postsArray, null, 2));
     }
     */
+
+    async safeSleepMs(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
 }

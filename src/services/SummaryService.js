@@ -24,7 +24,7 @@ export default class SummaryService {
             "maxHoursOld": 7 * 24,// now-7d ... now
             "limit": 100
         })
-        logger.info(`Summary - ${botPosts.length} post(s)`, context);
+        logger.info(`Summary - ${botPosts?.length} post(s)`, context);
         const analytics = {
             posts: 0, likes: 0, replies: 0, reposts: 0,
             bestScore: 0, bestScorePosts: [],

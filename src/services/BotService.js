@@ -112,8 +112,8 @@ export default class BotService {
 export const pluginResolve = (text, html, status = 200, post = 0) => {
     return {text, html, status, post};
 }
-export const pluginReject = (text, html, status, shortResponseMessage) => {
-    return {text, html, status, message: shortResponseMessage};
+export const pluginReject = (text, html, status, shortResponseMessage, mustBeReported=false) => {
+    return {text, html, status, message: shortResponseMessage, mustBeReported};
 }
 
 export const dataSimulationDirectory = "src/data/simulation"
