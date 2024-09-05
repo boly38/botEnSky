@@ -34,29 +34,37 @@ export default class AviBaseService {
     }
 
     async getSpeciesLink(species = null) {
-        const speciesValue = await this.getSpeciesValue(species);
+        const speciesValue = await this.getSpeciesValueOrNull(species);
         if (speciesValue !== null) {
             const longUrl = `https://avibase.bsc-eoc.org/species.jsp?lang=EN&avibaseid=${speciesValue}&sec=flickr`;
+            // DEBUG // console.log(`getSpeciesLink ${longUrl} shorted`);
             return buildShortUrlWithText(this.logger, longUrl, "Avibase flickr");
         }
         return null;
     }
 
-    async getSpeciesValue(species = null) {
+    getSpeciesValueOrNull(species = null) {
         if (species === null) {
             return null;
         }
-        const params = {"term": species};
-        const {data} = await this.avibase_api.get("", {params});
-        const refined = data.filter(d => d.label === `${species} (${species})`);
-        if (refined.length > 0) {
-            return refined[0].value;
-        }
-        const refinedBis = data.filter(d => d.label.startsWith`${species} (`);
-        if (refinedBis.length > 0) {
-            return refinedBis[0].value;
-        }
-        // return data[0];
-        return null;
+        return new Promise(resolve => {
+            this.avibase_api.get("", {"params": {"term": species}})
+                .then(result => {
+                    const {data} = result;
+                    const refined = data.filter(d => d.label === `${species} (${species})`);
+                    if (refined.length > 0) {
+                        return resolve(refined[0].value);
+                    }
+                    const refinedBis = data.filter(d => d.label.startsWith`${species} (`);
+                    if (refinedBis.length > 0) {
+                        return resolve(refinedBis[0].value);
+                    }
+                    resolve(null);
+                })
+                .catch(err => {
+                    this.logger.warn(`Unable to use avibase_api for this species : ${species} - details: ${err?.message}`);
+                    resolve(null);
+                });
+        });
     }
 }
