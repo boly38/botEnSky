@@ -1,13 +1,13 @@
-import {clone, loadJsonResource} from "../lib/Common.js";
+import {clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf} from "../domain/post.js";
-import {isSet} from "../lib/Common.js";
 import {GR_BIRD_MINIMAL_PERCENT, IDENTIFY_RESULT} from "../servicesExternal/GrBirdApiService.js";
 
 export default class BioClip {
-    constructor(config, loggerService, pluginsCommonService, grBirdApiService) {
+    constructor(config, loggerService, pluginsCommonService, bioclipCommonService, grBirdApiService) {
         this.isAvailable = false;
         this.logger = loggerService.getLogger().child({label: 'BioClip'});
         this.pluginsCommonService = pluginsCommonService;
+        this.bioclipCommonService = bioclipCommonService;
         this.grBirdApiService = grBirdApiService;
         try {
             this.questions = loadJsonResource('src/data/questionsBioClip.json');
@@ -36,7 +36,7 @@ export default class BioClip {
 
     async process(config) {
         const pluginName = this.getName();
-        const {logger, pluginsCommonService, grBirdApiService, questions} = this;
+        const {logger, pluginsCommonService, bioclipCommonService, grBirdApiService, questions} = this;
         let {doSimulate = true, context} = config;
         let candidate = null;
         let step = "searchNextCandidate";
@@ -72,7 +72,7 @@ export default class BioClip {
             logger.info(`bioResult:${JSON.stringify(bioResult)}`);
             if (result === IDENTIFY_RESULT.OK) {
                 const {scoredResult} = bioResult;
-                return await this.replyToWithIdentificationResult(candidate,
+                return await bioclipCommonService.replyToWithIdentificationResult(candidate,
                     {tags, doSimulate, context, imageUrl, imageAlt},
                     {scoredResult}
                 );
@@ -91,14 +91,5 @@ export default class BioClip {
         }
     }
 
-    async replyToWithIdentificationResult(replyTo, options, pnResult) {
-        const {pluginsCommonService} = this;
-        const {tags, doSimulate, context, imageUrl, imageAlt} = options;
-        const {scoredResult} = pnResult
-
-        let replyMessage = `${scoredResult}\n\n${tags}`;
-        // score result without image
-        return await pluginsCommonService.replyResult(replyTo, {doSimulate, context, imageUrl, imageAlt}, replyMessage);
-    }
 
 }

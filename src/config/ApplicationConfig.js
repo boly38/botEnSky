@@ -23,6 +23,7 @@ import GrBirdApiService from "../servicesExternal/GrBirdApiService.js";
 import AviBaseService from "../servicesExternal/AviBaseService.js";
 import BioClip from "../plugins/BioClip.js";
 import PluginsCommonService from "../services/PluginsCommonService.js";
+import AskBioclip from "../plugins/AskBioclip.js";
 
 export default class ApplicationConfig {
     constructor() {
@@ -67,6 +68,11 @@ export default class ApplicationConfig {
             .addArgument(container.get('blueskyService'));
 
         container.register('plantnetCommonService', PlantnetCommonService)
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('blueskyService'))
+            .addArgument(container.get('pluginsCommonService'));
+
+        container.register('bioclipCommonService', PlantnetCommonService)
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('blueskyService'))
             .addArgument(container.get('pluginsCommonService'));
@@ -130,9 +136,17 @@ export default class ApplicationConfig {
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('pluginsCommonService'))
+            .addArgument(container.get('bioclipCommonService'))
+            .addArgument(container.get('grBirdApiService'));
+        container.register('askBioclip', AskBioclip)
+            .addArgument(container.get('config'))
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('blueskyService'))
+            .addArgument(container.get('pluginsCommonService'))
+            .addArgument(container.get('bioclipCommonService'))
             .addArgument(container.get('grBirdApiService'));
         this.plugins.push(container.get('bioclip'));
-
+        this.plugins.push(container.get('askBioclip'));
     }
 
     constructBot() {

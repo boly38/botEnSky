@@ -41,7 +41,7 @@ class Bluesky {
             "q": searchQuery,
             "sort": "latest",
             "limit": 5,
-            "since": nowMinusHoursUTCISO(24),
+            "since": nowMinusHoursUTCISO(48),
             "until": nowMinusHoursUTCISO(0)
         };
         console.log(`search ${JSON.stringify(params)}`);
@@ -54,12 +54,13 @@ class Bluesky {
 /**
  * search using query from env, or argv or default
  * example: node.exe tests/manual/bluesky_search.js "very small flower from:rangedan.bsky.social"
+ * example: node.exe tests/manual/bluesky_search.js "garlic flower from:boly38.bsky.social"
  */
 try {
     const bluesky = new Bluesky();
     console.log(`🧪🧪 login`);
 
-    const searchQuery = process.env["SEARCH_QUERY"] || process.argv[2] || "@botensky.bsky.social";
+    const searchQuery = process.env["SEARCH_QUERY"] || process.argv[2] || "from:botensky.bsky.social";
 
     await bluesky.login()
     const posts = await bluesky.postSearch(searchQuery);

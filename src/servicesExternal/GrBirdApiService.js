@@ -56,6 +56,7 @@ export default class GrBirdApiService {
     }
 
     async api_classification(image_url = null) {
+        this.logger.info(`Bioclip classification for the following image : ${image_url}`);
         const client = await Client.connect("3oly/grBird");
         const result = await client.predict("/api_classification", [image_url]);
         const {data} = result;

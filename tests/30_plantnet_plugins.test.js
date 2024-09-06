@@ -1,4 +1,4 @@
-/* jshint expr: true */    // for to.be.empty
+/* jshint expr: true */        // for to.be.empty
 /* eslint-disable mocha/max-top-level-suites */
 import {before, describe, it} from 'mocha';
 import ApplicationConfig from '../src/config/ApplicationConfig.js';
@@ -6,16 +6,23 @@ import {initEnv, verifyPluginProcessResult} from "./libTest.js";
 
 initEnv();
 const appConfig = ApplicationConfig.getInstance();
-const pluginConfigDoSimulate = {doSimulate: true, doSimulateSearch: true, searchSimulationFile: "blueskyPostFakeFlower"};
-const pluginConfigDoSimulateAsk = {doSimulate: true, doSimulateSearch: true, searchSimulationFile: "blueskyPostFakeAskBot"};
+const pluginConfigDoSimulate = {
+    doSimulate: true,
+    doSimulateSearch: true,
+    searchSimulationFile: "blueskyPostFakeFlower"
+};
+const pluginConfigDoSimulateAsk = {
+    doSimulate: true,
+    doSimulateSearch: true,
+    searchSimulationFile: "blueskyPostFakeAskBot"
+};
 const plantnetPluginDefaultTag = "#BeSPlantnet #IndentificationDePlantes";
 const plantnetAskPluginDefaultTag = "#BeSAskPlantnet #IndentificationDePlantes";
 let plantnetPlugin;
 let askPlantnetPlugin;
-let unmutePlugin;
 
 // v2 tests example : https://github.com/PLhery/node-twitter-api-v2/blob/master/test/tweet.v2.test.ts
-describe("🧪🧩 30 - Pl@ntNet Plugin\n", function () {
+describe("🧪🧩 30 - Pl@ntNet Plugin\n", () => {
 
     before(() => {
         plantnetPlugin = appConfig.get('plantnet');
@@ -40,7 +47,8 @@ describe("🧪🧩 30 - Pl@ntNet Plugin\n", function () {
     }).timeout(60 * 1000);
 
 });
-describe("🧪🧩 31 - Ask-Pl@ntNet Plugin\n", function () {
+
+describe("🧪🧩 31 - Ask-Pl@ntNet Plugin\n", () => {
 
     before(() => {
         askPlantnetPlugin = appConfig.get('askPlantnet');

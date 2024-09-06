@@ -1,0 +1,49 @@
+{
+  "uri": "at://did:plc:zkfih2cilqkmhg7fz7oqvuw7/app.bsky.feed.post/3l3lhran3vt2f",
+  "cid": "bafyreibixmlvz2b44vqsra5cpuemm4rrsysqxugoo5tdxdrmmv3gjwi2wu",
+  "author": {
+    "did": "did:plc:zkfih2cilqkmhg7fz7oqvuw7",
+    "handle": "isabelletg.bsky.social",
+    "displayName": "",
+    "avatar": "https://cdn.bsky.app/img/avatar/plain/did:plc:zkfih2cilqkmhg7fz7oqvuw7/bafkreih6ajhl23wwualh7iimu3gkkuql2pko2vbozqzl2lojhdc4umtmme@jpeg",
+    "associated": {
+      "chat": {
+        "allowIncoming": "all"
+      }
+    },
+    "viewer": {
+      "muted": false,
+      "blockedBy": false
+    },
+    "labels": [],
+    "createdAt": "2023-09-19T17:22:22.566Z"
+  },
+  "record": {
+    "$type": "app.bsky.feed.post",
+    "createdAt": "2024-09-07T18:09:56.737Z",
+    "langs": [
+      "fr"
+    ],
+    "reply": {
+      "parent": {
+        "cid": "bafyreidmhbxgyzevc7uvzt3llajbcd6mrb76fqezaaweprcg6yznp5hgxq",
+        "uri": "at://did:plc:4vcqn56njmlf3n6mu5rzugbc/app.bsky.feed.post/3l3lgomd5qm2f"
+      },
+      "root": {
+        "cid": "bafyreidmhbxgyzevc7uvzt3llajbcd6mrb76fqezaaweprcg6yznp5hgxq",
+        "uri": "at://did:plc:4vcqn56njmlf3n6mu5rzugbc/app.bsky.feed.post/3l3lgomd5qm2f"
+      }
+    },
+    "text": "Bon appétit 😉"
+  },
+  "replyCount": 1,
+  "repostCount": 0,
+  "likeCount": 1,
+  "quoteCount": 0,
+  "indexedAt": "2024-09-07T18:09:56.737Z",
+  "viewer": {
+    "threadMuted": false,
+    "embeddingDisabled": false
+  },
+  "labels": []
+}

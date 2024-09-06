@@ -17,7 +17,7 @@ export default class Plantnet {
             this.logger.info((this.isAvailable ? "available" : "not available") +
                 " with " + this.questions.length + " questions");
         } catch (exception) {
-            plantnetCommonService.logError("init", exception);
+            pluginsCommonService.logError("init", exception);
         }
     }
 
