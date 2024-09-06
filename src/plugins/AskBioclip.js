@@ -1,32 +1,30 @@
 import {clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
-import {IDENTIFY_RESULT, PLANTNET_MINIMAL_PERCENT} from "../servicesExternal/PlantnetApiService.js";
+import {GR_BIRD_MINIMAL_PERCENT, IDENTIFY_RESULT} from "../servicesExternal/GrBirdApiService.js";
 
-export default class AskPlantnet {
-    constructor(config, loggerService, blueskyService, pluginsCommonService, plantnetCommonService, plantnetApiService) {
+export default class AskBioclip {
+    constructor(config, loggerService, blueskyService, pluginsCommonService, bioclipCommonService, grBirdApiService) {
         this.isAvailable = false;
-        this.logger = loggerService.getLogger().child({label: 'AskPl@ntNet'});
+        this.logger = loggerService.getLogger().child({label: 'AskBioclip'});
         this.blueskyService = blueskyService;
-        this.plantnetSimulate = (config.bot.plantnetSimulate === true);
         this.pluginsCommonService = pluginsCommonService;
-        this.plantnetCommonService = plantnetCommonService;
-        this.plantnetApiService = plantnetApiService;
+        this.bioclipCommonService = bioclipCommonService;
+        this.grBirdApiService = grBirdApiService;
         try {
-            this.asks = loadJsonResource('src/data/askPlantnet.json');
-            this.isAvailable = plantnetApiService.isReady();
-            this.logger.info((this.isAvailable ? "available" : "not available") +
-                " with " + this.asks.length + " asks");
+            this.asks = loadJsonResource('src/data/askBioclip.json');
+            this.isAvailable = true
+            this.logger.info("available with " + this.asks.length + " asks");
         } catch (exception) {
             pluginsCommonService.logError("init", exception);
         }
     }
 
     getName() {
-        return "AskPlantnet";
+        return "AskBioclip";
     }
 
     getPluginTags() {
-        return ["#BeSAskPlantnet", "#IndentificationDePlantes"].join(' ');
+        return ["#BeSAskBioclip", "#TreeOfLife10MPrediction"].join(' ');
     }
 
     getQuestions() {
@@ -39,12 +37,11 @@ export default class AskPlantnet {
 
     async process(config) {
         const pluginName = this.getName();
-        let {doSimulate, simulateIdentifyCase, context} = config;
+        let {doSimulate, context} = config;
         const {
-            plantnetSimulate, pluginsCommonService, plantnetCommonService, plantnetApiService, blueskyService,
-            logger, "asks": questions
+            grBirdApiService, pluginsCommonService, bioclipCommonService, blueskyService, logger,
+            "asks": questions
         } = this;
-        const doSimulateIdentify = plantnetSimulate || isSet(simulateIdentifyCase);// if at least one want to simulate then simulate
         let candidate = null;
         let step = "searchNextCandidate";
         try {
@@ -69,36 +66,35 @@ export default class AskPlantnet {
                 `\t${postInfoOf(parentPost)}\n` +
                 `\t${postImageOf(parentPhoto)}`, context);
 
-            step = "plantnetIdentify";
+            step = "birdIdentify";
             const tags = this.getPluginTags();
-            const identifyOptions = {
-                "imageUrl": parentPhoto?.fullsize,
-                doSimulate,
-                doSimulateIdentify,
-                simulateIdentifyCase,
-                candidate,
-                tags,
-                context
-            };
+            const imageUrl = parentPhoto?.fullsize;
             const {
                 result,
-                plantnetResult = null
-            } = await plantnetApiService.plantnetIdentify(identifyOptions);
+                bioResult = null
+            } = await grBirdApiService.birdIdentify({
+                imageUrl,
+                tags,
+                context
+            });
 
-            step = "handle plantnetIdentification response";
+            step = "birdIdentify handle response";
+            const imageAlt = bioResult;
+            logger.info(`result:${result} ${isSet(bioResult) ? JSON.stringify(bioResult) : ""}`);
+            logger.info(`bioResult:${JSON.stringify(bioResult)}`);
             if (result === IDENTIFY_RESULT.OK) {
-                const {scoredResult, firstImageOriginalUrl, firstImageText} = plantnetResult;
-                return await plantnetCommonService.replyToWithIdentificationResult(candidate,
-                    {tags, doSimulate, context},
-                    {scoredResult, firstImageOriginalUrl, firstImageText}
+                const {scoredResult} = bioResult;
+                return await bioclipCommonService.replyToWithIdentificationResult(candidate,
+                    {tags, doSimulate, context, imageUrl, imageAlt},
+                    {scoredResult}
                 );
             } else if (result === IDENTIFY_RESULT.BAD_SCORE) {
-                return await pluginsCommonService.handleWithoutScoredResult(pluginName, PLANTNET_MINIMAL_PERCENT,
+                return await pluginsCommonService.handleWithoutScoredResult(pluginName, GR_BIRD_MINIMAL_PERCENT,
                     {doSimulate, "candidate": parentPost, "replyTo": candidate, "muteAuthor": false, context}
                 );
             } else {
-                if (result !== IDENTIFY_RESULT.NONE) {
-                    logger.warn(`unable to handle plantnetService.plantnetIdentify result:${result} so consider it as NONE`);
+                if (result !== IDENTIFY_RESULT.BAD_SCORE) {
+                    logger.warn(`unable to handle grBirdApiService.birdIdentify result:${result} so consider it as NONE`);
                 }
                 return await pluginsCommonService.handleWithNoIdentificationResult(pluginName,
                     {doSimulate, "candidate": parentPost, "replyTo": candidate, "muteAuthor": false, context}

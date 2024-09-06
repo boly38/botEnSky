@@ -25,7 +25,7 @@ His ambition is to **bring 😊 happiness to 🦋 Bluesky 👤 users**.
 
 - 🧩 [askPlantnet](src/plugins/AskPlantnet.js) plugin
 
-*search a post with one of [askPlantnet](src/data/askPlantnet.json) mention, and try to identify the parent post using the same previous logic except that bad score or nothing detected will produce a reply.*
+*search a post with one of [askPlantnet](src/data/askPlantnet.json) mention, and try to identify the parent post first image using the same previous logic except that bad score or nothing detected will produce a reply to the mention.*
 
 
 - 🧩 [unMute](src/plugins/UnMute.js) plugin
@@ -41,6 +41,10 @@ His ambition is to **bring 😊 happiness to 🦋 Bluesky 👤 users**.
 *search a post with an embedded image, a not muted author, and without reply using [some questions](src/data/questionsBioClip.json) and use [GrBird API](https://huggingface.co/spaces/3oly/grBird) to try to classify the bird.*
 - on **good score** result: post a reply with confident ratio, species, genus, family, common name, and a link to flickr gallery (provided by [Avibase](https://avibase.bsc-eoc.org/))
 - on **bad score** result, or **nothing detected** result: mute author and don't reply. The action to "mute" the author is to avoid to replay the same classification twice a day (for same result). Muted authors are unMuted by UnMute plugin at the end of the day.
+
+- 🧩 [askBioclip](src/plugins/AskBioclip.js) plugin
+
+*search a post with one of [askBioclip](src/data/askBioclip.json) mention, and try to classify the parent post first image using the same previous logic except that bad score or nothing detected will produce a reply to the mention.*
 
 
 ### Bot trigger

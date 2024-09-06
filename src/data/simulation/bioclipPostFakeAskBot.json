@@ -1,0 +1,51 @@
+{
+  "uri": "at://did:plc:iy7q3r5p5jagqaznuudppucr/app.bsky.feed.post/3l3j2h5kla52e",
+  "cid": "bafyreiczxxar6rn264wo27v2zkiagh745eg2lbdmtqwfrdxmamihrttnqe",
+  "author": {
+    "did": "did:plc:iy7q3r5p5jagqaznuudppucr",
+    "handle": "boly38.bsky.social",
+    "displayName": "Boly38",
+    "avatar": "https://cdn.bsky.app/img/avatar/plain/did:plc:iy7q3r5p5jagqaznuudppucr/bafkreignropk7wuesbc4levrkxtzbh3l554mxduheh4htfkvr6afforkaq@jpeg",
+    "associated": {
+      "chat": {
+        "allowIncoming": "all"
+      }
+    },
+    "viewer": {
+      "muted": false,
+      "blockedBy": false,
+      "following": "at://did:plc:jkvb3exm4wg3jt5veu75qppn/app.bsky.graph.follow/3kskfpio2672i",
+      "followedBy": "at://did:plc:iy7q3r5p5jagqaznuudppucr/app.bsky.graph.follow/3kt3v2qa3tu2p"
+    },
+    "labels": [],
+    "createdAt": "2024-05-14T19:54:08.801Z"
+  },
+  "record": {
+    "$type": "app.bsky.feed.post",
+    "createdAt": "2024-09-06T19:06:19.440Z",
+    "langs": [
+      "fr"
+    ],
+    "reply": {
+      "parent": {
+        "cid": "bafyreigpy6vlpdbavucz6vrk6sa4fjf4th6ngpdv3hjnefjxfaqalqubxm",
+        "uri": "at://did:plc:iy7q3r5p5jagqaznuudppucr/app.bsky.feed.post/3l3izvrzfdp2g"
+      },
+      "root": {
+        "cid": "bafyreigpy6vlpdbavucz6vrk6sa4fjf4th6ngpdv3hjnefjxfaqalqubxm",
+        "uri": "at://did:plc:iy7q3r5p5jagqaznuudppucr/app.bsky.feed.post/3l3izvrzfdp2g"
+      }
+    },
+    "text": "mais askbioclip STP !"
+  },
+  "replyCount": 0,
+  "repostCount": 0,
+  "likeCount": 0,
+  "quoteCount": 0,
+  "indexedAt": "2024-09-06T19:06:19.440Z",
+  "viewer": {
+    "threadMuted": false,
+    "embeddingDisabled": false
+  },
+  "labels": []
+}

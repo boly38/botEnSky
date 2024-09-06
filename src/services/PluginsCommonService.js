@@ -30,9 +30,9 @@ export default class PluginsCommonService {
             bookmark = 0,
             doSimulateSearch = false,
             searchSimulationFile = null,
-            hasImages= false, // need to be explicitly set
-            hasNoReply= true,
-            isNotMuted= true,
+            hasImages = false, // need to be explicitly set
+            hasNoReply = true,
+            isNotMuted = true,
             maxHoursOld = 24
         } = config;
         if (doSimulateSearch && searchSimulationFile === null) {
@@ -40,6 +40,7 @@ export default class PluginsCommonService {
         }
         if (doSimulateSearch) {
             await blueskyService.login();
+            this.logger.info(`simulate search using ${searchSimulationFile}`, context);
             return Promise.resolve(loadJsonResource(`${dataSimulationDirectory}/${searchSimulationFile}.json`));
         }
         const candidatePosts = await blueskyService.searchPosts({
@@ -71,6 +72,32 @@ export default class PluginsCommonService {
         return Promise.reject(pluginReject(reasonText, reasonHtml, 202, "no candidate image"));
     }
 
+    resultNoCandidateParent(candidate, context) {
+        const resultTxt = `aucun parent pour ${postTextOf(candidate)}`;
+        const resultHtml = `aucun parent pour ${postHtmlOf(candidate)}`;
+        this.logger.info(resultTxt, context);
+        return Promise.resolve(pluginResolve(resultTxt, resultHtml, 202))
+    }
+
+    rejectNoCandidateParentImage(parentPost, pluginName, context) {
+        const reasonText = `aucune image pour ${pluginName} dans ${postTextOf(parentPost)}`;
+        const reasonHtml = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(parentPost)}</div><b>Info</b>: aucune image`;
+        this.logger.info(reasonText, context);
+        return Promise.reject(pluginReject(reasonText, reasonHtml, 202, "no candidate parent image"));
+    }
+
+    rejectWithParentIdentifyError(step, candidate, pluginName, err, context) {
+        let askTxtError = `[${step}] Impossible d'identifier l'image avec ${pluginName}`;
+        let askHtmlError = askTxtError;
+        if (isSet(candidate)) {
+            askTxtError = `[${step}] Impossible d'identifier l'image du parent de ${postLinkOf(candidate)} avec ${pluginName}`;
+            askHtmlError = `<b>Post</b>: <div class="bg-warning">parent de ${postHtmlOf(candidate)}</div>` +
+                `<b>Erreur [${step}]</b>: impossible d'identifier l'image avec ${pluginName}`;
+        }
+        this.logger.error(`${askTxtError} : ${err.message}`, context);
+        return Promise.reject(pluginReject(askTxtError, askHtmlError, 500, "unable to identify"));
+    }
+
     logCandidate(pluginName, candidate, candidatePhoto, context) {
         this.logger.debug(`post Candidate : ${postLinkOf(candidate)}\n` +
             `\t${postInfoOf(candidate)}\n` +
@@ -88,7 +115,7 @@ export default class PluginsCommonService {
         }
         this.logger.error(`${plantnetTxtError} : ${message}`, context);
         return Promise.reject(pluginReject(plantnetTxtError, plantnetHtmlError,
-            isSet(status) ? status: 500,
+            isSet(status) ? status : 500,
             `${pluginName} unexpected error`, mustBeReported));
     }
 
