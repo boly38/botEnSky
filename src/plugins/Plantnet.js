@@ -51,8 +51,9 @@ export default class Plantnet {
         const doSimulateIdentify = plantnetSimulate || isSet(simulateIdentifyCase);// if at least one want to simulate then simulate
         let candidate = null;
         let step = "searchNextCandidate";
+        const hasImages = true;
         try {
-            candidate = await pluginsCommonService.searchNextCandidate({...config, questions});
+            candidate = await pluginsCommonService.searchNextCandidate({...config, questions, hasImages});
             if (candidate === null) {
                 return pluginsCommonService.resultNoCandidate(pluginName, context);
             }
