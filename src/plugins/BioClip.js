@@ -42,7 +42,8 @@ export default class BioClip {
         let step = "searchNextCandidate";
         try {
             const maxHoursOld = 48;
-            candidate = await pluginsCommonService.searchNextCandidate({...config, questions, maxHoursOld});
+            const hasImages = true;
+            candidate = await pluginsCommonService.searchNextCandidate({...config, questions, hasImages, maxHoursOld});
             if (candidate === null) {
                 return pluginsCommonService.resultNoCandidate(pluginName, context);
             }

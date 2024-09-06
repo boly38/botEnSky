@@ -50,6 +50,7 @@ export default class AskPlantnet {
         let step = "searchNextCandidate";
         try {
             const maxHoursOld = 72;
+            // keep hasImages=false as this is mention post's parent which include flower image
             const candidate = await pluginsCommonService.searchNextCandidate({...config, questions, maxHoursOld});
             if (candidate === null) {
                 return pluginsCommonService.resultNoCandidate(pluginName, context);
