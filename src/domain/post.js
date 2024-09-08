@@ -69,7 +69,7 @@ export const fromBlueskyPost = post => {
  */
 export const fromBlueskyPosts = posts => posts?.map(fromBlueskyPost)
 
-export const firstImageOf = post => !isSet(post?.embed) ? null : post?.embed.images[0];
+export const firstImageOf = post => !isSet(post?.embed?.images) ? null : post?.embed?.images[0];
 export const postLinkOf = post => {
     const {uri, author: {handle}} = post;
     const id = uri.split("/app.bsky.feed.post/")[1];

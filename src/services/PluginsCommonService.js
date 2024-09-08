@@ -66,24 +66,26 @@ export default class PluginsCommonService {
     }
 
     rejectNoCandidateImage(pluginName, candidate, context) {
-        const reasonText = `aucune image pour Pl@ntNet dans ${postTextOf(candidate)}`;
-        const reasonHtml = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div><b>Info</b>: aucune image`;
+        const reasonText = `aucune image pour ${pluginName} dans ${postTextOf(candidate)}`;
+        const reasonHtml = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div><b>Info</b>: aucune image pour ${pluginName}`;
         this.logger.info(reasonText, context);
         return Promise.reject(pluginReject(reasonText, reasonHtml, 202, "no candidate image"));
     }
 
-    resultNoCandidateParent(candidate, context) {
-        const resultTxt = `aucun parent pour ${postTextOf(candidate)}`;
-        const resultHtml = `aucun parent pour ${postHtmlOf(candidate)}`;
+    async resultNoCandidateParent(candidate, pluginName, context) {
+        const authorAction = await this.safeMuteAuthor(true, candidate, `${pluginName} aucun parent`, context);
+        const resultTxt = `aucun parent pour ${pluginName} pour ${postTextOf(candidate)}${authorAction}`;
+        const resultHtml = `aucun parent pour ${pluginName} pour ${postHtmlOf(candidate)}${authorAction}`;
         this.logger.info(resultTxt, context);
         return Promise.resolve(pluginResolve(resultTxt, resultHtml, 202))
     }
 
-    rejectNoCandidateParentImage(parentPost, pluginName, context) {
-        const reasonText = `aucune image pour ${pluginName} dans ${postTextOf(parentPost)}`;
-        const reasonHtml = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(parentPost)}</div><b>Info</b>: aucune image`;
+    async rejectNoCandidateParentImage(candidate, parentPost, pluginName, context) {
+        const authorAction = await this.safeMuteAuthor(true, candidate, `${pluginName} aucune image dans le parent`, context);
+        const reasonText = `${pluginName} aucune image du parent de ${postTextOf(candidate)}${authorAction}`;
+        const reasonHtml = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div><b>Info</b>: ${pluginName} aucune image du parent ${authorAction}`;
         this.logger.info(reasonText, context);
-        return Promise.reject(pluginReject(reasonText, reasonHtml, 202, "no candidate parent image"));
+        return Promise.resolve(pluginReject(reasonText, reasonHtml, 202, "no candidate parent image"));
     }
 
     rejectWithParentIdentifyError(step, candidate, pluginName, err, context) {
@@ -94,7 +96,7 @@ export default class PluginsCommonService {
             askHtmlError = `<b>Post</b>: <div class="bg-warning">parent de ${postHtmlOf(candidate)}</div>` +
                 `<b>Erreur [${step}]</b>: impossible d'identifier l'image avec ${pluginName}`;
         }
-        this.logger.error(`${askTxtError} : ${err.message}`, context);
+        this.logger.error(`${askTxtError} : ${askTxtError} // message was: ${err.message}`, context);
         return Promise.reject(pluginReject(askTxtError, askHtmlError, 500, "unable to identify"));
     }
 
@@ -162,7 +164,7 @@ export default class PluginsCommonService {
     }
 
     async safeMuteAuthor(muteAuthor, candidate, reason, context) {
-        const authorAction = muteAuthor ? "(auteur masqué)" : "";
+        const authorAction = muteAuthor ? " (auteur masqué)" : "";
         if (muteAuthor) {
             await this.blueskyService.safeMuteCandidateAuthor(postAuthorOf(candidate), reason, context);
         }
