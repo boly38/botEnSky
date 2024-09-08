@@ -57,13 +57,14 @@ export default class AskPlantnet {
             step = "getParentPostOf";
             const parentPost = await blueskyService.getParentPostOf(candidate.uri);
             if (parentPost === null) {
-                return pluginsCommonService.resultNoCandidateParent(candidate, context);
+                return await pluginsCommonService.resultNoCandidateParent(candidate, pluginName, context);
             }
+            // logger.info(parentPost);
             logger.debug(`CANDIDATE's PARENT:${parentPost ? postTextOf(parentPost) : "NONE"}`);
             step = "firstImageOf";
             const parentPhoto = firstImageOf(parentPost);
             if (!parentPhoto) {
-                return pluginsCommonService.rejectNoCandidateParentImage(parentPost, pluginName, context);
+                return await pluginsCommonService.rejectNoCandidateParentImage(candidate, parentPost, pluginName, context);
             }
             logger.debug(`post Candidate Parent : ${postLinkOf(parentPost)}\n` +
                 `\t${postInfoOf(parentPost)}\n` +
@@ -105,6 +106,7 @@ export default class AskPlantnet {
                 );
             }
         } catch (err) {
+            // DEBUG / console.log("stack >>", err.stack);// print stack
             return pluginsCommonService.rejectWithParentIdentifyError(step, candidate, pluginName, err, context);
         }
     }

@@ -144,26 +144,28 @@ export default class ExpressServer {
                 unauthorized(res, UNAUTHORIZED_FRIENDLY);
             }
         } catch (error) {
-            const {status, message, mustBeReported} = error;
-            if (status !== StatusCodes.INTERNAL_SERVER_ERROR && isSet(message)) {
-                const {status, message} = error;
+            const {status, message, mustBeReported, text, html} = error;
+            // DEBUG // console.log(JSON.stringify({status, message, mustBeReported, text, html}))
+            const mustReportAsIncident = !isSet(mustBeReported) || mustBeReported;
+            if (!mustReportAsIncident && isSet(text) && isSet(html)) {
+                this.newsService.add(html);
                 res.status(status).json({success: false, message});
                 return;
             }
             let errId = generateErrorId();
             // internal
-            let errorInternalDetails = `Error id:${errId} msg:${error.message} stack:${error.stack}`;
+            let errorInternalDetails = `Error id:${errId} msg:${error.message} mustBeReported:${mustBeReported}`;
             this.logger.error(errorInternalDetails);
             this.auditLogsService.createAuditLog(errorInternalDetails);
             // user
             let unexpectedError = res.__('server.error.unexpected');
-            let userErrorTxt = unexpectedError;
-            let userErrorHtml = unexpectedError;
-            if (mustBeReported !== false) {
+            let userErrorTxt = message;
+            let userErrorHtml = message;
+            if (mustReportAsIncident) {
                 const pleaseReportIssue = res.__('server.pleaseReportIssue');
                 const issueLink = res.__('server.issueLinkLabel');
-                userErrorTxt = `${unexpectedError}, ${pleaseReportIssue} ${BES_ISSUES} - ${errId}`;
-                userErrorHtml = `${unexpectedError}, ${pleaseReportIssue} <a href="${BES_ISSUES}">${issueLink}</a> - ${errId}`;
+                userErrorTxt = `${unexpectedError} ${status}, ${pleaseReportIssue} ${BES_ISSUES} - ${errId}`;
+                userErrorHtml = `${unexpectedError} ${status}, ${pleaseReportIssue} <a href="${BES_ISSUES}">${issueLink}</a> - ${errId}`;
             }
             this.newsService.add(userErrorHtml);
             res.status(500).json({success: false, message: userErrorTxt});
