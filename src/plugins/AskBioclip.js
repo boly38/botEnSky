@@ -79,11 +79,11 @@ export default class AskBioclip {
             });
 
             step = "birdIdentify handle response";
-            const imageAlt = bioResult;
             logger.info(`result:${result} ${isSet(bioResult) ? JSON.stringify(bioResult) : ""}`);
             logger.info(`bioResult:${JSON.stringify(bioResult)}`);
             if (result === IDENTIFY_RESULT.OK) {
                 const {scoredResult} = bioResult;
+                const imageAlt = scoredResult;
                 return await bioclipCommonService.replyToWithIdentificationResult(candidate,
                     {tags, doSimulate, context, imageUrl, imageAlt},
                     {scoredResult}
