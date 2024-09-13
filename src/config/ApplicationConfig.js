@@ -24,6 +24,7 @@ import AviBaseService from "../servicesExternal/AviBaseService.js";
 import BioClip from "../plugins/BioClip.js";
 import PluginsCommonService from "../services/PluginsCommonService.js";
 import AskBioclip from "../plugins/AskBioclip.js";
+import BioclipCommonService from "../services/BioclipCommonService.js";
 
 export default class ApplicationConfig {
     constructor() {
@@ -72,7 +73,7 @@ export default class ApplicationConfig {
             .addArgument(container.get('blueskyService'))
             .addArgument(container.get('pluginsCommonService'));
 
-        container.register('bioclipCommonService', PlantnetCommonService)
+        container.register('bioclipCommonService', BioclipCommonService)
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('blueskyService'))
             .addArgument(container.get('pluginsCommonService'));

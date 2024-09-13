@@ -5,10 +5,10 @@ export default class BioclipCommonService {
         this.pluginsCommonService = pluginsCommonService;
     }
 
-    async replyToWithIdentificationResult(replyTo, options, pnResult) {
+    async replyToWithIdentificationResult(replyTo, options, bioResult) {
         const {pluginsCommonService} = this;
         const {tags, doSimulate, context, imageUrl, imageAlt} = options;
-        const {scoredResult} = pnResult
+        const {scoredResult} = bioResult
 
         let replyMessage = `${scoredResult}\n\n${tags}`;
         // score result without image

@@ -67,15 +67,12 @@ export default class BioClip {
             });
 
             step = "birdIdentify handle response";
-            const imageAlt = bioResult;
             logger.info(`result:${result} ${isSet(bioResult) ? JSON.stringify(bioResult) : ""}`);
-            logger.info(`bioResult:${JSON.stringify(bioResult)}`);
             if (result === IDENTIFY_RESULT.OK) {
                 const {scoredResult} = bioResult;
-                return await bioclipCommonService.replyToWithIdentificationResult(candidate,
-                    {tags, doSimulate, context, imageUrl, imageAlt},
-                    {scoredResult}
-                );
+                const imageAlt = scoredResult;
+                let options = {tags, doSimulate, context, imageUrl, imageAlt};
+                return await bioclipCommonService.replyToWithIdentificationResult(candidate, options, {scoredResult});
             } else {
                 if (result !== IDENTIFY_RESULT.BAD_SCORE) {
                     logger.warn(`unable to handle grBirdApiService.birdIdentify result:${result} so consider it as NONE`);
