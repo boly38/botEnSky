@@ -37,7 +37,8 @@ export default class ApplicationProperties {
         this.bluesky = {
             identifier: getEnv("BLUESKY_USERNAME"),
             password: getEnv("BLUESKY_PASSWORD"),
-            service: getEnv("BLUESKY_SERVICE")
+            service: getEnv("BLUESKY_SERVICE"),
+            exclusions : getEnv("BOT_BLUESKY_EXCLUSIONS", "")// list of author.handle to exclude from search result
         }
         this.plantnet = {
             apiKey: getEnv("PLANTNET_API_PRIVATE_KEY")

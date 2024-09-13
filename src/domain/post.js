@@ -140,11 +140,13 @@ export const fiterWithNoReply = p => p?.replyCount === 0
 export const fiterWithNotMuted = p => p?.author?.viewer?.muted === false
 export const fiterWithNoReplyDisabled = p => p?.viewer?.replyDisabled !== true
 
-export const postsFilterSearchResults = (responsePosts, hasImages, hasNoReply, isNotMuted) => {
+export const postsFilterSearchResults = (responsePosts, hasImages, hasNoReply, isNotMuted, exclusions = []) => {
     let posts = fromBlueskyPosts(responsePosts);
     posts = hasImages ? posts?.filter(filterWithEmbedImageView) : posts;
     posts = hasNoReply ? posts?.filter(fiterWithNoReply) : posts;
     posts = isNotMuted ? posts?.filter(fiterWithNotMuted) : posts;
+    // remove excluded author handle
+    posts = exclusions.length > 0 ? posts?.filter(p => !exclusions.includes(p?.author?.handle)) : posts;
     // undertakes public viewer replyDisabled rule // https://github.com/bluesky-social/atproto/discussions/2576
     posts = posts?.filter(fiterWithNoReplyDisabled);
     return posts;

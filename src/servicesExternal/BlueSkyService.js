@@ -10,11 +10,16 @@ export default class BlueSkyService {
     constructor(config, loggerService) {
         this.config = config;
         this.logger = loggerService.getLogger().child({label: 'BlueSkyService'});
-        const {identifier, password, service} = config.bluesky
+        const {identifier, password, service, exclusions} = config.bluesky
         this.agent = new BskyAgent({service})
         this.api = this.agent.api;// inspired from https://github.com/skyware-js/bot/blob/main/src/bot/Bot.ts#L324
         this.agentConfig = {identifier, password};
         this.profile = null;
+        this.exclusions = isSet(exclusions) ? exclusions.split(",") : [];
+        if (!this.exclusions.includes(identifier)) {
+            this.exclusions.push(identifier);// exclude bot username to prevent "Ask" plugins from answering itself
+        }
+        this.logger.info(`exclusions: ${this.exclusions}`);
     }
 
     clearLogin() {
@@ -56,9 +61,10 @@ export default class BlueSkyService {
      * @returns {Promise<void>}
      */
     async searchPosts(options = {}) {
+        const { logger, exclusions } = this;
         const {
             searchQuery = "boly38",
-            limit = 20,
+            limit = 40,
             sort = "latest",// recent first
             hasImages = false,// does post include embed image
             hasNoReply = false,// does post has 0 reply
@@ -72,10 +78,11 @@ export default class BlueSkyService {
             params["since"] = since;
             params["until"] = nowMinusHoursUTCISO(0);
         }
-        this.logger.info(`searchPosts ${JSON.stringify(params)}`);
         const response = await this.resilientSearchPostsWithRetry(params, {}, 2);
-        const posts = postsFilterSearchResults(response?.data?.posts, hasImages, hasNoReply, isNotMuted);
-        this.logger.debug(`posts`, JSON.stringify(posts, null, 2));
+        let responsePosts = response?.data?.posts;
+        const posts = postsFilterSearchResults(responsePosts, hasImages, hasNoReply, isNotMuted, exclusions);
+        logger.info(`searchPosts ${JSON.stringify(params)} - ${responsePosts?.length} results, ${posts?.length} post-filter`);
+        logger.debug(`posts : `+ JSON.stringify(posts, null, 2));
         return posts;
     }
 
