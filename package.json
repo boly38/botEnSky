@@ -59,7 +59,7 @@
     "i18n": "^0.15.1",
     "node-dependency-injection": "^3.1.2",
     "superagent": "^9.0.2",
-    "tinyurl": "^1.1.7",
+    "turl": "^1.1.2",
     "winston": "^3.13.0"
   },
   "devDependencies": {

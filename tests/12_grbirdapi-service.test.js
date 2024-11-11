@@ -3,7 +3,7 @@ import ApplicationConfig from '../src/config/ApplicationConfig.js';
 import {_expectNoError, initEnv, testLogger} from "./libTest.js";
 import {expect} from "chai";
 
-const BAD_SCORE_JSON_RESULT = {"result":"BAD_SCORE"};
+const BAD_SCORE_JSON_RESULT = {"result": "BAD_SCORE"};
 
 initEnv();
 const appConfig = ApplicationConfig.getInstance();
