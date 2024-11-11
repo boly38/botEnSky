@@ -7,5 +7,6 @@ export default class TooManyRequestsException {
         this.code = ReasonPhrases.TOO_MANY_REQUESTS;
         this.status = StatusCodes.TOO_MANY_REQUESTS;
         this.message = isSet(message) ? message : i18n.__('server.error.tooManyRequests');
+        this.mustBeReported = false;
     }
 }
