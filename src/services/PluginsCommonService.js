@@ -97,7 +97,7 @@ export default class PluginsCommonService {
                 `<b>Erreur [${step}]</b>: impossible d'identifier l'image avec ${pluginName}`;
         }
         this.logger.error(`${askTxtError} : ${askTxtError} // message was: ${err.message}`, context);
-        return Promise.reject(pluginReject(askTxtError, askHtmlError, 500, "unable to identify"));
+        return Promise.reject(pluginReject(askTxtError, askHtmlError, 500, "unable to identify", true));
     }
 
     logCandidate(pluginName, candidate, candidatePhoto, context) {
@@ -107,7 +107,8 @@ export default class PluginsCommonService {
     }
 
     rejectWithIdentifyError(pluginName, step, candidate, err, context) {
-        const {status, message, mustBeReported} = err;
+        let {status, message, mustBeReported} = err;
+        mustBeReported = isSet(mustBeReported) ? mustBeReported : true;
         let plantnetTxtError = `[${step}] Impossible d'identifier l'image avec ${pluginName}`;
         let plantnetHtmlError = plantnetTxtError;
         if (isSet(candidate)) {
