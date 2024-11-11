@@ -17,7 +17,8 @@
     "wipBio": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: BioClip' http://localhost:5000/api/hook",
     "wipAPN": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: AskPlantnet' http://localhost:5000/api/hook",
     "wipPN": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: Plantnet' http://localhost:5000/api/hook",
-    "wipUM": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: UnMute' http://localhost:5000/api/hook"
+    "wipUM": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: UnMute' http://localhost:5000/api/hook",
+    "wipSum": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: Summary' http://localhost:5000/api/hook"
   },
   "repository": {
     "type": "git",

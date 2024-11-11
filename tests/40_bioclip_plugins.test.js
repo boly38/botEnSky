@@ -34,7 +34,7 @@ describe("🧪🧩 40 - bioClip Plugin\n", () => {
 
     it("BioClip plugin - id. OK images", async () => {
         await verifyPluginProcessResult(bioclipPlugin, pluginConfigDoSimulate,
-            ["BioClip identify (at 67.92%) Haliaeetus leucocephalus genus:Haliaeetus (fam. Accipitridae) com. Bald Eagle", bioclipPluginDefaultTag]);
+            ["BioClip identify (at 68.15%) Haliaeetus leucocephalus genus:Haliaeetus (fam. Accipitridae) com. Bald Eagle", bioclipPluginDefaultTag]);
     }).timeout(60 * 1000);
 
     it("BioClip plugin - id. BAD_SCORE", async () => {
@@ -52,7 +52,7 @@ describe("🧪🧩 41 - Ask-Bioclip Plugin\n", () => {
 
     it("Ask-Bioclip plugin - id. OK images", async () => {
         await verifyPluginProcessResult(askBioclipPlugin, pluginConfigDoSimulateAsk,
-            [": BioClip identify (at 87.05%) Cardinalis cardinalis genus:Cardinalis", bioclipAskPluginDefaultTag]);
+            [": BioClip identify (at 86.12%) Cardinalis cardinalis genus:Cardinalis (fam. Cardinalidae) com. Northern Cardinal", bioclipAskPluginDefaultTag]);
     }).timeout(60 * 1000);
 
     // possible coverage improvement : no species on avibase

@@ -61,7 +61,7 @@ export default class BlueSkyService {
      * @returns {Promise<void>}
      */
     async searchPosts(options = {}) {
-        const { logger, exclusions } = this;
+        let { logger, exclusions } = this;
         const {
             searchQuery = "boly38",
             limit = 40,
@@ -71,6 +71,9 @@ export default class BlueSkyService {
             isNotMuted = true,// is post muted by bot
             maxHoursOld = 1// restrict search time window "since" limit
         } = options;
+        if (isSet(options.exclusions)) {
+            exclusions = options.exclusions;
+        }
         const since = isSet(maxHoursOld) ? nowMinusHoursUTCISO(maxHoursOld) : null;
         await this.login();
         let params = {q: searchQuery, sort, limit};
@@ -80,6 +83,7 @@ export default class BlueSkyService {
         }
         const response = await this.resilientSearchPostsWithRetry(params, {}, 2);
         let responsePosts = response?.data?.posts;
+        // DEBUG FILTER // console.log(`filter : hasImages:${hasImages?"YES":"NO"}, hasNoReply:${hasNoReply?"YES":"NO"}, isNotMuted:${isNotMuted?"YES":"NO"}, exclusions:${exclusions}`)
         const posts = postsFilterSearchResults(responsePosts, hasImages, hasNoReply, isNotMuted, exclusions);
         logger.info(`searchPosts ${JSON.stringify(params)} - ${responsePosts?.length} results, ${posts?.length} post-filter`);
         logger.debug(`posts : `+ JSON.stringify(posts, null, 2));
