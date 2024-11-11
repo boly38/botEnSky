@@ -20,9 +20,12 @@ export default class SummaryService {
         const {context = {}} = options;
         const botPosts = await blueskyService.searchPosts({
             searchQuery: "from:botensky.bsky.social",
-            "hasImages": true,
+            "hasImages": false,
+            "hasNoReply":false,
+            "isNotMuted":false,
             "maxHoursOld": 7 * 24,// now-7d ... now
-            "limit": 100
+            "limit": 100,
+            "exclusions":[]
         })
         logger.info(`Summary - ${botPosts?.length} post(s)`, context);
         const analytics = {

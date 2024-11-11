@@ -53,10 +53,11 @@ export const cacheGetTtlObject = (key, ttlSecond, objectProviderFunction) => {
         evictDeprecatedTtlObject();
         const ttlObjects = MemoryCache.ttlObject.filter(ttlObject => ttlObject.key === key)
         if (isSet(ttlObjects) && ttlObjects.length === 1) {
+            DEBUG && console.log(`cache solve ${key}:${JSON.stringify(ttlObjects[0].value)}`);
             return resolve(ttlObjects[0].value);
         }
         cacheEvictKey(key);
-        // DEBUG && console.log(`cache miss:getTtlObject ${key}`);
+        DEBUG && console.log(`cache miss:getTtlObject ${key}`);
         const ttl = nowEpochSec() + ttlSecond;
         objectProviderFunction()
             .then(value => {
