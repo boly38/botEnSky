@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js"
 import timezone from "dayjs/plugin/timezone.js"
 import axios from "axios";
-import TinyURL from "tinyurl"; // dependent on utc plugin
+import turl from "turl";
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -95,10 +95,10 @@ export const buildShortUrlWithText = (logger, imageUrl, text) => {
         if (imageUrl === null) {
             return resolve(false);
         }
-        TinyURL.shorten(imageUrl)
+        turl.shorten(imageUrl)
             .then(shortenUrl => resolve(`${text}\n${shortenUrl}`))
             .catch(err => {
-                logger.warn(`Unable to use tinyUrl for this url : ${imageUrl} - details: ${err?.message}`);
+                logger.warn(`Unable to use turl for this url : ${imageUrl} - details: ${err?.message}`);
                 resolve(`${text}\n${imageUrl}`);
             });
     });
