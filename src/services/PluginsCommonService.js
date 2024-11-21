@@ -32,6 +32,8 @@ export default class PluginsCommonService {
             searchSimulationFile = null,
             hasImages = false, // need to be explicitly set
             hasNoReply = true,
+            hasNoReplyFromBot = false,
+            threadGetLimited = true,
             isNotMuted = true,
             maxHoursOld = 24
         } = config;
@@ -44,7 +46,12 @@ export default class PluginsCommonService {
             return Promise.resolve(loadJsonResource(`${dataSimulationDirectory}/${searchSimulationFile}.json`));
         }
         const candidatePosts = await blueskyService.searchPosts({
-            searchQuery: questions[bookmark], hasImages, hasNoReply, isNotMuted,
+            searchQuery: questions[bookmark],
+            hasImages,
+            hasNoReply,
+            hasNoReplyFromBot,
+            threadGetLimited,
+            isNotMuted,
             maxHoursOld// now-<maxHoursOld>h ... now
         })
         logger.info(`${candidatePosts.length} candidate(s)`, context);

@@ -12,6 +12,7 @@ import turl from "turl";
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
+export const BOT_HANDLE = 'botensky.bsky.social'
 export const DEFAULT_TZ = 'Europe/Paris'
 export const BES_DATE_FORMAT = "YYYY-MM-DD HH:mm:ss";
 const __dirname = path.resolve();
@@ -108,4 +109,7 @@ export const maxStringLength = (variable, max) => {
         return variable.substring(0, max - 3) + "...";
     }
     return variable;
+}
+export const timeout = ms => {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
