@@ -1,6 +1,13 @@
 import {BskyAgent, RichText} from '@atproto/api'
 import {descriptionOfPostAuthor, didOfPostAuthor, postLinkOf, postsFilterSearchResults} from "../domain/post.js";
-import {getEncodingBufferAndBase64FromUri, isSet, nowISO8601, nowMinusHoursUTCISO} from "../lib/Common.js";
+import {
+    BOT_HANDLE,
+    getEncodingBufferAndBase64FromUri,
+    isSet,
+    nowISO8601,
+    nowMinusHoursUTCISO,
+    timeout
+} from "../lib/Common.js";
 import InternalServerErrorException from "../exceptions/ServerInternalErrorException.js";
 import ServiceUnavailableException from "../exceptions/ServiceUnavailableException.js";
 
@@ -68,6 +75,8 @@ export default class BlueSkyService {
             sort = "latest",// recent first
             hasImages = false,// does post include embed image
             hasNoReply = false,// does post has 0 reply
+            hasNoReplyFromBot = false,// does post has 0 reply having current bot handle as author
+            threadGetLimited = true,// limit to 1 result when ned to getThread to filter post
             isNotMuted = true,// is post muted by bot
             maxHoursOld = 1// restrict search time window "since" limit
         } = options;
@@ -84,10 +93,11 @@ export default class BlueSkyService {
         const response = await this.resilientSearchPostsWithRetry(params, {}, 2);
         let responsePosts = response?.data?.posts;
         // DEBUG FILTER // console.log(`filter : hasImages:${hasImages?"YES":"NO"}, hasNoReply:${hasNoReply?"YES":"NO"}, isNotMuted:${isNotMuted?"YES":"NO"}, exclusions:${exclusions}`)
-        const posts = postsFilterSearchResults(responsePosts, hasImages, hasNoReply, isNotMuted, exclusions);
-        logger.info(`searchPosts ${JSON.stringify(params)} - ${responsePosts?.length} results, ${posts?.length} post-filter`);
-        logger.debug(`posts : `+ JSON.stringify(posts, null, 2));
-        return posts;
+        let filteredPosts = postsFilterSearchResults(responsePosts, hasImages, hasNoReply, isNotMuted, exclusions);
+        filteredPosts = await this.postsFilterFromEachThread(filteredPosts, hasNoReplyFromBot, threadGetLimited);
+        logger.info(`searchPosts ${JSON.stringify(params)} - ${responsePosts?.length} results, ${filteredPosts?.length} post-filter`);
+        logger.debug(`posts : `+ JSON.stringify(filteredPosts, null, 2));
+        return filteredPosts;
     }
 
     // https://github.com/bluesky-social/atproto/issues/2786 - bluesky api client should provide more than `TypeError: fetch failed`
@@ -106,6 +116,43 @@ export default class BlueSkyService {
                 throw error;
             }
         }
+    }
+
+    /**
+     * filter given posts
+     * @param posts post to filter
+     * @param hasNoReplyFromBot when true retains only posts having NO reply ith bot as author
+     * @param threadGetLimited when getPostThread is required by filter logic, and on first win,
+     * we leave with first candidate to save some API call
+     * @returns {Promise<*|Awaited<unknown>>}
+     */
+    async postsFilterFromEachThread(posts, hasNoReplyFromBot = false, threadGetLimited = true) {
+        if (!hasNoReplyFromBot) {// no filter
+            return posts;
+        }
+        let winnersPosts = [];
+        for (const post of posts) {
+            if ((await this.filterPostRepliesByAuthor(post.uri, BOT_HANDLE)).length===0) {// post with 0 replies having bot a author
+                winnersPosts.push(post);
+                if (threadGetLimited) {
+                    return winnersPosts;
+                }
+                await timeout(100);//~pseudo rate limit API call
+            }
+        }
+        return winnersPosts;
+    }
+
+    async filterPostRepliesByAuthor(postUri, authorHandle) {
+        // all reply via `getPostThread`
+        const reply = await this.api.app.bsky.feed.getPostThread({ uri: postUri });
+        const replies = reply?.data?.thread?.replies[0]?.replies;
+        // DEBUG // console.log(JSON.stringify(replies,null,2))
+        if (!replies || replies.length === 0) { // no reply at all
+            return [];
+        }
+        // filter reply by author only
+        return replies.filter(reply => reply.post.author.handle === authorHandle);
     }
 
     /**
