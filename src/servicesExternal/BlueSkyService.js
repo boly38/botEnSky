@@ -68,7 +68,7 @@ export default class BlueSkyService {
      * @returns {Promise<void>}
      */
     async searchPosts(options = {}) {
-        let { logger, exclusions } = this;
+        let {logger, exclusions} = this;
         const {
             searchQuery = "boly38",
             limit = 40,
@@ -96,7 +96,7 @@ export default class BlueSkyService {
         let filteredPosts = postsFilterSearchResults(responsePosts, hasImages, hasNoReply, isNotMuted, exclusions);
         filteredPosts = await this.postsFilterFromEachThread(filteredPosts, hasNoReplyFromBot, threadGetLimited);
         logger.info(`searchPosts ${JSON.stringify(params)} - ${responsePosts?.length} results, ${filteredPosts?.length} post-filter`);
-        logger.debug(`posts : `+ JSON.stringify(filteredPosts, null, 2));
+        logger.debug(`posts : ` + JSON.stringify(filteredPosts, null, 2));
         return filteredPosts;
     }
 
@@ -132,7 +132,7 @@ export default class BlueSkyService {
         }
         let winnersPosts = [];
         for (const post of posts) {
-            if ((await this.filterPostRepliesByAuthor(post.uri, BOT_HANDLE)).length===0) {// post with 0 replies having bot a author
+            if ((await this.filterPostRepliesByAuthor(post.uri, BOT_HANDLE)).length === 0) {// post with 0 replies having bot a author
                 winnersPosts.push(post);
                 if (threadGetLimited) {
                     return winnersPosts;
@@ -143,16 +143,33 @@ export default class BlueSkyService {
         return winnersPosts;
     }
 
+    getAllRepliesPosts(replies) {
+        let allReplies = [];
+        if (!replies) return allReplies;
+        replies?.forEach(reply => {
+            if (reply.post) {
+                allReplies.push(reply.post)
+            }
+            if (reply.replies) {
+                allReplies = allReplies.concat(this.getAllRepliesPosts(reply.replies));
+            }
+        });
+        return allReplies;
+    }
+
     async filterPostRepliesByAuthor(postUri, authorHandle) {
         // all reply via `getPostThread`
-        const reply = await this.api.app.bsky.feed.getPostThread({ uri: postUri });
-        const replies = reply?.data?.thread?.replies[0]?.replies;
-        // DEBUG // console.log(JSON.stringify(replies,null,2))
-        if (!replies || replies.length === 0) { // no reply at all
+        // console.log(`filterPostRepliesByAuthor ${postUri} ${authorHandle}`);
+        const reply = await this.api.app.bsky.feed.getPostThread({uri: postUri});
+        // console.log(JSON.stringify(reply,null,2))
+        const replies = reply?.data?.thread?.replies;
+        const aggregatedRepliesPosts = this.getAllRepliesPosts(replies);
+        // DEBUG // console.log(JSON.stringify(aggregatedRepliesPosts,null,2))
+        if (!aggregatedRepliesPosts || aggregatedRepliesPosts.length === 0) { // no reply at all
             return [];
         }
         // filter reply by author only
-        return replies.filter(reply => reply.post.author.handle === authorHandle);
+        return aggregatedRepliesPosts.filter(reply => reply.author.handle === authorHandle);
     }
 
     /**
