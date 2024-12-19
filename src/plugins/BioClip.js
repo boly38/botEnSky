@@ -82,8 +82,8 @@ export default class BioClip {
                 );
             }
         } catch (err) {
-            // console.log(err.stack);// print stack
-            // console.trace();// print stack
+            console.log(err.stack);// print stack
+            console.trace();// print stack
             return pluginsCommonService.rejectWithIdentifyError(pluginName, step, candidate, err, context);
         }
     }

@@ -204,6 +204,8 @@ export default class PluginsCommonService {
                     ));
                 })
                 .catch(err => {
+                    console.log(err.stack);// print stack
+                    console.trace();// print stack
                     plugin.logError("replyTo", err, {...context, doSimulate, replyTo, replyMessage});
                     reject(new Error("impossible de répondre au post"));
                 });
