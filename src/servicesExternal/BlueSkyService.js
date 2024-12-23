@@ -226,11 +226,16 @@ export default class BlueSkyService {
             logger.info(`SIMULATE REPLY TO ${postLinkOf(post)} : ${text}${embedDesc}`);
             return {"uri": "simulated_reply_uri", "cid": "simulated_reply_cid"};
         }
-        logger.debug("POST SENT:\n" + JSON.stringify(replyPost, null, 2));
-        const postReplyResponse = await this.agent.post(replyPost)
-        logger.info(`replyTo response : ${JSON.stringify(postReplyResponse)}`);
-        logger.info(`replyTo ${postLinkOf(post)} : ${text}`);
-        return postReplyResponse;
+        try {
+            logger.debug("POST SENT:\n" + JSON.stringify(replyPost, null, 2));
+            const postReplyResponse = await this.agent.post(replyPost)
+            logger.info(`replyTo response : ${JSON.stringify(postReplyResponse)}`);
+            logger.info(`replyTo ${postLinkOf(post)} : ${text}`);
+            return postReplyResponse;
+        } catch (postException) {
+            logger.error(`agent.post error ${postException.message}`);
+            throw new InternalServerErrorException(`Bluesky replyTo was failed`);
+        }
     }
 
     prepareImageUrlAsBlueskyEmbed(imageUri, imageAltText) {
