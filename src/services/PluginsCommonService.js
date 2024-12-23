@@ -116,15 +116,15 @@ export default class PluginsCommonService {
     rejectWithIdentifyError(pluginName, step, candidate, err, context) {
         let {status, message, mustBeReported} = err;
         mustBeReported = isSet(mustBeReported) ? mustBeReported : true;
-        let plantnetTxtError = `[${step}] Impossible d'identifier l'image avec ${pluginName}`;
-        let plantnetHtmlError = plantnetTxtError;
+        let pluginTxtError = `[${step}] Impossible d'identifier l'image avec ${pluginName}`;
+        let pluginHtmlError = pluginTxtError;
         if (isSet(candidate)) {
-            plantnetTxtError = `[${step}] Impossible d'identifier l'image de ${postLinkOf(candidate)} avec ${pluginName}`;
-            plantnetHtmlError = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div>` +
+            pluginTxtError = `[${step}] Impossible d'identifier l'image de ${postLinkOf(candidate)} avec ${pluginName}`;
+            pluginHtmlError = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div>` +
                 `<b>Erreur [${step}]</b>: impossible d'identifier l'image avec ${pluginName}`;
         }
-        this.logger.error(`${plantnetTxtError} : ${message}`, context);
-        return Promise.reject(pluginReject(plantnetTxtError, plantnetHtmlError,
+        this.logger.error(`${pluginTxtError} : ${message}`, context);
+        return Promise.reject(pluginReject(pluginTxtError, pluginHtmlError,
             isSet(status) ? status : 500,
             `${pluginName} unexpected error`, mustBeReported));
     }
@@ -204,7 +204,8 @@ export default class PluginsCommonService {
                     ));
                 })
                 .catch(err => {
-                    console.log(err.stack);// print stack
+                    console.log(err);// print err
+                    console.log(err?.stack);// print stack
                     console.trace();// print stack
                     plugin.logError("replyTo", err, {...context, doSimulate, replyTo, replyMessage});
                     reject(new Error("impossible de répondre au post"));
