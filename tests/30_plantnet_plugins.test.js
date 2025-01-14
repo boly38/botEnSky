@@ -1,4 +1,3 @@
-/* jshint expr: true */        // for to.be.empty
 /* eslint-disable mocha/max-top-level-suites */
 import {before, describe, it} from 'mocha';
 import ApplicationConfig from '../src/config/ApplicationConfig.js';

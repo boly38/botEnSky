@@ -1,5 +1,17 @@
   <div class="panel panel-info" id="principes">
-    <div class="panel-heading"><%= __('principles.bot_principles') %></div>
+    <div class="fixed-div"><a href="#top" style="text-decoration: none;">🔝</a></div>
+    <div class="panel-heading">
+        <h1 id="top"><%= __('principles.bot_principles') %></h1>
+
+                            <%= __('principles.functions') %>
+                            <ul>
+                                <li><a href="#BeSPlantnet">BeSPlantnet</a></li>
+                                <li><a href="#BeSAskPlantnet">BeSAskPlantnet</a></li>
+                                <li><a href="#BeSBioClip">BeSBioClip</a></li>
+                                <li><a href="#BeSAskBioClip">BeSAskBioClip</a></li>
+                                <li><a href="#1Day1Bioclip">1Day1Bioclip</a></li>
+                            </ul>
+    </div>
     <div class="panel-body">
             <!-- Part A -->
             <div class="card bes-card">
@@ -7,49 +19,68 @@
               <!-- examples commons -->
               <script async src="https://embed.bsky.app/static/embed.js" charset="utf-8"></script>
 
-              <b><%= __('principles.functions') %></b>
-              <ul>
-<!-- #BeSPlantnet -->
-              <li><b><a href="https://bsky.app/hashtag/BeSPlantnet" target="_bluesky">#BeSPlantnet</a></b> - <%= __('principles.besplantnet.head') %><br/><br/>
+          <h3 id="BeSPlantnet">BeSPlantnet</h3>
+              <p>
+                <b><a href="https://bsky.app/hashtag/BeSPlantnet" target="_bluesky">#BeSPlantnet</a></b> - <%= __('principles.besplantnet.head') %><br/><br/>
                    <%= __('principles.besplantnet.body') %>
-              </li>
+              </p>
 
-                  <!-- BeSPlantnet example -->
+              <h4>Example</h4>
                   <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:jkvb3exm4wg3jt5veu75qppn/app.bsky.feed.post/3kv2rkoqy5x2w" data-bluesky-cid="bafyreia7axfc4pwo5jvuw5mb5ap7zpmxhmkqk6k2cpwtsrldtn66gfncaa"><p lang="">Pl@ntNet identifie (à 80.29%) Couroupita guianensis (fam Lecythidaceae) com. Arbre à boulet de canon, Calabasse Colin, Abricot-macaque
                   #BeSPlantnet #IndentificationDePlantes<br><br><a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3kv2rkoqy5x2w?ref_src=embed">[image or embed]</a></p>&mdash; botEnSky (<a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn?ref_src=embed">@botensky.bsky.social</a>) <a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3kv2rkoqy5x2w?ref_src=embed">Jun 16, 2024 at 20:18</a></blockquote>
                   <br/><br/>
 
-<!-- #BeSAskPlantnet -->
-              <li><b><a href="https://bsky.app/hashtag/BeSAskPlantnet" target="_bluesky">#BeSAskPlantnet</a></b> - <%= __('principles.besaskplantnet.head') %><br/><br/>
-                  <%- __('principles.besaskplantnet.body') %>
-              </li>
 
-                  <!-- BeSAskPlantnet example -->
+          <h3 id="BeSAskPlantnet">BeSAskPlantnet</h3>
+              <p>
+                 <b><a href="https://bsky.app/hashtag/BeSAskPlantnet" target="_bluesky">#BeSAskPlantnet</a></b> - <%= __('principles.besaskplantnet.head') %><br/><br/>
+                  <%- __('principles.besaskplantnet.body') %>
+              </p>
+
+              <h4>Example</h4>
                   <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:jkvb3exm4wg3jt5veu75qppn/app.bsky.feed.post/3ku6ujolvd22w" data-bluesky-cid="bafyreig7yo3pptqetfbfagvzsebxeaitwzwxf3fyfpx3ee6irk7aawygky"><p lang="">Pl@ntNet identifie (à 27.70%) Myosotis decumbens (fam Boraginaceae) com. Myosotis retombant, Myosotis étalé
                   #BeSAskPlantnet #IndentificationDePlantes<br><br><a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3ku6ujolvd22w?ref_src=embed">[image or embed]</a></p>&mdash; botEnSky (<a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn?ref_src=embed">@botensky.bsky.social</a>) <a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3ku6ujolvd22w?ref_src=embed">Jun 5, 2024 at 17:57</a></blockquote>
                   <br/><br/>
 
-<!-- #BeSBioClip -->
-              <li><b><a href="https://bsky.app/hashtag/BeSBioClip" target="_bluesky">#BeSBioClip</a></b> - <%= __('principles.besbioclip.head') %><br/><br/>
+
+          <h3 id="BeSBioClip">BeSBioClip</h3>
+              <p>
+                  <b><a href="https://bsky.app/hashtag/BeSBioClip" target="_bluesky">#BeSBioClip</a></b> - <%= __('principles.besbioclip.head') %><br/><br/>
                   <%- __('principles.besbioclip.body') %>
-              </li>
-
-<!-- #BeSAskBioClip -->
-              <li><b><a href="https://bsky.app/hashtag/BeSAskBioClip" target="_bluesky">#BeSAskBioClip</a></b> - <%= __('principles.besaskbioclip.head') %><br/><br/>
-                  <%- __('principles.besaskbioclip.body') %>
-              </li>
+              </p>
 
 
-                  <!-- BeSBioClip example -->
-                  <img src="https://cdn.bsky.app/img/feed_thumbnail/plain/did:plc:enfg4d3wj5udrx3p66bttsq6/bafkreibis5zkx4lojiwir3kyzxoswgdwsn4ocrvvsbiej6vxnm5hwftco4@jpeg" class="medium-post-image" alt="post example of a bird" title="post example of a bird">
-                  <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:jkvb3exm4wg3jt5veu75qppn/app.bsky.feed.post/3kwwag6ok3r2x" data-bluesky-cid="bafyreicbu4a4lwbx2wrbz2iurmn7l4wswscjql4h2rkfzqratwugfnebu4"><p lang="">BioClip identify (at 98.69%) Tyrannus tyrannus genus:Tyrannus (fam. Tyrannidae) com. Eastern Kingbird
+              <h4>Example</h4>
+                  <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:twu4iqyasazfles5q5ci2dz3/app.bsky.feed.post/3l2s6yrmnnc2h" data-bluesky-cid="bafyreiflmpktoy6zm5cpu3hsmxl2e2sbmytmimlw63jwqnbvl6xozkc65m"><p lang="en">Another great antbird of Amazonas is the White-browed Antbird. These are not common birds, but are very cooperative photo subjects.
+
+                  #birds<br><br><a href="https://bsky.app/profile/did:plc:twu4iqyasazfles5q5ci2dz3/post/3l2s6yrmnnc2h?ref_src=embed">[image or embed]</a></p>&mdash; Mike Melton (<a href="https://bsky.app/profile/did:plc:twu4iqyasazfles5q5ci2dz3?ref_src=embed">@mikemelton.bsky.social</a>) <a href="https://bsky.app/profile/did:plc:twu4iqyasazfles5q5ci2dz3/post/3l2s6yrmnnc2h?ref_src=embed">28 août 2024 à 18:56</a></blockquote><script async src="https://embed.bsky.app/static/embed.js" charset="utf-8"></script>
+
+
+                  <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:jkvb3exm4wg3jt5veu75qppn/app.bsky.feed.post/3l2ultjeyvp2z" data-bluesky-cid="bafyreidhfsmvhtldb67xwtwpa7yc2dlu3b2a2obnqk3hephh2tiryh2a64"><p lang="">BioClip identify (at 99.49%) Myrmoborus leucophrys genus:Myrmoborus (fam. Thamnophilidae) com. White-browed Antbird
+
                   Avibase flickr
-                  https://tinyurl.com/2xmvc3b9
-                  #BeSBioClip #TreeOfLife10MPrediction</p>&mdash; botEnSky (<a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn?ref_src=embed">@botensky.bsky.social</a>) <a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3kwwag6ok3r2x?ref_src=embed">Jul 10, 2024 at 11:51</a>
-                  <br/><br/>
+                  https://tinyurl.com/27hn4pwo
+
+                  #BeSBioClip #TreeOfLife10MPrediction</p>&mdash; botEnSky (<a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn?ref_src=embed">@botensky.bsky.social</a>) <a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3l2ultjeyvp2z?ref_src=embed">29 août 2024 à 17:51</a></blockquote><script async src="https://embed.bsky.app/static/embed.js" charset="utf-8"></script>
+
+
+
+          <h3 id="BeSAskBioClip">BeSAskBioClip</h3>
+              <p>
+                  <b><a href="https://bsky.app/hashtag/BeSAskBioClip" target="_bluesky">#BeSAskBioClip</a></b> - <%= __('principles.besaskbioclip.head') %><br/><br/>
+                  <%- __('principles.besaskbioclip.body') %>
+              </p>
+
+
+          <h3 id="1Day1Bioclip">1Day1Bioclip</h3>
+
+              <p>
+                  <b><a href="https://bsky.app/hashtag/1Day1Bioclip" target="_bluesky">#1Day1Bioclip</a></b> - <%= __('principles.onedayonebioclip.head') %><br/><br/>
+                  <%- __('principles.onedayonebioclip.body') %>
+              </p>
+
  <br/><br/> <br/><br/> <br/><br/> <br/><br/>
 
-              </ul>
 
               </div>
             </div>
@@ -70,7 +101,6 @@
                       <a href="<%- projectDiscussions %>"
                          data-umami-event="{projectDiscussions link}" id="projectDiscussions-link"><%= __('project.line6link') %></a> !
                 </ul>
-
               </div>
             </div>
     </div>

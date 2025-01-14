@@ -1,4 +1,3 @@
-import { Buffer } from 'buffer';
 import path from 'node:path';
 import fs from 'node:fs';
 import process from "node:process";
@@ -6,12 +5,12 @@ import dayjs from "dayjs";
 
 import utc from "dayjs/plugin/utc.js"
 import timezone from "dayjs/plugin/timezone.js"
-import axios from "axios";
 import turl from "turl";
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
+export const BOT_NAME = 'botEnSky'
 export const BOT_HANDLE = 'botensky.bsky.social'
 export const DEFAULT_TZ = 'Europe/Paris'
 export const BES_DATE_FORMAT = "YYYY-MM-DD HH:mm:ss";
@@ -43,8 +42,6 @@ export function getEnvInt(varName, defaultValue = null) {
 
 export const isSet = value => value !== undefined && value !== null && value !== "";
 
-export const arrayIsNotEmpty = arr => isSet(arr) && arr.length > 0;
-
 export const assumePropertyIsSet = (expectedValue, name) => {
     if (!isSet(expectedValue)) {
         throw new Error(`application properties - expect following '${name}' value to be set`);
@@ -74,30 +71,13 @@ export const toHumanTime = (utcDateTimeString, tz= DEFAULT_TZ) => {
 
 export const generateErrorId = () => "ERR_" + dayjs().format("YYYYMMDDHHmmss");
 
-export const getEncodingBufferAndBase64FromUri = imageUri => {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(imageUri, {
-                responseType: 'arraybuffer'
-            })
-            .then(response => {
-                const encoding = response.headers["content-type"];
-                const buffer = Buffer.from(response.data, 'binary');/* incoming data are binary */
-                const base64 = buffer.toString('base64');
-                resolve({encoding, buffer, base64});
-            })
-            .catch(reject)
-    });
-};
-
-
 export const buildShortUrlWithText = (logger, imageUrl, text) => {
     return new Promise(resolve => {
         if (imageUrl === null) {
             return resolve(false);
         }
         turl.shorten(imageUrl)
-            .then(shortenUrl => resolve(`${text}\n${shortenUrl}`))
+            .then(shortenUrl => resolve(`${text}${shortenUrl}`))
             .catch(err => {
                 logger.warn(`Unable to use turl for this url : ${imageUrl} - details: ${err?.message}`);
                 resolve(`${text}\n${imageUrl}`);

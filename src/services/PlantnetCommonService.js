@@ -23,7 +23,8 @@ export default class PlantnetCommonService {
             } catch (embedErr) {
                 // image as text link into reply post
                 logger.info(`Unable to make bluesky embed of image ${firstImageOriginalUrl}, so keep it as text link: ${embedErr.message}`);
-                const illustrateImage = await buildShortUrlWithText(this.logger, firstImageOriginalUrl, firstImageText)
+                const illustrateImage = await buildShortUrlWithText(this.logger, firstImageOriginalUrl,
+                    firstImageText + "\n")
                 const withImageLink = (illustrateImage ? "\n\n" + illustrateImage : "")
                 replyMessage = `${scoredResult}\n${withImageLink} \n\n${tags}`;
                 return await pluginsCommonService.replyResult(replyTo, {doSimulate, context, imageUrl, imageAlt}, replyMessage);

@@ -1,22 +1,17 @@
 import {BskyAgent, RichText} from '@atproto/api'
 import {descriptionOfPostAuthor, didOfPostAuthor, postLinkOf, postsFilterSearchResults} from "../domain/post.js";
-import {
-    BOT_HANDLE,
-    getEncodingBufferAndBase64FromUri,
-    isSet,
-    nowISO8601,
-    nowMinusHoursUTCISO,
-    timeout
-} from "../lib/Common.js";
+import {BOT_HANDLE, BOT_NAME, isSet, nowISO8601, nowMinusHoursUTCISO, timeout} from "../lib/Common.js";
 import InternalServerErrorException from "../exceptions/ServerInternalErrorException.js";
 import ServiceUnavailableException from "../exceptions/ServiceUnavailableException.js";
 
 const BLUESKY_POST_LENGTH_MAX = 300;// https://github.com/bluesky-social/bsky-docs/issues/162
+const BLUESKY_EMBED_IMAGE_BUFFER_LENGTH_MAX = 1000000;
 
 export default class BlueSkyService {
-    constructor(config, loggerService) {
+    constructor(config, loggerService, resizeService) {
         this.config = config;
         this.logger = loggerService.getLogger().child({label: 'BlueSkyService'});
+        this.resizeService = resizeService;
         const {identifier, password, service, exclusions} = config.bluesky
         this.agent = new BskyAgent({service})
         this.api = this.agent.api;// inspired from https://github.com/skyware-js/bot/blob/main/src/bot/Bot.ts#L324
@@ -76,7 +71,7 @@ export default class BlueSkyService {
             hasImages = false,// does post include embed image
             hasNoReply = false,// does post has 0 reply
             hasNoReplyFromBot = false,// does post has 0 reply having current bot handle as author
-            threadGetLimited = true,// limit to 1 result when ned to getThread to filter post
+            threadGetLimited = true,// limit to 1 result when need to getThread to filter post
             isNotMuted = true,// is post muted by bot
             maxHoursOld = 1// restrict search time window "since" limit
         } = options;
@@ -224,7 +219,7 @@ export default class BlueSkyService {
         if (doSimulate) {
             const embedDesc = embed !== null ? `\n[${embed["$type"]}|alt:${embed?.images[0]?.alt}]` : '';
             logger.info(`SIMULATE REPLY TO ${postLinkOf(post)} : ${text}${embedDesc}`);
-            return {"uri": "simulated_reply_uri", "cid": "simulated_reply_cid"};
+            return {"uri": "/app.bsky.feed.post/simulated_reply_uri", "cid": "simulated_reply_cid"};
         }
         try {
             logger.debug("POST SENT:\n" + JSON.stringify(replyPost, null, 2));
@@ -238,38 +233,95 @@ export default class BlueSkyService {
         }
     }
 
-    prepareImageUrlAsBlueskyEmbed(imageUri, imageAltText) {
-        const bs = this;
-        return new Promise((resolve, reject) => {
-            getEncodingBufferAndBase64FromUri(imageUri)
-                .then(result => {
-                    const {encoding, buffer, base64} = result;
-                    if (encoding === undefined) {
-                        throw new Error("encoding is undefined");
-                    }
-                    if (base64?.length < 1) {
-                        throw new Error("image is empty");
-                    }
-                    if (base64?.length > 1000000) {
-                        throw new Error(`image file size too large (${base64?.length}). 1000000 bytes maximum`);
-                    }
-                    bs.logger.debug(`base64.length=${base64?.length} encoding=${encoding}`)
-                    // create blueSky blob of image
-                    bs.agent.uploadBlob(buffer, {encoding})
-                        .then(upBlobResponse => {
-                            const {data} = upBlobResponse;
-                            const embed = {
-                                $type: 'app.bsky.embed.images',
-                                images: [ // can be an array up to 4 values
-                                    {"alt": imageAltText, "image": data.blob}
-                                ]
-                            };
-                            resolve(embed);
-                        })
-                        .catch(reject);
-                })
-                .catch(reject);
-        });
+
+    /**
+     * create a new POST with a given TEXT and a given image
+     * bluesky doc : https://docs.bsky.app/docs/advanced-guides/posts
+     * To create facets, we may use dedicated tooling.
+     *  - https://docs.bsky.app/docs/advanced-guides/posts#mentions-and-links
+     *  - https://docs.bsky.app/docs/advanced-guides/post-richtext
+     * @param text
+     * @param doSimulate
+     * @param imageUrl
+     * @param imageAlt
+     * @returns {Promise<unknown>}
+     */
+    async newPost(text, doSimulate, imageUrl, imageAlt) {
+        const {logger} = this;
+
+        if (!isSet(text)) {
+            throw new InternalServerErrorException(`Trying to post with an empty content`);
+        }
+
+        if (text.length > BLUESKY_POST_LENGTH_MAX) {
+            throw new InternalServerErrorException(`Trying to post with a content length over the limits (${text.length} > ${BLUESKY_POST_LENGTH_MAX}:${text}`);
+        }
+
+        let embed;
+        try {
+            embed = await this.prepareImageUrlAsBlueskyEmbed(imageUrl, imageAlt)
+        } catch (embedErr) {
+            logger.info(`Unable to make bluesky embed of image ${imageUrl}, so cancel post: ${embedErr.message}`);
+            throw new InternalServerErrorException(`Unable to embed image while trying to post with an image`);
+        }
+
+        //~ rich format
+        const rt = new RichText({text})
+        try {
+            await rt.detectFacets(this.agent) // automatically detects mentions and links
+        } catch (err) {
+            logger.error(`detectFacets error ${err.message}`);
+        }
+        const newPost = {
+            "$type": "app.bsky.feed.post",
+            text: rt.text,
+            facets: rt.facets,
+            "createdAt": nowISO8601(), // ex. "2023-08-07T05:49:40.501974Z" OR new Date().toISOString()
+            "langs": ["en-US"]
+        };
+        if (embed !== null) {
+            newPost.embed = embed;
+        }
+
+        if (doSimulate) {
+            const embedDesc = embed !== null ? `\n[${embed["$type"]}|alt:${embed?.images[0]?.alt}]` : '';
+            logger.debug(`**SIMULATE** NEW POST : ${text}${embedDesc}`);
+            return {
+                "uri": "/app.bsky.feed.post/simulated_reply_uri",
+                "cid": "simulated_reply_cid",
+                author: {"handle": BOT_HANDLE, "displayName": BOT_NAME},
+                record: {"text":text+embedDesc, "createdAt": nowISO8601()}
+            };
+
+        }
+        try {
+            logger.debug("POST SENT:\n" + JSON.stringify(newPost, null, 2));
+            const newPostResponse = await this.agent.post(newPost)
+            logger.info(`newPost response : ${JSON.stringify(newPostResponse)}`);
+            logger.info(`newPost ${postLinkOf(newPostResponse)}`);
+            return newPostResponse;
+        } catch (postException) {
+            logger.error(`agent.post error ${postException.message}`);
+            throw new InternalServerErrorException(`Bluesky post was failed`);
+        }
+    }
+
+    async prepareImageUrlAsBlueskyEmbed(imageUri, imageAltText) {
+        const {resizeService, logger, agent} = this;
+        const {encoding, buffer, base64, quality} = await resizeService.getEncodingBufferAndBase64FromUri(
+            imageUri,
+            {bufferMaxSize: BLUESKY_EMBED_IMAGE_BUFFER_LENGTH_MAX}
+        );
+        logger.info(`prepared image: encoding=${encoding} base64.length=${base64?.length} quality=${quality}`)
+        // create blueSky blob of image
+        const upBlobResponse = await agent.uploadBlob(buffer, {encoding})
+        const {data} = upBlobResponse;
+        return {
+            $type: 'app.bsky.embed.images',
+            images: [ // can be an array up to 4 values
+                {"alt": imageAltText, "image": data.blob}
+            ]
+        };
     }
 
     async getMutes() {

@@ -1,6 +1,7 @@
 import {dataSimulationDirectory, pluginReject, pluginResolve} from "./BotService.js";
 import {postAuthorOf, postHtmlOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
-import {arrayIsNotEmpty, isSet, loadJsonResource} from "../lib/Common.js";
+import {isSet, loadJsonResource} from "../lib/Common.js";
+import {arrayIsNotEmpty} from "../lib/ArrayUtil.js";
 
 export default class PluginsCommonService {
     constructor(loggerService, auditLogsService, blueskyService) {

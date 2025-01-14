@@ -70,6 +70,7 @@ export default class BotService {
             }
             return result;
         } catch (error) {
+            // DEBUG // console.trace();// print stack
             if (error.status && error.message) {
                 throw error;
             }

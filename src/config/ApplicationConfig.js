@@ -25,6 +25,9 @@ import BioClip from "../plugins/BioClip.js";
 import PluginsCommonService from "../services/PluginsCommonService.js";
 import AskBioclip from "../plugins/AskBioclip.js";
 import BioclipCommonService from "../services/BioclipCommonService.js";
+import UnsplashService from "../services/UnsplashService.js";
+import OneDayOneBioclip from "../plugins/OneDayOneBioclip.js";
+import ResizeService from "../services/ResizeService.js";
 
 export default class ApplicationConfig {
     constructor() {
@@ -44,20 +47,28 @@ export default class ApplicationConfig {
         // register logger
         this.logger = container.get('loggerService').getLogger().child({label: 'ApplicationConfig'}); // https://github.com/winstonjs/winston?tab=readme-ov-file#creating-child-loggers
 
+        container.register('resizeService', ResizeService)
+            .addArgument(container.get('loggerService'));
+
         container.register('logtailService', LogtailService)
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'));
+
         container.register('newsService', NewsService)
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('logtailService'));
+
         container.register('discordService', DiscordSendService)
             .addArgument(container.get('config'));
+
         container.register('auditLogsService', AuditLogsService)
             .addArgument(container.get('discordService'));
 
         container.register('blueskyService', BlueSkyService)
             .addArgument(container.get('config'))
-            .addArgument(container.get('loggerService'));
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('resizeService'))
+        ;
 
         container.register('inactivityDetector', InactivityDetector)
             .addArgument(container.get('config'))
@@ -94,6 +105,11 @@ export default class ApplicationConfig {
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('blueskyService'));
 
+        container.register('unsplashService', UnsplashService)
+            .addArgument(container.get('config'))
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('pluginsCommonService'));
+
     }
 
     constructPlugins() {
@@ -116,8 +132,6 @@ export default class ApplicationConfig {
             .addArgument(container.get('pluginsCommonService'))
             .addArgument(container.get('plantnetCommonService'))
             .addArgument(container.get('plantnetApiService'));
-
-        this.plugins.push(container.get('plantnet'));
         this.plugins.push(container.get('askPlantnet'));
 
         container.register('unmute', UnMute)
@@ -139,6 +153,8 @@ export default class ApplicationConfig {
             .addArgument(container.get('pluginsCommonService'))
             .addArgument(container.get('bioclipCommonService'))
             .addArgument(container.get('grBirdApiService'));
+        this.plugins.push(container.get('bioclip'));
+
         container.register('askBioclip', AskBioclip)
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'))
@@ -146,8 +162,16 @@ export default class ApplicationConfig {
             .addArgument(container.get('pluginsCommonService'))
             .addArgument(container.get('bioclipCommonService'))
             .addArgument(container.get('grBirdApiService'));
-        this.plugins.push(container.get('bioclip'));
         this.plugins.push(container.get('askBioclip'));
+
+        container.register('oneDayOneBioclip', OneDayOneBioclip)
+            .addArgument(container.get('config'))
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('blueskyService'))
+            .addArgument(container.get('unsplashService'))
+            .addArgument(container.get('pluginsCommonService'))
+            .addArgument(container.get('grBirdApiService'));
+        this.plugins.push(container.get('oneDayOneBioclip'));
     }
 
     constructBot() {

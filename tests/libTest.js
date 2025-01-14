@@ -40,11 +40,10 @@ export const initEnv = () => {
     dotEnvFlow.config({path: 'env/'});
 }
 export const _expectNoError = (err) => {
-    console.error("_expectNoError", err);
-    const {status,message,success,error} = err;
-    console.error("_expectNoError details attempt", {status,message,success,error} );
+    const {status, message, success, error} = err;
+    console.error(`_expectNoError details attempt: ${JSON.stringify({status, message, success, error})}`);
     console.trace();// print stack
-    expect.fail(err);
+    expect.fail(err?.message || err);
 }
 export const assumeSuccess = (err, res) => {
     if (err) {
@@ -57,14 +56,18 @@ export const assumeSuccess = (err, res) => {
 }
 
 
-export const verifyPluginProcessResult = async (plugin, config, expectedResultTexts)=> {
-    const result = await plugin.process(config).catch(err => {
-        if (err.status === 202) {
-            testLogger.warn("plugin.process : no result - this use case should no more happens because bs search may be simulated");
-        } else {
-            _expectNoError(err);
-        }
-    });
+export const verifyPluginProcessResult = async (plugin, config, expectedResultTexts) => {
+    const result = await plugin
+        .process(config)
+        .catch(err => {
+            testLogger.info(`plugin.process : err:${JSON.stringify(err)}`);
+            if (err.status === 202) {
+                testLogger.info("plugin.process : no result - this use case should no more happens because bs search may be simulated");
+            } else {
+                console.trace();// print stack
+                _expectNoError(err);
+            }
+        });
 
     if (result) {
         testLogger.debug("plugin.process", result);
