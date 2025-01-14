@@ -1,4 +1,3 @@
-/* jshint expr: true */                // for to.be.empty
 import {before, describe, it} from 'mocha';
 import ApplicationConfig from '../src/config/ApplicationConfig.js';
 import {initEnv, verifyPluginProcessResult} from "./libTest.js";

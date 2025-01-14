@@ -125,6 +125,7 @@ export const postFormatterOf = (post, format = "text") => {
 }
 
 export const postAuthorOf = post => post?.author;
+export const postBodyOf = post => post?.record?.text;
 export const displayNameOfPostAuthor = postAuthor => postAuthor?.displayName;
 export const handleOfPostAuthor = postAuthor => postAuthor?.handle;
 export const didOfPostAuthor = postAuthor => postAuthor?.did;
@@ -136,19 +137,19 @@ export const descriptionOfPostAuthor = postAuthor => {
 }
 
 export const filterWithEmbedImageView = p => p?.embed?.$type === "app.bsky.embed.images#view"
-export const fiterWithNoReply = p => p?.replyCount === 0
-export const fiterWithNotMuted = p => p?.author?.viewer?.muted === false
-export const fiterWithNoReplyDisabled = p => p?.viewer?.replyDisabled !== true
+export const filterWithNoReply = p => p?.replyCount === 0
+export const filterWithNotMuted = p => p?.author?.viewer?.muted === false
+export const filterWithNoReplyDisabled = p => p?.viewer?.replyDisabled !== true
 
 export const postsFilterSearchResults = (responsePosts, hasImages, hasNoReply, isNotMuted, exclusions = []) => {
     let posts = fromBlueskyPosts(responsePosts);
     posts = hasImages ? posts?.filter(filterWithEmbedImageView) : posts;
-    posts = hasNoReply ? posts?.filter(fiterWithNoReply) : posts;
-    posts = isNotMuted ? posts?.filter(fiterWithNotMuted) : posts;
+    posts = hasNoReply ? posts?.filter(filterWithNoReply) : posts;
+    posts = isNotMuted ? posts?.filter(filterWithNotMuted) : posts;
     // remove excluded author handle
     posts = exclusions.length > 0 ? posts?.filter(p => !exclusions.includes(p?.author?.handle)) : posts;
     // undertakes public viewer replyDisabled rule // https://github.com/bluesky-social/atproto/discussions/2576
-    posts = posts?.filter(fiterWithNoReplyDisabled);
+    posts = posts?.filter(filterWithNoReplyDisabled);
     return posts;
 }
 

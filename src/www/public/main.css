@@ -155,3 +155,15 @@ li.msgContainer {
     position: relative;
     float: right;
 }
+
+.fixed-div {
+    position: fixed;
+    bottom: 10px; /* Distance par rapport au bas de l'écran */
+    right: 10px; /* Distance par rapport à la droite de l'écran */
+    background-color: #c3d2e1; /* Couleur de fond */
+    padding: 5px; /* Espacement interne */
+    border-radius: 10px; /* Coins arrondis */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
+    font-family: Arial, sans-serif; /* Style de police */
+    z-index: 1000; /* Assure que la div est au-dessus des autres éléments */
+}

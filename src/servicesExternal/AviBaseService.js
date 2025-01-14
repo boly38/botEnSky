@@ -38,7 +38,7 @@ export default class AviBaseService {
         if (speciesValue !== null) {
             const longUrl = `https://avibase.bsc-eoc.org/species.jsp?lang=EN&avibaseid=${speciesValue}&sec=flickr`;
             // DEBUG // console.log(`getSpeciesLink ${longUrl} shorted`);
-            return buildShortUrlWithText(this.logger, longUrl, "Avibase flickr");
+            return buildShortUrlWithText(this.logger, longUrl, "Avibase flickr\n");
         }
         return null;
     }

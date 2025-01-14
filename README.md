@@ -42,9 +42,14 @@ His ambition is to **bring 😊 happiness to 🦋 Bluesky 👤 users**.
 - on **good score** result: post a reply with confident ratio, species, genus, family, common name, and a link to flickr gallery (provided by [Avibase](https://avibase.bsc-eoc.org/))
 - on **bad score** result, or **nothing detected** result: mute author and don't reply. The action to "mute" the author is to avoid to replay the same classification twice a day (for same result). Muted authors are unMuted by UnMute plugin at the end of the day.
 
+
 - 🧩 [askBioclip](src/plugins/AskBioclip.js) plugin
 
 *search a post with one of [askBioclip](src/data/askBioclip.json) mention, and try to classify the parent post first image using the same previous logic except that bad score or nothing detected will produce a reply to the mention.*
+
+- 🧩 [1Day1Bioclip](src/plugins/OneDayOneBioclip.js) plugin
+
+*Every day, the robot searches [Unsplash](https://unsplash.com/) for a collection with one of [this queries](src/data/oneDayOneBioclip.json) for photo of another author and attempts to identify it using Bioclip. The details of the photo and its identification are then posted on Bluesky.*
 
 
 ### Bot trigger

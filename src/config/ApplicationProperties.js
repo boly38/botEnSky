@@ -43,6 +43,9 @@ export default class ApplicationProperties {
         this.plantnet = {
             apiKey: getEnv("PLANTNET_API_PRIVATE_KEY")
         }
+        this.unsplash = {
+            access_key: getEnv("UNSPLASH_ACCESS_KEY")
+        }
     }
 
     verifyProperties() {
