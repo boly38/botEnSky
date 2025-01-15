@@ -254,7 +254,7 @@ export default class BlueSkyService {
         }
 
         if (text.length > BLUESKY_POST_LENGTH_MAX) {
-            throw new InternalServerErrorException(`Trying to post with a content length over the limits (${text.length} > ${BLUESKY_POST_LENGTH_MAX}:${text}`);
+            throw new InternalServerErrorException(`Trying to post with a content length over the limits (${text.length} > ${BLUESKY_POST_LENGTH_MAX}`);
         }
 
         let embed;

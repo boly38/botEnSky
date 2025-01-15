@@ -24,15 +24,19 @@ export default class ResizeService {
         if (isBufferSizeValidated(inputBuffer)) {
             return inputBuffer;
         }
-        const {logger} = this;
+        const {logger, cpuIsShared} = this;
         let buffer;
         let quality = 100;
         do {
-            quality -= 5;// decrease quality step by step
+            quality -= 10;// decrease quality step by step
             buffer = await sharp(inputBuffer)
                 .jpeg({quality})
                 .toBuffer();
             logger.info(`resizeImageBuffer:${inputBuffer.length} => quality ${quality} : length:${buffer.length}`);
+            if (cpuIsShared) {
+                sharp.cache(false);// resources: free unused buffer to save memory
+                sharp.concurrency(1); // resources: 1 thread to minimize CPU and memory consumption
+            }
         } while (
             !isBufferSizeValidated(buffer)
             && quality > 10
@@ -66,7 +70,7 @@ export default class ResizeService {
      * poor workaround to avoid app to be killed by onrender.com due to heavy load
      * TO FIX: proper way to handle this is rate limiter
      */
-    async hasToPreserveSharedCPU(nbSec = 5) {
+    async hasToPreserveSharedCPU(nbSec = 10) {
         const {cpuIsShared, logger} = this;
         if (!cpuIsShared) {
             return true;// no need to preserve cpu

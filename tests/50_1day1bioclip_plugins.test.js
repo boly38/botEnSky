@@ -5,7 +5,7 @@ import {initEnv, verifyPluginProcessResult} from "./libTest.js";
 initEnv();
 const appConfig = ApplicationConfig.getInstance();
 const pluginConfigDoSimulate = {doSimulate: true};
-const pluginDefaultTag = "#1Day1Bioclip #TreeOfLife10MPrediction";
+const pluginDefaultTag = "#1Day1Bioclip";
 let plugin;
 
 describe("🧪🧩 50 - oneDayOneBioClip Plugin\n", () => {
