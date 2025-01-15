@@ -15,6 +15,11 @@ export default class ApplicationProperties {
         this.port = getEnvInt("PORT", 5000);
         this.isProd = this.nodeEnv === 'production';
 
+        this.cpuIsShared = this.isProd;// preserve hosting solution shared cpu / prevent app to be killed in resizeService
+        if (this.cpuIsShared) {
+            console.log(` ☑  cpu is shared 💊`);
+        }
+
         this.discordWebhookUrl = getEnv("BOT_DISCORD_WEBHOOK_URL", null);
         this.inactivityDelayMin = getEnv("BOT_INACTIVITY_DELAY_MIN", 3);
         this.log = {

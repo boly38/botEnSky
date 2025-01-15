@@ -48,6 +48,7 @@ export default class ApplicationConfig {
         this.logger = container.get('loggerService').getLogger().child({label: 'ApplicationConfig'}); // https://github.com/winstonjs/winston?tab=readme-ov-file#creating-child-loggers
 
         container.register('resizeService', ResizeService)
+            .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'));
 
         container.register('logtailService', LogtailService)
