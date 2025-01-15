@@ -27,7 +27,7 @@ export default class OneDayOneBioclip {
     }
 
     getPluginTags() {
-        return ["#1Day1Bioclip", "#TreeOfLife10MPrediction"].join(' ');
+        return ["#1Day1Bioclip"].join(' ');
     }
 
     isReady() {
@@ -108,11 +108,9 @@ export default class OneDayOneBioclip {
         const photo_description = shortDescriptionOfPhoto(photo);
         const unsplashUrl = await buildShortUrlWithText(this.logger, photo.origin, "Unsplash ")
         const newPostContent = `
-${photo_description} 
-by ${usernameOfPhoto(photo)} (${unsplashUrl})\n
+${photo_description} by ${usernameOfPhoto(photo)} (${unsplashUrl})\n
 ${imageAlt}\n
-${tags}
-        `.trim();
+${tags}`.trim();
         // 4- produce post : text, html
         return new Promise((resolve, reject) => {
             blueskyService.newPost(newPostContent, doSimulate, imageUrl, imageAlt + extendedDetails)
