@@ -53,16 +53,17 @@ export default class ResizeService {
         if (encoding === undefined) {
             throw new Error("encoding is undefined");
         }
-        const buffer = Buffer.from(response.data, 'binary');/* incoming data are binary */
-        if (buffer?.length < 1) {
+        const inBuffer = Buffer.from(response.data, 'binary');/* incoming data are binary */
+        if (inBuffer?.length < 1) {
             throw new Error("image is empty");
         }
         const isB64BufferLessThanMax = buffer => !bufferMaxSize || toBase64(buffer).length < bufferMaxSize;
-        const {"buffer": base64Buffer, quality} = await this.resizeImageBuffer(buffer, isB64BufferLessThanMax);
-        if (base64Buffer.length >= bufferMaxSize) {
-            throw new Error(`image file size too large (${base64Buffer?.length}). ${bufferMaxSize} bytes maximum`);
+        const {buffer, quality} = await this.resizeImageBuffer(inBuffer, isB64BufferLessThanMax);
+        const base64 = toBase64(buffer);
+        if (base64.length >= bufferMaxSize) {
+            throw new Error(`image file size too large (${base64?.length}). ${bufferMaxSize} bytes maximum`);
         }
-        return {encoding, buffer, "base64": base64Buffer, quality};
+        return {encoding, buffer, base64, quality};
     }
 
 
