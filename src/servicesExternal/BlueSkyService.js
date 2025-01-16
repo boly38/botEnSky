@@ -240,6 +240,14 @@ export default class BlueSkyService {
      * To create facets, we may use dedicated tooling.
      *  - https://docs.bsky.app/docs/advanced-guides/posts#mentions-and-links
      *  - https://docs.bsky.app/docs/advanced-guides/post-richtext
+     *
+     *  here is a newPost API response example
+     *  {  "uri":"at://did:plc:jkvb3exm4wg3jt5veu75qppn/app.bsky.feed.post/3lfuayaajba2z",
+     *     "cid":"bafyreidk2tgra6etlysv6nztyjs35eywhty344rtjvrnfpozdlt4ss25na",
+     *     "commit":{"cid":"bafyreibtkscu6k5t64auegm3rbchdoet456or5i7xuzgnwyx3ycqjeunpa",
+     *     "rev":"3lfuayaauya2z"
+     *     },"validationStatus":"valid"}
+     *
      * @param text
      * @param doSimulate
      * @param imageUrl
@@ -282,22 +290,29 @@ export default class BlueSkyService {
         if (embed !== null) {
             newPost.embed = embed;
         }
+        // to be compliant with other use-case (candidate (get) post content), response is augmented according.
+        const newPostResponseAugmented = {
+            author: {"handle": BOT_HANDLE, "displayName": BOT_NAME},
+            record: {"text":text, "createdAt": nowISO8601()}
+        }
 
         if (doSimulate) {
             const embedDesc = embed !== null ? `\n[${embed["$type"]}|alt:${embed?.images[0]?.alt}]` : '';
+            newPostResponseAugmented.record.text += embedDesc;// provide to local test more details on image alt
             logger.debug(`**SIMULATE** NEW POST : ${text}${embedDesc}`);
             return {
                 "uri": "/app.bsky.feed.post/simulated_reply_uri",
                 "cid": "simulated_reply_cid",
-                author: {"handle": BOT_HANDLE, "displayName": BOT_NAME},
-                record: {"text":text+embedDesc, "createdAt": nowISO8601()}
+                ...newPostResponseAugmented
             };
 
         }
         try {
             logger.debug("POST SENT:\n" + JSON.stringify(newPost, null, 2));
-            const newPostResponse = await this.agent.post(newPost)
+            let newPostResponse = await this.agent.post(newPost)
             logger.info(`newPost response : ${JSON.stringify(newPostResponse)}`);
+            newPostResponse = { ...newPostResponse, ...newPostResponseAugmented };
+            logger.info(`newPost response augmented: ${JSON.stringify(newPostResponse)}`);
             logger.info(`newPost ${postLinkOf(newPostResponse)}`);
             return newPostResponse;
         } catch (postException) {
