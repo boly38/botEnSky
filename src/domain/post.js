@@ -27,7 +27,7 @@ import dayjs from "dayjs";
 import console from "node:console";
 
 const bskyAppPostUriBuilder = (authorHandle, postId) => `https://bsky.app/profile/${authorHandle}/post/${postId}`;
-const bskyAppHAndleUriBuilder = authorHandle => `https://bsky.app/profile/${authorHandle}`;
+const bskyAppHandleUriBuilder = authorHandle => `https://bsky.app/profile/${authorHandle}`;
 
 export const fromBlueskyPostImage = img => {
     const {alt, fullsize} = img;
@@ -71,8 +71,9 @@ export const fromBlueskyPosts = posts => posts?.map(fromBlueskyPost)
 
 export const firstImageOf = post => !isSet(post?.embed?.images) ? null : post?.embed?.images[0];
 export const postLinkOf = post => {
-    const {uri, author: {handle}} = post;
-    const id = uri.split("/app.bsky.feed.post/")[1];
+    const uri = post?.uri;
+    const handle = post?.author?.handle;
+    const id = uri?.split("/app.bsky.feed.post/")[1];
     return isSet(id) && isSet(handle) ? bskyAppPostUriBuilder(handle, id) : null;
 }
 
@@ -114,7 +115,7 @@ export const postFormatterOf = (post, format = "text") => {
     const username = isSet(displayName) ? displayName : handle;
     const postDate = createdAt ? toLocaleDate(createdAt) : "";
     const postLink = postLinkOf(post);
-    const handleLink = bskyAppHAndleUriBuilder(handle);
+    const handleLink = bskyAppHandleUriBuilder(handle);
     if (format === "text") {
         return `${postLink} ${postDate} by @${username} (${handleLink}) --- ${textToShow}`;
     } else if (format === "html") {
