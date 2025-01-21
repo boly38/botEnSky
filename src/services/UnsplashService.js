@@ -1,5 +1,5 @@
 import {buildUrl} from "../lib/UrlUtil.js";
-import {arrayGetRandomElement} from "../lib/ArrayUtil.js";
+import {arrayGetRandomElement, shuffleArrayByFisherYates} from "../lib/ArrayUtil.js";
 import {isSet, loadJsonResource} from "../lib/Common.js";
 import {limitString} from "../lib/StringUtil.js";
 
@@ -126,14 +126,18 @@ export default class UnsplashService {
         // Choose a random collection and search photos
         while (photos.length === 0 && retries++ < MAX_COLLECTION_RETRIES) {
             const collection = arrayGetRandomElement(collections);
-            photos = await this.searchPhotosInCollection(collection.id);
+            const collectionId = collection.id;
+            const collectionUrl = `https://unsplash.com/collections/${collectionId}`;
+            photos = await this.searchPhotosInCollection(collectionId);
+
             const initialLength = photos.length;
+            photos = shuffleArrayByFisherYates(photos);
             // Remove photos from recent already published authors
-            photos = photos.filter(p => !excludedAuthors.includes(!p.user?.name))
+            photos = photos.filter(p => !excludedAuthors.includes(p.user?.name))
             // add origin: collection link
-            photos.forEach(p => p.origin = `https://unsplash.com/collections/${collection.id}`)
+            photos.forEach(p => p.origin = collectionUrl)
             if (photos.length === 0 && retries < MAX_COLLECTION_RETRIES) {
-                logger.info(`https://unsplash.com/collections/${collection.id} (${initialLength} entries) no not already published, retry ${retries}`);
+                logger.info(`${collectionUrl} (${initialLength} entries) no not already published, retry ${retries}`);
             }
         }
 
