@@ -44,7 +44,7 @@ jobs:
           webhook-url: ${{ secrets.UMAMI_TO_DISCORD_WEBHOOK_URL }}
           username: "Umami report"
           avatar-url: ${{ env.UMAMI_LOGO }}
-          content: "${{ umami-report-content }}"
+          content: "${{ steps.umamiReportStep.outputs.umamiReport }}"
       - name: Send Umami Cloud report to discord if pageViews is positive
         if: steps.umamiReportStep.outputs.pageViews != '0' && steps.umamiReportStep.outputs.umamiReportLength >= 2000
         uses: tsickert/discord-webhook@v7.0.0
