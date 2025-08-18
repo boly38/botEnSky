@@ -95,7 +95,7 @@ export default class PlantnetApiService {
                     if (err) {
                         let errStatus = err.status;
                         let errError = err.message;
-                        let errDetails = err.response.text;
+                        let errDetails = res?.text;
                         let errResult = "Pla@ntnet identify error (" + errStatus + ") " + errError;
                         service.logger.error(errResult + " - details:" + errDetails);
                         reject({message: errResult, status: errStatus});
