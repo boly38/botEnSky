@@ -5,6 +5,12 @@ import winston from "winston";
 import {Logtail} from "@logtail/node";
 import {LogtailTransport} from "@logtail/winston";
 import {isSet} from "../lib/Common.js"; // https://betterstack.com/docs/logs/javascript/winston/
+
+/**
+ * Publish new applicative logs
+ * - console log
+ * - and export them to betterstack (historically logtail) via winston+logtail transport.
+ */
 export default class LoggerService {
     constructor(config) {
         this.config = config;
@@ -15,12 +21,11 @@ export default class LoggerService {
     buildLogtail() {
         this.logtail = null;
         // Create a Logtail client
-        let sourceToken = this.config?.log?.logtailToken;
+        let sourceToken = this.config?.log?.betterstackSourceToken;
         if (isSet(sourceToken)) {
             this.logtail = new Logtail(sourceToken);
         }
     }
-
 
     buildLogger() {
         const format = winston.format;

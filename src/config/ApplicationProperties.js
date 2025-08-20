@@ -23,11 +23,19 @@ export default class ApplicationProperties {
         this.discordWebhookUrl = getEnv("BOT_DISCORD_WEBHOOK_URL", null);
         this.inactivityDelayMin = getEnv("BOT_INACTIVITY_DELAY_MIN", 3);
         this.log = {
-            logtailToken: getEnv("LOG_LOGTAIL_TOKEN", null),
-            logtailApiV1: "https://logs.betterstack.com/api/v1",
-            logtailApiV2: "https://logs.betterstack.com/api/v2",
-            logtailApiToken: getEnv("LOGTAIL_API_TOKEN", null),
-            logtailSourceId: getEnv("LOGTAIL_SOURCE_ID", null)
+            betterstackDebug: getEnv("LOG_BETTERSTACK_DEBUG", false),
+            // betterstack source token is used by logger (logtail client) to send new log
+            betterstackSourceToken: getEnv("LOG_BETTERSTACK_SOURCE_TOKEN", null),
+
+            /// betterstack api token is used by legacy API Bearer auth
+            /// useless today ? // betterstackApiToken: getEnv("LOG_BETTERSTACK_API_TOKEN", null),
+
+            // betterstack telemetry api endpoint is the latest API
+            betterstackHttpRemotelyEndpoint: getEnv("LOG_BETTERSTACK_API_HTTP_REMOTELY_ENDPOINT", null),
+            betterstackHttpUsername: getEnv("LOG_BETTERSTACK_API_HTTP_USERNAME", null),
+            betterstackHttpPassword: getEnv("LOG_BETTERSTACK_API_HTTP_PASSWORD", null),
+            betterstackTeamId: getEnv("LOG_BETTERSTACK_TEAM_ID", null),
+            betterstackSourceTableName: getEnv("LOG_BETTERSTACK_SOURCE_TABLE_NAME", null)
         }
 
         this.bot = {

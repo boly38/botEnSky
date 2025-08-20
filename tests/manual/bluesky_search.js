@@ -40,7 +40,7 @@ class Bluesky {
         let params = {
             "q": searchQuery,
             "sort": "latest",
-            "limit": 5,
+            "limit": 30,
             "since": nowMinusHoursUTCISO(48),
             "until": nowMinusHoursUTCISO(0)
         };
@@ -65,7 +65,7 @@ try {
     await bluesky.login()
     const posts = await bluesky.postSearch(searchQuery);
     const candidate = posts[0];
-    console.log(`🧍 candidate:\n${JSON.stringify(candidate, null, 2)}`);
+    console.log(`🧍 ${posts?.length} posts, first candidate:\n${JSON.stringify(candidate, null, 2)}`);
 } catch (err) {
     exitFailed(err);
 }

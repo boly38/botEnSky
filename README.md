@@ -51,6 +51,9 @@ His ambition is to **bring 😊 happiness to 🦋 Bluesky 👤 users**.
 
 *Every day, the robot searches [Unsplash](https://unsplash.com/) for a collection with one of [this queries](src/data/oneDayOneBioclip.json) for photo of another author and attempts to identify it using Bioclip. The details of the photo and its identification are then posted on Bluesky.*
 
+- 🧩 [Healthcheck](src/plugins/HealthCheck.js) plugin
+
+*Performs health checks of external services upon manager request. These checks help ensure the system is functioning properly by diagnosing problems.
 
 ### Bot trigger
 - Github Actions [workflows](.github/workflows) (`trigger_*`) are used to trigger the bot, they are based on `schedule` directives (UTC time, [doc](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule))

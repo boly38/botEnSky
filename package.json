@@ -19,7 +19,8 @@
     "wipPN": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: Plantnet' http://localhost:5000/api/hook",
     "wipUM": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: UnMute' http://localhost:5000/api/hook",
     "wipSum": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: Summary' http://localhost:5000/api/hook",
-    "wip1D": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: OneDayOneBioclip' http://localhost:5000/api/hook"
+    "wip1D": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: OneDayOneBioclip' http://localhost:5000/api/hook",
+    "wipHC": "curl -v -H 'API-TOKEN: SIMULATE_WITH_LOCAL_DEV_ACCOUNT' -H 'PLUGIN-NAME: HealthCheck' http://localhost:5000/api/hook"
   },
   "repository": {
     "type": "git",

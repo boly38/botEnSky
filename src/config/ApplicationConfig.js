@@ -3,7 +3,7 @@ import process from "node:process";
 import {ContainerBuilder} from 'node-dependency-injection';
 import {nowHuman} from "../lib/Common.js";
 import ApplicationProperties from './ApplicationProperties.js';
-import LogtailService from "../servicesExternal/LogtailService.js";
+import LogsService from "../servicesExternal/LogsService.js";
 import PlantnetApiService from "../servicesExternal/PlantnetApiService.js";
 import BlueSkyService from "../servicesExternal/BlueSkyService.js";
 import DiscordSendService from "../servicesExternal/DiscordSendService.js";
@@ -28,6 +28,7 @@ import BioclipCommonService from "../services/BioclipCommonService.js";
 import UnsplashService from "../services/UnsplashService.js";
 import OneDayOneBioclip from "../plugins/OneDayOneBioclip.js";
 import ResizeService from "../services/ResizeService.js";
+import HealthCheck from "../plugins/HealthCheck.js";
 
 export default class ApplicationConfig {
     constructor() {
@@ -51,13 +52,13 @@ export default class ApplicationConfig {
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'));
 
-        container.register('logtailService', LogtailService)
+        container.register('logsService', LogsService)
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'));
 
         container.register('newsService', NewsService)
             .addArgument(container.get('loggerService'))
-            .addArgument(container.get('logtailService'));
+            .addArgument(container.get('logsService'));
 
         container.register('discordService', DiscordSendService)
             .addArgument(container.get('config'));
@@ -173,6 +174,16 @@ export default class ApplicationConfig {
             .addArgument(container.get('pluginsCommonService'))
             .addArgument(container.get('grBirdApiService'));
         this.plugins.push(container.get('oneDayOneBioclip'));
+
+        container.register('healthCheck', HealthCheck)
+            .addArgument(container.get('config'))
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('blueskyService'))
+            .addArgument(container.get('unsplashService'))
+            .addArgument(container.get('pluginsCommonService'))
+            .addArgument(container.get('grBirdApiService'))
+            .addArgument(container.get('logsService'));
+        this.plugins.push(container.get('healthCheck'));
     }
 
     constructBot() {

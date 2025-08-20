@@ -6,11 +6,11 @@ export const NEWS_LABEL = "News 📢";
 export const NEWS_CACHE_KEY = "cache:news";
 export const ONE_DAY_SECOND = 60 * 60 * 24;
 export default class NewsService {
-    constructor(loggerService, logtailService) {
+    constructor(loggerService, logsService) {
         this.max = 30;
         this.since = nowISO8601();
         this.lastNews = [];
-        this.logtailService = logtailService;
+        this.logsService = logsService;
         this.loggerNews = loggerService.getLogger().child({label: NEWS_LABEL});
         this.loggerService = loggerService.getLogger().child({label: 'NewsService'});
     }
@@ -31,16 +31,16 @@ export default class NewsService {
     }
 
     getNews() {
-        const {loggerService, logtailService, since, lastNews} = this;
+        const {loggerService, logsService, since, lastNews} = this;
         return new Promise(resolve => {
             const to = nowHuman();
             const oldSchoolNews = {"since": toHuman(since), to, "data": lastNews};
-            oldSchoolNews.data = logtailService.perDateMessage(oldSchoolNews.data);
-            if (!logtailService.isAvailable()) {
+            oldSchoolNews.data = logsService.perDateMessage(oldSchoolNews.data);
+            if (!logsService.isAvailable()) {
                 loggerService.debug(`logtailService is not available`);
                 return resolve(oldSchoolNews);
             }
-            cacheGetTtlObject(NEWS_CACHE_KEY, ONE_DAY_SECOND, logtailService.getRecentNews.bind(logtailService))
+            cacheGetTtlObject(NEWS_CACHE_KEY, ONE_DAY_SECOND, logsService.getRecentNews.bind(logsService))
                 .then(cacheNews => {
                     return isSet(cacheNews) ? resolve(cacheNews) : resolve(oldSchoolNews);
                 })

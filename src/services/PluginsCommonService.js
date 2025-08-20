@@ -67,10 +67,13 @@ export default class PluginsCommonService {
         return Promise.resolve(null);
     }
 
+    resultSimple(pluginName, context, resultSentence) {
+        this.logger.info(resultSentence, context);
+        return Promise.resolve(pluginResolve(resultSentence, resultSentence, 202))
+    }
+
     resultNoCandidate(pluginName, context) {
-        const result = `aucun candidat pour ${pluginName}`;
-        this.logger.info(result, context);
-        return Promise.resolve(pluginResolve(result, result, 202))
+        return this.resultSimple(pluginName, context, `aucun candidat pour ${pluginName}`)
     }
 
     rejectNoCandidateImage(pluginName, candidate, context) {
