@@ -56,11 +56,17 @@ export const nowHuman = (tz = DEFAULT_TZ) => dayjs().tz(tz).format(BES_DATE_FORM
 export const toHuman = (utcDateTimeString, tz= DEFAULT_TZ) => {
     return dayjs.utc(utcDateTimeString).tz(tz).format(BES_DATE_FORMAT);
 };
+export const toHumanFromSecond = (timestampInSeconds, tz = DEFAULT_TZ) => {
+    return dayjs.unix(timestampInSeconds).tz(tz).format(BES_DATE_FORMAT);
+};
 export const toHumanDay = (utcDateTimeString, tz= DEFAULT_TZ) => {
     return dayjs.utc(utcDateTimeString).tz(tz).format("YYYY-MM-DD");
 };
 export const toHumanTime = (utcDateTimeString, tz= DEFAULT_TZ) => {
     return dayjs.utc(utcDateTimeString).tz(tz).format("HH:mm:ss");
+};
+export const getUtcTimestampWithDelta = (deltaDays) => {
+    return dayjs.utc().add(deltaDays, 'day').unix();
 };
 /*
   getParisNowDate() {

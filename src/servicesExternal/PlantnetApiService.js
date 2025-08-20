@@ -93,11 +93,11 @@ export default class PlantnetApiService {
                 })
                 .end((err, res) => {
                     if (err) {
-                        let errStatus = err.status;
-                        let errError = err.message;
-                        let errDetails = res?.text;
+                        let errStatus = err?.status || "503";
+                        let errError = err?.message || err;
+                        let errDetails = (res?.text) ? " - details:" + errDetails : "";
                         let errResult = "Pla@ntnet identify error (" + errStatus + ") " + errError;
-                        service.logger.error(errResult + " - details:" + errDetails);
+                        service.logger.error(errResult + errDetails);
                         reject({message: errResult, status: errStatus});
                         return;
                     }

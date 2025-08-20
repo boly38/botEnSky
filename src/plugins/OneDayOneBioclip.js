@@ -76,6 +76,7 @@ export default class OneDayOneBioclip {
                 }
                 photos.shift();// remove first element cause identification was not OK
             }
+            return await pluginsCommonService.resultNoCandidate(pluginName, context);
         } catch (err) {
             console.trace();// print stack // TODO comment this in the futur
             return pluginsCommonService.rejectWithParentIdentifyError(step, null, pluginName, err, context);

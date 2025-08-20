@@ -72,9 +72,10 @@ export GREN_GITHUB_TOKEN=your_token_here
 # one time setup
 npm install github-release-notes -g
 
+git checkout main
 git fetch --all && git pull
 # make a release vX with all history
-gren release --data-source=prs -t v2.2.2 --milestone-match=v2.2.2
+gren release --data-source=prs -t v1.4.13
 # overrides release vX with history from vX-1
-gren release --data-source=prs -t "v2.2.2..v2.2.1" --milestone-match="v2.2.2" --override
+gren release --data-source=prs -t "v1.4.13..v1.4.12" --override
 ```
