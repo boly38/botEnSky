@@ -75,8 +75,6 @@ export default class Plantnet {
                 doSimulate,
                 doSimulateIdentify,
                 simulateIdentifyCase,
-                candidate,
-                tags,
                 context
             });
             step = "handle plantnet identification";

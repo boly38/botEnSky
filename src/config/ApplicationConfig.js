@@ -179,9 +179,8 @@ export default class ApplicationConfig {
             .addArgument(container.get('config'))
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('blueskyService'))
-            .addArgument(container.get('unsplashService'))
+            .addArgument(container.get('plantnetApiService'))
             .addArgument(container.get('pluginsCommonService'))
-            .addArgument(container.get('grBirdApiService'))
             .addArgument(container.get('logsService'));
         this.plugins.push(container.get('healthCheck'));
     }
