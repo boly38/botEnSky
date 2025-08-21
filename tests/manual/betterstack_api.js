@@ -23,20 +23,20 @@ import axios from 'axios';
 const betterstack_api_token = process.env.LOG_BETTERSTACK_API_TOKEN;
 
 // API "Connect remotely via HTTP" // Dashboard > Connect remotely
-// https://telemetry.betterstack.com/team/t<teamID>/dashboards/connections
+// https://telemetry.betterstack.com/team/t<id>/dashboards/connections
 const betterstack_remotely_http_endpoint = process.env.LOG_BETTERSTACK_API_HTTP_REMOTELY_ENDPOINT + "?output_format_pretty_row_numbers=0";
 const betterstack_api_username = process.env.LOG_BETTERSTACK_API_HTTP_USERNAME;
 const betterstack_api_password = process.env.LOG_BETTERSTACK_API_HTTP_PASSWORD;
 
 // Dashboard > Sources
-// https://telemetry.betterstack.com/team/t<teamID>/sources
+// https://telemetry.betterstack.com/team/t<id>/sources
 // Source NAME - get it from source config UI : "Basic" > "Source ID" - it's a name not an int
 const betterstack_source_table_name = process.env.LOG_BETTERSTACK_SOURCE_TABLE_NAME;
 // Source ID - get it from source url, or from results of get sources api - it's an int
 // https://telemetry.betterstack.com/team/t<teamID>/sources/<sourceID>/data-ingestion
 // unused // const betterstack_source_id = process.env.LOG_BETTERSTACK_SOURCE_ID;
 
-// Team ID - get it from source url or fetch source request
+// Team ID - get it from "Dashboard > Connect remotely" examples, or fetch source request
 const betterstack_team_id = process.env.LOG_BETTERSTACK_TEAM_ID;
 
 // action to do as first cmd line argument (node script.js <action>)
