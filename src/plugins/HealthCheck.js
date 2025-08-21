@@ -1,15 +1,13 @@
 export default class HealthCheck {
-    constructor(config, loggerService, blueskyService, unsplashService,
-                pluginsCommonService, grBirdApiService, logsService) {
+    constructor(config, loggerService, blueskyService, plantnetApiService, pluginsCommonService, logsService) {
         this.isAvailable = false;
         this.logger = loggerService.getLogger().child({label: 'HealthCheck'});
         this.blueskyService = blueskyService;
-        this.unsplashService = unsplashService;
+        this.plantnetApiService = plantnetApiService;
         this.pluginsCommonService = pluginsCommonService;
-        this.grBirdApiService = grBirdApiService;
         this.logsService = logsService;
         try {
-            this.isAvailable = unsplashService.isReady();
+            this.isAvailable = plantnetApiService.isReady();
             this.logger.info((this.isAvailable ? "available" : "not available"));
         } catch (exception) {
             this.pluginsCommonService.logError("init", exception);
@@ -34,8 +32,11 @@ export default class HealthCheck {
         const {logger, pluginsCommonService} = this;
         logger.info(`healthCheck - doSimulate:${doSimulate} - context:${JSON.stringify(context)}`);
         let errorCount = 0;
+
+        /***************************** Checks *******************************************************/
         errorCount = await this.checkLogs(errorCount);
         errorCount = await this.checkBlueskySearch(errorCount);
+        errorCount = await this.checkPlantNetID(config, errorCount);
 
         const sentence = pluginName + (errorCount > 0 ? `❌ done with ${errorCount} errors.` : "✅ done without issue.");
         return await pluginsCommonService.resultSimple(pluginName, context, sentence);
@@ -78,6 +79,33 @@ export default class HealthCheck {
         return errorCount;
     }
 
+    async checkPlantNetID(config, errorCount) {
+        const start = Date.now();
+        const target = "plantnetApiService.plantnetIdentify";
+        try {
+            const {doSimulate, context} = config;
+            const imageUrl = "https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:bjivtavjwicclemh6xsotprl/bafkreib6aziube7wpdu2c7dhbgdbeofilny2faornvbhj23n6w7g7nzege@jpeg"
+            const {
+                result,
+                plantnetResult = null
+            } = await this.plantnetApiService.plantnetIdentify({
+                imageUrl, // candidatePhoto?.fullsize,
+                "doSimulate": false,
+                "doSimulateIdentify": doSimulate,
+                "simulateIdentifyCase": 'GoodScoreImages',
+                context
+            });
+            this.reportSuccess(target, Date.now() - start,
+                `result : ${JSON.stringify({result, plantnetResult})}`);
+        } catch (error) {
+            errorCount++;
+            this.reportError(target, Date.now() - start, error)
+        }
+        return errorCount;
+
+
+    }
+
     reportSuccess(target, durationMs, successMsg) {
         this.logger.info(`🧪✅ healthCheck - ${target} (${durationMs} ms) ${successMsg}`);
     }
@@ -85,5 +113,6 @@ export default class HealthCheck {
     reportError(target, durationMs, error) {
         this.logger.info(`🧪❌ healthCheck - ${target} (${durationMs} ms) error: ${error.message}`);
     }
+
 }
 
