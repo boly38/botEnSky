@@ -19,7 +19,7 @@ His ambition is to **bring 😊 happiness to 🦋 Bluesky 👤 users**.
 ### Plugins
 - 🧩 [Plantnet](src/plugins/Plantnet.js) plugin
 
-*search a post with an embedded image, a not muted author, and without reply using [some questions](src/data/questionsPlantnet.json) and use Pla@ntNet API to try to identify the flower.*
+*search a post with an embedded image, a not muted author, and without reply using [some questions](src/data/questionsPlantnet.json) and use Pl@ntNet API to try to identify the flower.*
 - on **good score** result: post a reply with confident ratio, name, common name, and embed sample image +alt (provided by Pl@ntNet)
 - on **bad score** result, or **nothing detected** result: mute author and don't reply. The action to "mute" the author is to avoid to replay the same plantnet identification twice a day (for same result). Muted authors are unMuted by UnMute plugin at the end of the day.
 
