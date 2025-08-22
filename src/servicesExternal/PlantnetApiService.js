@@ -1,5 +1,6 @@
 import fs from 'fs';
 import superagent from 'superagent';
+import retry from 'superagent-retry';
 import {isSet, maxStringLength} from "../lib/Common.js";
 import {dataSimulationDirectory} from "../services/BotService.js";
 
@@ -22,17 +23,52 @@ export const IDENTIFY_RESULT = {
     NONE: "NONE"
 };
 
+// Retry configuration
+const RETRY_CONFIG = {
+    retries: 3,               // Nombre maximum de tentatives
+    minTimeout: 1000,         // Délai initial (1s)
+    maxTimeout: 10000,        // Délai maximum (10s)
+    factor: 2,                // Facteur multiplicateur pour le backoff
+    shouldRetry: (err) => {
+        return err && (err.status >= 500 || err.code === 'ETIMEDOUT' || err.code === 'ECONNRESET');
+    }
+};
+
 export default class PlantnetApiService {
 
     constructor(config, loggerService) {
         this.isAvailable = false;
         this.logger = loggerService.getLogger().child({label: 'PlantnetApiService'});
-
         this.apiKey = config.plantnet.apiKey;
         if (!isSet(this.apiKey)) {
             this.logger.error("PlantnetApiService, please setup your environment");
             return;
         }
+        // timeouts and keep-alive config with explicit default values
+        const timeoutConfig = {
+            response: config.plantnet?.timeout?.response || 10000,   // 10s pour début réponse
+            deadline: config.plantnet?.timeout?.deadline || 60000,   // 60s timeout global
+        };
+        const keepAliveConfig = {
+            keepAlive: config.plantnet?.keepAlive?.enabled !== false,
+            keepAliveMsecs: config.plantnet?.keepAlive?.msecs || 1000,
+            maxSockets: config.plantnet?.keepAlive?.maxSockets || 10,
+            maxFreeSockets: config.plantnet?.keepAlive?.maxFreeSockets || 2,
+        };
+        // Pl@ntNet client customization
+        this.plantnetClient = superagent.agent()
+            .use(req => {
+                req.timeout(timeoutConfig);
+                req.set('Connection', keepAliveConfig.keepAlive ? 'keep-alive' : 'close');
+                return req;
+            })
+            .set('Accept', 'application/json');
+        // .set('User-Agent', 'PlantnetBot/1.0');
+
+        this.logger.info(`client configured with` +
+            ` timeouts=${JSON.stringify(timeoutConfig)},` +
+            ` keepAlive=${JSON.stringify(keepAliveConfig)}`);
+
         this.isAvailable = true;
         this.logger.info("available");
     }
@@ -43,7 +79,11 @@ export default class PlantnetApiService {
 
     async plantnetIdentify(options) {
         const {imageUrl, doSimulateIdentify, simulateIdentifyCase, context} = options;
-        this.logger.debug(`identifyOptions : ${JSON.stringify({imageUrl, doSimulateIdentify, simulateIdentifyCase})}`, context);
+        this.logger.debug(`identifyOptions : ${JSON.stringify({
+            imageUrl,
+            doSimulateIdentify,
+            simulateIdentifyCase
+        })}`, context);
         let plantResult;
         try {
             plantResult = await this.plantnetIdentifyApi({imageUrl, doSimulateIdentify, simulateIdentifyCase});
@@ -71,7 +111,7 @@ export default class PlantnetApiService {
         let {imageUrl, doSimulateIdentify, simulateIdentifyCase} = options;
         doSimulateIdentify = !(doSimulateIdentify === false) || imageUrl === undefined;
         const identifyAddOn = doSimulateIdentify ? `| SIMULATE ${simulateIdentifyCase ? simulateIdentifyCase : ''}| ` : "";
-        service.logger.info(`Pla@ntNet identify ${identifyAddOn}following image : ${imageUrl}`);
+        service.logger.info(`Pl@ntNet identify ${identifyAddOn}following image : ${imageUrl}`);
 
         return new Promise((resolve, reject) => {
             if (doSimulateIdentify) {
@@ -83,7 +123,17 @@ export default class PlantnetApiService {
             }
 
             // https://my.plantnet.org/account/doc // v2
-            superagent.get(MY_API_PLANTNET_V2_URL)
+            // let req  = superagent.get(MY_API_PLANTNET_V2_URL)
+            let req = this.plantnetClient.get(MY_API_PLANTNET_V2_URL)
+                .retry(RETRY_CONFIG.retries, RETRY_CONFIG.shouldRetry, (err, res) => {
+                    const retryCount = err.retries || 0;
+                    const delay = Math.min(
+                        RETRY_CONFIG.maxTimeout,
+                        RETRY_CONFIG.minTimeout * Math.pow(RETRY_CONFIG.factor, retryCount)
+                    );
+                    service.logger.warn(`Retry ${retryCount + 1}/${RETRY_CONFIG.retries} after ${delay}ms - Error: ${err.message}`);
+                    return delay;
+                })
                 .query({
                     "images": [imageUrl, imageUrl],
                     "organs": ["flower", "leaf"],
@@ -91,12 +141,16 @@ export default class PlantnetApiService {
                     "lang": "fr",
                     "api-key": service.apiKey,
                 })
+                .on('request', (request) => {
+                    const redactedUrl = request.url.replace(/api-key=[^&]+/, 'api-key=REDACTED');
+                    console.log("👉 Full GET URL used :", redactedUrl);
+                })
                 .end((err, res) => {
                     if (err) {
                         let errStatus = err?.status || "503";
                         let errError = err?.message || err;
-                        let errDetails = (res?.text) ? " - details:" + errDetails : "";
-                        let errResult = "Pla@ntnet identify error (" + errStatus + ") " + errError;
+                        let errDetails = (res?.text) ? " - details:" + res?.text : "";
+                        let errResult = "Pl@ntnet identify error (" + errStatus + ") " + errError;
                         service.logger.error(errResult + errDetails);
                         reject({message: errResult, status: errStatus});
                         return;
