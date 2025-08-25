@@ -1,6 +1,5 @@
 import fs from 'fs';
 import superagent from 'superagent';
-import retry from 'superagent-retry';
 import {isSet, maxStringLength} from "../lib/Common.js";
 import {dataSimulationDirectory} from "../services/BotService.js";
 
@@ -21,17 +20,6 @@ export const IDENTIFY_RESULT = {
      * Pl@ntNet were unable to identify something
      */
     NONE: "NONE"
-};
-
-// Retry configuration
-const RETRY_CONFIG = {
-    retries: 3,               // Nombre maximum de tentatives
-    minTimeout: 1000,         // Délai initial (1s)
-    maxTimeout: 10000,        // Délai maximum (10s)
-    factor: 2,                // Facteur multiplicateur pour le backoff
-    shouldRetry: (err) => {
-        return err && (err.status >= 500 || err.code === 'ETIMEDOUT' || err.code === 'ECONNRESET');
-    }
 };
 
 export default class PlantnetApiService {
@@ -124,16 +112,7 @@ export default class PlantnetApiService {
 
             // https://my.plantnet.org/account/doc // v2
             // let req  = superagent.get(MY_API_PLANTNET_V2_URL)
-            let req = this.plantnetClient.get(MY_API_PLANTNET_V2_URL)
-                .retry(RETRY_CONFIG.retries, RETRY_CONFIG.shouldRetry, (err, res) => {
-                    const retryCount = err.retries || 0;
-                    const delay = Math.min(
-                        RETRY_CONFIG.maxTimeout,
-                        RETRY_CONFIG.minTimeout * Math.pow(RETRY_CONFIG.factor, retryCount)
-                    );
-                    service.logger.warn(`Retry ${retryCount + 1}/${RETRY_CONFIG.retries} after ${delay}ms - Error: ${err.message}`);
-                    return delay;
-                })
+            this.plantnetClient.get(MY_API_PLANTNET_V2_URL)
                 .query({
                     "images": [imageUrl, imageUrl],
                     "organs": ["flower", "leaf"],
@@ -143,11 +122,11 @@ export default class PlantnetApiService {
                 })
                 .on('request', (request) => {
                     const redactedUrl = request.url.replace(/api-key=[^&]+/, 'api-key=REDACTED');
-                    console.log("👉 Full GET URL used :", redactedUrl);
+                    console.log("👉 GET URL used :", redactedUrl);
                 })
                 .end((err, res) => {
                     if (err) {
-                        let errStatus = err?.status || "503";
+                        let errStatus = err?.status || 503;
                         let errError = err?.message || err;
                         let errDetails = (res?.text) ? " - details:" + res?.text : "";
                         let errResult = "Pl@ntnet identify error (" + errStatus + ") " + errError;

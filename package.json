@@ -62,7 +62,6 @@
     "node-dependency-injection": "^3.1.2",
     "sharp": "^0.33.5",
     "superagent": "^9.0.2",
-    "superagent-retry": "^0.6.0",
     "turl": "^1.1.2",
     "winston": "^3.13.0"
   },
