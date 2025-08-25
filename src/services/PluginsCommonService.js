@@ -119,18 +119,22 @@ export default class PluginsCommonService {
 
     rejectWithIdentifyError(pluginName, step, candidate, err, context) {
         let {status, message, mustBeReported} = err;
-        mustBeReported = isSet(mustBeReported) ? mustBeReported : true;
-        let pluginTxtError = `[${step}] Impossible d'identifier l'image avec ${pluginName}`;
+        mustBeReported = isSet(mustBeReported) ? mustBeReported : (!isSet(status) || status !== 503);
+        let identifyError = `Impossible d'identifier l'image avec ${pluginName}`
+        if (status === 503) {
+            identifyError += " le service est indisponible.";
+        }
+        let pluginTxtError = `[${step}] ${identifyError}`;
         let pluginHtmlError = pluginTxtError;
         if (isSet(candidate)) {
-            pluginTxtError = `[${step}] Impossible d'identifier l'image de ${postLinkOf(candidate)} avec ${pluginName}`;
+            pluginTxtError = `${pluginTxtError} de ${postLinkOf(candidate)}`;
             pluginHtmlError = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div>` +
-                `<b>Erreur [${step}]</b>: impossible d'identifier l'image avec ${pluginName}`;
+                `<b>Erreur [${step}]</b>: ${identifyError}`;
         }
         this.logger.error(`${pluginTxtError} : ${message}`, context);
         return Promise.reject(pluginReject(pluginTxtError, pluginHtmlError,
             isSet(status) ? status : 500,
-            `${pluginName} unexpected error`, mustBeReported));
+            pluginTxtError, mustBeReported));
     }
 
     async handleWithoutScoredResult(pluginName, minimalPercent, options) {
