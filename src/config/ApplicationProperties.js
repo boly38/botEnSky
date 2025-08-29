@@ -53,8 +53,13 @@ export default class ApplicationProperties {
             service: getEnv("BLUESKY_SERVICE"),
             exclusions : getEnv("BOT_BLUESKY_EXCLUSIONS", "")// list of author.handle to exclude from search result
         }
+
+        // PLANTNET V2 API https://my-api.plantnet.org/v2/identify/all - https://my.plantnet.org/doc/api/identify
+        // see also plantnet dedicated readme
         this.plantnet = {
-            apiKey: getEnv("PLANTNET_API_PRIVATE_KEY")
+            apiKey: getEnv("PLANTNET_API_PRIVATE_KEY"),
+            plantnetHost: getEnv("PLANTNET_API_HOST", "my-api.plantnet.org"),
+            plantnetIDApi: getEnv("PLANTNET_API_IDENTIFY_ALL", "https://my-api.plantnet.org/v2/identify/all")
         }
         this.unsplash = {
             access_key: getEnv("UNSPLASH_ACCESS_KEY")

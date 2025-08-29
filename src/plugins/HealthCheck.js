@@ -1,5 +1,5 @@
-import net from 'net';
 import https from 'https';
+import {tryToConnectToSocketWithRetry} from "../lib/NetworkUtil.js";
 
 export default class HealthCheck {
     constructor(config, loggerService, blueskyService, plantnetApiService, pluginsCommonService, logsService) {
@@ -9,6 +9,7 @@ export default class HealthCheck {
         this.plantnetApiService = plantnetApiService;
         this.pluginsCommonService = pluginsCommonService;
         this.logsService = logsService;
+        this.plantnetHost = config.plantnet?.plantnetHost;
         try {
             this.isAvailable = plantnetApiService.isReady();
             this.logger.info((this.isAvailable ? "available" : "not available"));
@@ -41,7 +42,9 @@ export default class HealthCheck {
         errorCount = await this.checkLogs(errorCount);
         errorCount = await this.checkBlueskySearch(errorCount);
         errorCount = await this.checkPlantNetID(config, errorCount);
-        errorCount = await this.checkPlantNetPort(errorCount);
+        if (this.plantnetHost) {
+            errorCount = await this.checkPlantNetPort(errorCount, this.plantnetHost);
+        }
 
         const sentence = pluginName + (errorCount > 0 ? `❌ done with ${errorCount} errors.` : "✅ done without issue.");
         return await pluginsCommonService.resultSimple(pluginName, context, sentence);
@@ -128,62 +131,31 @@ export default class HealthCheck {
         return errorCount;
     }
 
-    async checkPlantNetPort(errorCount) {
+    async checkPlantNetPort(errorCount, plantnetHost) {
+        const start = Date.now();
+        const target = "checkPlantNetPort";
         const {logger} = this;
-        const host = 'my-api.plantnet.org';
+        const host = plantnetHost;
         const port = 443;
         const timeout = 3000;
         const maxRetries = 2;
-
-        const tryConnect = async (retryCount = 0) => {
-            return new Promise((resolve, reject) => {
-                const socket = new net.Socket();
-                let isConnected = false;
-
-                socket.setTimeout(timeout);
-
-                socket.on('connect', () => {
-                    isConnected = true;
-                    socket.destroy();
-                    resolve(true);
-                });
-
-                socket.on('timeout', () => {
-                    socket.destroy();
-                    reject(new Error('Connection timeout'));
-                });
-
-                socket.on('error', (err) => {
-                    socket.destroy();
-                    reject(err);
-                });
-
-                socket.connect(port, host);
-            }).catch(async (err) => {
-                if (retryCount < maxRetries) {
-                    logger.warn(`Retry ${retryCount + 1}/${maxRetries} for port check: ${err.message}`);
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    return tryConnect(retryCount + 1);
-                }
-                throw err;
-            });
-        };
-
         try {
-            await tryConnect();
-            logger.info(`Port ${port} is open on ${host}`);
+            await tryToConnectToSocketWithRetry(timeout, port, host, maxRetries, logger);
+            this.reportSuccess(target, Date.now() - start, `on ${host} > port ${port} is open `);
         } catch (error) {
             errorCount++;
-            logger.error(`Port ${port} check failed on ${host}: ${error.message}`);
+            this.reportError(target, Date.now() - start, error)
         }
         return errorCount;
     }
+
 
     reportSuccess(target, durationMs, successMsg) {
         this.logger.info(`🧪✅ healthCheck - ${target} (${durationMs} ms) ${successMsg}`);
     }
 
     reportError(target, durationMs, error) {
+        console.log(error.stack);
         this.logger.info(`🧪❌ healthCheck - ${target} (${durationMs} ms) error: ${error.message}`);
     }
 

@@ -3,7 +3,6 @@ import superagent from 'superagent';
 import {isSet, maxStringLength} from "../lib/Common.js";
 import {dataSimulationDirectory} from "../services/BotService.js";
 
-const MY_API_PLANTNET_V2_URL = 'https://my-api.plantnet.org/v2/identify/all';
 export const PLANTNET_MINIMAL_PERCENT = 20;
 const PLANTNET_MINIMAL_RATIO = PLANTNET_MINIMAL_PERCENT / 100;
 // Pl@ntNet API : https://github.com/plantnet/my.plantnet/blob/master/README.md
@@ -22,6 +21,9 @@ export const IDENTIFY_RESULT = {
     NONE: "NONE"
 };
 
+/**
+ * Client to call Pl@ntNet API : cf root dedicated readme file
+ */
 export default class PlantnetApiService {
 
     constructor(config, loggerService) {
@@ -32,30 +34,39 @@ export default class PlantnetApiService {
             this.logger.error("PlantnetApiService, please setup your environment");
             return;
         }
+        //~ plantnet config - https://my.plantnet.org/account/doc // v2
+        const { plantnetIDApi, plantnetTimeout, plantnetKeepAlive } = config.plantnet;
         // timeouts and keep-alive config with explicit default values
-        const timeoutConfig = {
-            response: config.plantnet?.timeout?.response || 10000,   // 10s pour début réponse
-            deadline: config.plantnet?.timeout?.deadline || 60000,   // 60s timeout global
-        };
-        const keepAliveConfig = {
-            keepAlive: config.plantnet?.keepAlive?.enabled !== false,
-            keepAliveMsecs: config.plantnet?.keepAlive?.msecs || 1000,
-            maxSockets: config.plantnet?.keepAlive?.maxSockets || 10,
-            maxFreeSockets: config.plantnet?.keepAlive?.maxFreeSockets || 2,
-        };
+        const timeoutConfig = plantnetTimeout ? {
+            response: plantnetTimeout.response || 15000,   // 10s pour début réponse
+            deadline: plantnetTimeout.deadline || 60000,   // 60s timeout global
+        } : null;
+        const keepAliveConfig = plantnetKeepAlive ? {
+            keepAlive: plantnetKeepAlive?.enabled !== false,
+            keepAliveMsecs: plantnetKeepAlive?.msecs || 1000,
+            maxSockets: plantnetKeepAlive?.maxSockets || 10,
+            maxFreeSockets: plantnetKeepAlive?.maxFreeSockets || 2,
+        } : null;
+
         // Pl@ntNet client customization
-        this.plantnetClient = superagent.agent()
-            .use(req => {
-                req.timeout(timeoutConfig);
-                req.set('Connection', keepAliveConfig.keepAlive ? 'keep-alive' : 'close');
+        this.plantnetClient = superagent.agent();
+        this.plantnetClient.set('Accept', 'application/json')
+        if ((timeoutConfig !== null) || (keepAliveConfig !== null)) {
+            this.plantnetClient.use(req => {
+                if (timeoutConfig !== null) {
+                    req.timeout(timeoutConfig);
+                }
+                if (keepAliveConfig !== null) {
+                    req.set('Connection', keepAliveConfig.keepAlive ? 'keep-alive' : 'close');
+                }
                 return req;
             })
-            .set('Accept', 'application/json');
-        // .set('User-Agent', 'PlantnetBot/1.0');
-
-        this.logger.info(`client configured with` +
-            ` timeouts=${JSON.stringify(timeoutConfig)},` +
-            ` keepAlive=${JSON.stringify(keepAliveConfig)}`);
+            this.logger.info(`plantnetClient configured with` +
+                ` timeouts=${JSON.stringify(timeoutConfig)},` +
+                ` keepAlive=${JSON.stringify(keepAliveConfig)}`);
+        }
+        this.plantnetIDApi = plantnetIDApi;
+        this.logger.info(`plantnetClient IPApi:${plantnetIDApi}`);
 
         this.isAvailable = true;
         this.logger.info("available");
@@ -110,9 +121,7 @@ export default class PlantnetApiService {
                 return resolve(simulatedAnswer);
             }
 
-            // https://my.plantnet.org/account/doc // v2
-            // let req  = superagent.get(MY_API_PLANTNET_V2_URL)
-            this.plantnetClient.get(MY_API_PLANTNET_V2_URL)
+            this.plantnetClient.get(service.plantnetIDApi)
                 .query({
                     "images": [imageUrl, imageUrl],
                     "organs": ["flower", "leaf"],
