@@ -21,6 +21,7 @@ export const IDENTIFY_RESULT = {
     NONE: "NONE"
 };
 
+const DEBUG = process.env.DEBUG_PLANTNET_API_SERVICE === 'true';
 /**
  * Client to call Pl@ntNet API : cf root dedicated readme file
  */
@@ -35,7 +36,7 @@ export default class PlantnetApiService {
             return;
         }
         //~ plantnet config - https://my.plantnet.org/account/doc // v2
-        const { plantnetIDApi, plantnetTimeout, plantnetKeepAlive } = config.plantnet;
+        const {plantnetIDApi, plantnetTimeout, plantnetKeepAlive} = config.plantnet;
         // timeouts and keep-alive config with explicit default values
         const timeoutConfig = plantnetTimeout ? {
             response: plantnetTimeout.response || 15000,   // 10s pour début réponse
@@ -130,8 +131,10 @@ export default class PlantnetApiService {
                     "api-key": service.apiKey,
                 })
                 .on('request', (request) => {
-                    const redactedUrl = request.url.replace(/api-key=[^&]+/, 'api-key=REDACTED');
-                    console.log("👉 GET URL used :", redactedUrl);
+                    if (DEBUG) {
+                        const redactedUrl = request.url.replace(/api-key=[^&]+/, 'api-key=REDACTED');
+                        console.log("👉 GET URL used :", redactedUrl);
+                    }
                 })
                 .end((err, res) => {
                     if (err) {
