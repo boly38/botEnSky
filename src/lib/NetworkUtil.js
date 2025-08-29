@@ -1,15 +1,12 @@
 import net from "net";
 
-export const tryToConnectToSocketWithRetry = (timeout, port, host, maxRetries, logger) => {
+export const tryToConnectToSocketWithRetry = (timeoutMs, port, host, maxRetries, logger) => {
     const tryConnect = async (retryCount = 0) => {
         return new Promise((resolve, reject) => {
             const socket = new net.Socket();
-            let isConnected = false;
-
-            socket.setTimeout(timeout);
+            socket.setTimeout(timeoutMs);// setTimeout: timeout after x milliseconds of inactivity on the socket
 
             socket.on('connect', () => {
-                isConnected = true;
                 socket.destroy();
                 resolve(true);
             });
