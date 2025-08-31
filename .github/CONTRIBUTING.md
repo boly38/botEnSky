@@ -45,12 +45,23 @@ cp ./env/.env.template ./env/.env.development
 
 Execute the application
 ```bash
-pnpm startDev
+pnpm dev
 ```
 or (production mode)
 ```bash
 pnpm start
 ```
+
+
+## About nixpacks packaging
+
+This app is a Node.js ESM simple application.
+
+- compatible with [nixpacks](https://nixpacks.com/docs/getting-started)
+
+### nixpacks build
+cf. [OPS_app](../doc/OPS_app.md)
+
 
 ## PullRequests additional information
 Activated bot:
@@ -58,6 +69,11 @@ Activated bot:
 
 
 # Maintainer HowTos
+
+## HowTo operate bot hosting
+- for now, botEnSky is manually deployed via www.render.com free plan in state. There is just ENV to setup.
+- there is a plan to move on a dedicated VM (#142), and a draft version of [OPS](../doc/OPS.md) guide exist.
+
 
 ## HowTo create a fresh version
 - use patch or minor or major workflow

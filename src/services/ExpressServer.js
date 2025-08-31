@@ -91,7 +91,7 @@ export default class ExpressServer {
         )
 
         expressServer.listeningServer = await expressServer.app.listen(expressServer.port);
-        expressServer.logger.info(`Bot ${expressServer.version} listening on ${expressServer.port} with health on ${HEALTH_ENDPOINT}`);
+        expressServer.logger.info(`✅🎧 Bot ${expressServer.version} listening on ${expressServer.port} with health on ${HEALTH_ENDPOINT}`);
         return expressServer.listeningServer;
     }
 
