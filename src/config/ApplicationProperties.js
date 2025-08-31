@@ -6,7 +6,7 @@ export default class ApplicationProperties {
     constructor() {
         this.buildCommonEnvironment();
         this.verifyProperties();
-        console.log(` ☑  properties ${this.nodeEnv}`);
+        console.log(`✅ properties ${this.nodeEnv}`);
     }
 
     buildCommonEnvironment() {
@@ -17,7 +17,7 @@ export default class ApplicationProperties {
 
         this.cpuIsShared = this.isProd;// preserve hosting solution shared cpu / prevent app to be killed in resizeService
         if (this.cpuIsShared) {
-            console.log(` ☑  cpu is shared 💊`);
+            console.log(`✅ cpu is shared 💊`);
         }
 
         this.discordWebhookUrl = getEnv("BOT_DISCORD_WEBHOOK_URL", null);

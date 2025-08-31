@@ -1,0 +1,22 @@
+# nixpacks.toml for botEnSky
+# This configuration allows using the same file in both production and development
+# environments, controlled by the NODE_ENV variable.
+[phases.setup]
+nixPkgs = ["nodejs_23", "pnpm"]
+
+[phases.install]
+cmds = [
+    # In production:
+    #   > pnpm install --prod --frozen-lockfile --ignore-workspace-root-check
+    #   Install only runtime dependencies
+    # In development:
+    #   > pnpm install
+    #   Install all dependencies, including devDependencies
+    "if [ \"$NODE_ENV\" = \"production\" ]; then pnpm install --prod --frozen-lockfile; else pnpm install; fi"
+]
+
+[phases.build]
+cmds = []  # No build step required for this project
+
+[start]
+cmd = "bash ./bin/start.sh"
