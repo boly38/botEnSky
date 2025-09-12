@@ -78,7 +78,11 @@ Services ( having free plan 🚀 🌷 )
 - [PlantNet.org](https://plantnet.org) ([API](https://my.plantnet.org/)) - plant identification service (max 200 req/days)
 - [BioCLIP](https://github.com/Imageomics/bioclip) ([GrBird API](https://huggingface.co/spaces/3oly/grBird)) - classification from BioCLIP : a CLIP model trained on a new 10M-image dataset of biological organisms with fine-grained taxonomic labels. (cf. [paper](https://arxiv.org/abs/2311.18803) for more details) - credits : Samuel Stevens, Jiaman Wu, Matthew J Thompson, Elizabeth G Campolongo, Chan Hee Song, David Edward Carlyn, Li Dong, Wasila M Dahdul, Charles Stewart, Tanya Berger-Wolf, Wei-Lun Chao, Yu Su.
 - [betterstack](https://logs.betterstack.com/) - logs management
-- 
 
-Team:
-- cf. [contributors](https://github.com/boly38/botEnSky/graphs/contributors)
+### Contributions
+
+- Team: cf. [contributors](https://github.com/boly38/botEnSky/graphs/contributors)
+![Repobeats](https://repobeats.axiom.co/api/embed/7e769fd1b4307573766d3ea965277996d11a0b3f.svg "Repobeats analytics image")
+
+<small>provided by [Repobeats](https://repobeats.axiom.co/)</small> 
+
