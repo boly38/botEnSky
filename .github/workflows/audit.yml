@@ -1,4 +1,4 @@
-name: botensky-audit
+name: audit
 
 on:
   schedule:
@@ -18,26 +18,30 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          # version from package.json
+          run_install: false
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
       - name: Install dependencies
-        # - run: npm ci # need package.json.lock
         run: |
+          echo ::group::Install dependencies
           echo "install"
-          npm install
+          pnpm --silent install 
           echo "show outdated (if any)"
-          npm outdated --depth=3 || echo "you must think about update your dependencies :)"
+          pnpm outdated --depth=3 || echo "::warning::🕸️ you must think about update your dependencies :)"
+          echo ::endgroup::
 
-      - name: Audit backend
-        uses: oke-py/npm-audit-action@v2.4.4
-        with:
-          audit_level: moderate
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          issue_assignees: boly38
-          issue_labels: cybersecurity,bot-created
-          dedupe_issues: true
+      - name: pnpm audit
+        run: |
+          echo "pnpm audit"
+          pnpm audit

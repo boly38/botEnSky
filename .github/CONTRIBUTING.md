@@ -13,7 +13,7 @@ If you want to push some code :
 You could also be critic with existing ticket/PR : all constructive feedbacks are welcome.
 
 ## HowTo execute tests
-* launch tests using `npm test`.
+* launch tests using `pnpm test`.
 
 Think about environment setup.
 
@@ -30,7 +30,7 @@ $ git clone https://github.com/boly38/botEnSky.git
 1. Install NodeJs (https://nodejs.org/en/download/)
 2. Install dependencies
 ```bash
-npm install
+pnpm install
 ```
 
 ### Set your own private environment
@@ -45,11 +45,11 @@ cp ./env/.env.template ./env/.env.development
 
 Execute the application
 ```bash
-npm run startDev
+pnpm startDev
 ```
 or (production mode)
 ```bash
-npm run start
+pnpm start
 ```
 
 ## PullRequests additional information
