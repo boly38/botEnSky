@@ -57,25 +57,23 @@ Activated bot:
 - [houndci](https://houndci.com/)
 
 
-
 # Maintainer HowTos
+
 ## HowTo create a fresh version
 - use patch or minor or major workflow
 
 this will make a new version and on version tag, the main ci workflow will push a new npmjs version too.
 
-## HowTo release using Gren
+## HowTo release using `gh`
 
+Install and create automatically a draft release version using [gh client](https://cli.github.com/)
+- the version tag must exist
+
+Example to create v1.4.16
 ```bash
-# provide PAT with permissions to create release on current repository
-export GREN_GITHUB_TOKEN=your_token_here
-# one time setup
-npm install github-release-notes -g
-
-git checkout main
-git fetch --all && git pull
-# make a release vX with all history
-gren release --data-source=prs -t v1.4.13
-# overrides release vX with history from vX-1
-gren release --data-source=prs -t "v1.4.13..v1.4.12" --override
+gh release create v1.4.16 --draft --generate-notes
 ```
+this will make a new draft release. Verify it in [releases list](https://github.com/boly38/botEnSky/releases)
+
+- ⚠️ the repository apply immutable releases since #148, so you can't modify a release once published
+- publish the release when ready
