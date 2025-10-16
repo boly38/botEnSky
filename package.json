@@ -7,6 +7,8 @@
     "dev": "bash ./bin/startDev.sh",
     "start": "bash ./bin/startServer.sh",
     "setupDev": "npm install -g jshint",
+    "package-prod": "bash -c \"./scripts/package-bes.sh prod\"",
+    "package-prod-compose": "bash -c \"./scripts/package-bes-compose.sh prod\"",
     "lint": "eslint .",
     "jshint": "jshint .",
     "tst": "echo windows %TST% test&& set NODE_ENV=test&& mocha --trace-warnings --timeout 180000 --unhandled-rejections=strict tests/%TST%.test.js",

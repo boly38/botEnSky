@@ -44,10 +44,27 @@ jobs:
         run: |
           echo ::group::Install dependencies
           echo "install"
-          pnpm --silent install 
-          echo "show outdated (if any)"
-          pnpm outdated --depth=3 || echo "::warning::🕸️ you must think about update your dependencies :)"
+          pnpm i --frozen-lockfile
           echo ::endgroup::
+
+      - name: CHECK - Check for outdated dependencies (non-blocking warning)
+        run: |
+          echo "🔍 Checking for outdated dependencies..."
+          if pnpm outdated --depth=3; then
+            echo "::notice title=Deps OK::✅ Dependencies are up to date 🎉"
+          else
+            echo "::warning title=ℹ️ 🕸 Outdated Dependencies::Some dependencies are outdated. Please consider updating them."
+          fi
+
+      - name: CHECK - pnpm audit and comment on PR
+        if: ${{ github.event.pull_request }}
+        uses: JamesRobertWiseman/pnpm-audit@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          level: moderate   # 'low'|'moderate'|'high'|'critical'
+          fails: true # true to fail the build if vulnerabilities are found
+          single_comment: true # true to only post one comment
+          inline: true # true to emit audit findings directly in the workflow logs using GitHub annotation syntax
 
       - name: Run tests
         env:
@@ -64,13 +81,12 @@ jobs:
           BOT_INACTIVITY_DELAY_MIN: 1
         run: pnpm ci-test
 
-      - name: Report coverage
+      - name: COVERAGE - Report coverage on pull request
         if: github.event_name == 'pull_request'
         continue-on-error: true
         # uses: romeovs/lcov-reporter-action@v0.2.16 # https://github.com/romeovs/lcov-reporter-action/issues/10
         uses: andybelltree/lcov-reporter-action@v1.7.0 # https://github.com/andybelltree/lcov-reporter-action/releases
         with:
-          github-token: ${{ secrets.GH_ACTIONS_TOKEN }}
           lcov-file: ./coverage/lcov.info
           filter-changed-files: true
 
