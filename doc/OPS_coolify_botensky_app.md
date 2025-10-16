@@ -16,7 +16,7 @@ Add botEnSky as a new Coolify project instance :
 - Environment `Production` > `+Add Resource`
 - `Public Repository` > Repository URL `https://github.com/boly38/botEnSky` > `Check repository`
 - `Configuration` > branch `deploy-prod-package` > Build Pack `Docker compose`
-- `Configuration` > `Domains for app` > `https://bes.example.fr`
+- `Configuration` > `Domains for app` > `https://bes.example.fr` [doc](https://coolify.io/docs/knowledge-base/docker/compose)
 - Docker compose location : `/docker-compose.yml` > Click on `Continue`
 - Wait for it
 - When compose file is loaded, click on `Save`
@@ -32,5 +32,5 @@ TIP: to test using local WSL2, you could map 127.0.0.1 to a given name ex `cooli
 
 ### on "no available server" issue
 Means that Traefik dont route to your app ([doc](https://envix.shadowarcanist.com/coolify/troubleshooting/no-available-server/))
-- check health endpoint `/app $ wget http://127.0.0.1:3000/health`
+- check health endpoint `/app $ wget http://127.0.0.1/health`
 - check network/app configuration
