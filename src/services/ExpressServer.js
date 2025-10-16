@@ -68,7 +68,7 @@ export default class ExpressServer {
         expressServer.app.use(expressServer.i18n.bind(this));
         expressServer.app.set('views', path.join(wwwPath, './views'));
         expressServer.app.set('view engine', 'ejs');
-        expressServer.app.get('/api/health', expressServer.healthResponse.bind(this));
+        expressServer.app.get('/health', expressServer.healthResponse.bind(this));
         expressServer.app.get('/api/about', expressServer.aboutResponse.bind(this));
         expressServer.app.get('/api/hook', expressServer.hookResponse.bind(this));
         expressServer.app.get(HEALTH_ENDPOINT, (req, res) => res.status(200));

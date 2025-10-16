@@ -20,6 +20,7 @@ For BotEnSky applications install, cf. [OPS_coolify_botensky_app](./OPS_coolify_
 - Example : OVH dedicated VM ([VPS help doc](https://help.ovhcloud.com/csm/fr-vps-getting-started?id=kb_article_view&sysparm_article=KB0047736))
 - you could use your own VM, or VM provider to instantiate a new Linux VM.
 - you must have an ssh access to the VM.
+- your VM must have swap on.
 
 ### Ssh notice
 

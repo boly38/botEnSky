@@ -8,6 +8,7 @@ services:
     image: ghcr.io/boly38/botensky:latest-prod
     environment:
       - NODE_ENV=production
+      - PORT=3000
     expose:
       - "3000"
     restart: unless-stopped
