@@ -1,12 +1,9 @@
-[< OPS](./OPS.md)
 
-## BotEnSky Application deployment --- DRAFT VERSION
-
-Coolify is used to deploy app.
+### (deprecated) HowTo deploy botEnSky on Coolify - Build Pack : `Nixpacks`
 
 The app need to be nixpacks compatible to be deployed.
 
-### HowTo verify nixpacks compatibility
+#### HowTo (local) verify nixpacks compatibility
 
 ````bash
 # NB: this works under WSL2
@@ -15,23 +12,20 @@ The app need to be nixpacks compatible to be deployed.
 nixpacks build . --name botensky-app
 ````
 
-### run
+#### Local nixpacks run
 Once nixpacks build is done, you could start app container.
 
 ````bash
 docker run -it -p 5000:5000 botensky-app
 ````
+#### HowTo Coolify nixpacks deploy
 
-
-
-### HowTo deploy botEnSky on Coolify
-
-- once Coolify is installed, 
-- `Servers` : check you have a server installed with ssh access (ie. start ssh server if needed) 
+- once Coolify is installed,
+- `Servers` : check you have a server installed with ssh access (ie. start ssh server if needed)
 - `Projects > +add` : add and name a new project ex. Name `boly38/bot-en-sky:localQA` - Description `this is my bot`
 - You could name your environment ex. replace `Production` by `wsl2`
 - `Dashboard > boly38/bot-en-sky:localQA > +Add resource` :
-- choose `Public repository`, 
+- choose `Public repository`,
 - if needed to validate the server to use
 - Repository URL: `https://github.com/boly38/botEnSky` | Build Pack : `Nixpacks` | Base dir : `/` | Port `5000` | uncheck static site + `Continue`
 - `General` > adapt name suffix ex `boly38/bot-en-sky:nixpacks/coolify-withWsl2` | Port mapping `5000:5000` (or your need)

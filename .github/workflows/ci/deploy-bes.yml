@@ -1,0 +1,73 @@
+# deploy a ready-to-use docker-compose package
+name: deploy-bes
+on:
+  push:
+    branches:
+      - deploy-prod
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 18.x ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          # version from package.json
+          run_install: false
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: |
+          echo ::group::Install dependencies
+          echo "install"
+          pnpm --silent install --prod
+          echo ::endgroup::
+
+      - name: Pnpm package-prod
+        run: pnpm package-prod
+
+      - name: Log in to GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image (prod tag)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./dist-prod/
+          file: ./dist-prod/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/botensky:latest-prod
+            ghcr.io/${{ github.repository_owner }}/botensky:${{ github.sha }}-prod
+
+      - name: Pnpm package-prod
+        run: pnpm package-prod-compose
+
+      - name: Git publish deploy-prod-package
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: deploy-prod-package
+          publish_dir: ./dist-prod-compose
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: ${{ github.event.head_commit.message }}
+          force_orphan: true

@@ -136,3 +136,8 @@ dist
 # wip
 draft/
 *.dontpush.*
+
+# dist
+dist/
+dist-prod/
+dist-prod-compose/

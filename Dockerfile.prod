@@ -1,0 +1,27 @@
+# Dockerfile
+FROM node:20-alpine AS base
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Use a non-root user for better security
+RUN addgroup -S app && adduser -S app -G app
+
+# Enable corepack to use pnpm
+RUN corepack enable && corepack prepare pnpm@10.18.0 --activate
+# dist copy
+COPY . .
+
+WORKDIR /app
+RUN chown --recursive app:app /app
+USER app
+
+RUN pnpm install --prod --frozen-lockfile
+
+EXPOSE 3000
+
+# Healthcheck (optional but useful for Coolify)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+
+CMD ["node", "--unhandled-rejections=strict", "--trace-deprecation", "/app/bin/www.js"]

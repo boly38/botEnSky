@@ -1,0 +1,19 @@
+services:
+  app:
+    container_name: bes_app
+    # private image access
+    # https://coolify.io/docs/knowledge-base/docker/registry#docker-credentials
+    ## need a GH classic token with package:read permission
+    ## need to ssh on host to do `docker login ghcr.io` with that token
+    image: ghcr.io/boly38/botensky:latest-prod
+    environment:
+      - NODE_ENV=production
+    expose:
+      - "3000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
