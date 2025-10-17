@@ -33,6 +33,10 @@ docker compose \
   -f /data/coolify/source/docker-compose.prod.yml down
 ```
 
+#### Coolify Recover unstable proxy
+
+- https://github.com/coollabsio/coolify/issues/4605
+
 #### Coolify Recover admin account
 
 💁 TIP: I dont remember the email used by account creation
