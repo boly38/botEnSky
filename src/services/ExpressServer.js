@@ -68,13 +68,21 @@ export default class ExpressServer {
         expressServer.app.use(expressServer.i18n.bind(this));
         expressServer.app.set('views', path.join(wwwPath, './views'));
         expressServer.app.set('view engine', 'ejs');
-        expressServer.app.get('/health', expressServer.healthResponse.bind(this));
+        expressServer.app.get(HEALTH_ENDPOINT, expressServer.healthResponse.bind(this));
         expressServer.app.get('/api/about', expressServer.aboutResponse.bind(this));
         expressServer.app.get('/api/hook', expressServer.hookResponse.bind(this));
-        expressServer.app.get(HEALTH_ENDPOINT, (req, res) => res.status(200));
-        expressServer.app.get('/*', expressServer.webPagesResponse.bind(this));// default
-        expressServer.app.use((req, res, next) => next(createError(404)));// catch 404 and forward to error handler
-        expressServer.app.use(expressServer.errorHandlerMiddleware.bind(this));// error handler
+
+        // Catch-all pour le front-end (SPA)
+        expressServer.app.get('*', expressServer.webPagesResponse.bind(this));
+
+        // catch 404 and forward to error handler
+        expressServer.app.use((req, res, next) => {
+            // DEBUG //
+            expressServer.logger.info("catch 404 req",req.path);
+            next(createError(404));
+        });
+
+        expressServer.app.use(expressServer.errorHandlerMiddleware.bind(this));
 
         // build initial cache
         try {
@@ -90,7 +98,6 @@ export default class ExpressServer {
                 await ApplicationConfig.removeSessions();
             }
         )
-
         expressServer.listeningServer = await expressServer.app.listen(expressServer.port);
         expressServer.logger.info(`✅🎧 Bot ${expressServer.version} listening on ${expressServer.port} with health on ${HEALTH_ENDPOINT}`);
         return expressServer.listeningServer;
