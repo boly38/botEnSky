@@ -36,4 +36,4 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           pnpm version patch
           git branch -f deploy-prod
-          git push origin main deploy-prod --tags
+          git push -f origin main deploy-prod --tags
