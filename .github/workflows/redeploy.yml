@@ -1,5 +1,5 @@
 # render redeploy
-name: botensky-redeploy
+name: zzz-deprecated-botensky-redeploy
 
 on:
   push:

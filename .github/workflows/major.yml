@@ -38,5 +38,5 @@ jobs:
           git fetch --all
           git checkout main
           pnpm version major
-          git branch -f prod
-          git push origin main prod --tags
+          git branch -f deploy-prod
+          git push origin main deploy-prod --tags
