@@ -22,6 +22,8 @@ Add botEnSky as a new Coolify project instance :
 - When compose file is loaded, click on `Save`
 - Click on `Deploy` et voilà 🚀
 
+To make auto-deploy to work, you need to declare a dedicated source (even for a public repo), because this allow you to register a github app. This github app let coolify to have webhook for auto-deploy.
+
 
 TIP: show debug log to see the very first deployment in details. Coolify is very friendly.
 
