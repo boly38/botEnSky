@@ -73,7 +73,8 @@ export default class ExpressServer {
         expressServer.app.get('/api/hook', expressServer.hookResponse.bind(this));
 
         // Catch-all pour le front-end (SPA)
-        expressServer.app.get('*', expressServer.webPagesResponse.bind(this));
+        // Express 5: wildcard doit être nommé et inclure root avec {*splat}
+        expressServer.app.get('/{*splat}', expressServer.webPagesResponse.bind(this));
 
         // catch 404 and forward to error handler
         expressServer.app.use((req, res, next) => {

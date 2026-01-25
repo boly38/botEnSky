@@ -57,10 +57,19 @@ export const assumeSuccess = (err, res) => {
 
 
 export const verifyPluginProcessResult = async (plugin, config, expectedResultTexts) => {
+    testLogger.debug(`Plugin: ${plugin.getName()} | Config: ${JSON.stringify({
+        doSimulate: config.doSimulate,
+        doSimulateSearch: config.doSimulateSearch,
+        simulateIdentifyCase: config.simulateIdentifyCase,
+        searchSimulationFile: config.searchSimulationFile
+    })}`);
+
     const result = await plugin
         .process(config)
         .catch(err => {
-            testLogger.info(`plugin.process : err:${JSON.stringify(err)}`);
+            testLogger.error(`❌ plugin.process ERROR for ${plugin.getName()}`);
+            testLogger.error(`Config was: ${JSON.stringify(config)}`);
+            testLogger.error(`Error: ${JSON.stringify(err)}`);
             if (err.status === 202) {
                 testLogger.info("plugin.process : no result - this use case should no more happens because bs search may be simulated");
             } else {
@@ -70,12 +79,26 @@ export const verifyPluginProcessResult = async (plugin, config, expectedResultTe
         });
 
     if (result) {
-        testLogger.debug("plugin.process", result);
+        testLogger.debug("plugin.process result received", result);
         expect(result.html).not.to.be.empty;
         expect(result.text).not.to.be.empty;
-        // testLogger.debug(result.text)
+
+        testLogger.debug(`Verifying ${expectedResultTexts.length} expected text(s) in result...`);
         for (const text of expectedResultTexts) {
+            if (!result.text.includes(text)) {
+                testLogger.error(`❌ ASSERTION FAILED`);
+                testLogger.error(`Expected to find: "${text}"`);
+                testLogger.error(`Actual result: "${result.text}"`);
+                testLogger.error(`Config was: ${JSON.stringify({
+                    doSimulate: config.doSimulate,
+                    doSimulateSearch: config.doSimulateSearch,
+                    simulateIdentifyCase: config.simulateIdentifyCase,
+                    searchSimulationFile: config.searchSimulationFile
+                })}`);
+                testLogger.error(`💡 TIP: If identification is not simulated, check BOT_PLANTNET_SIMULATE env var is set to 'true'`);
+            }
             expect(result.text, `expected: ${result.text}`).to.contains(text);
         }
+        testLogger.debug(`✅ All ${expectedResultTexts.length} expected text(s) found`);
     }
 }

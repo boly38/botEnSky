@@ -1,4 +1,4 @@
-import chaiHttp from "chai-http";
+import chaiHttp, {request} from "chai-http";
 import * as chaiModule from 'chai';
 import ApplicationConfig from '../src/config/ApplicationConfig.js';
 import {before, describe, it} from "mocha";
@@ -26,7 +26,7 @@ describe("🧪🧪 20 - UI - Pages\n", () => {
 
 
     it("get /", done => {
-        agent = chai.request(expressServer.listeningServer)
+        agent = request.execute(expressServer.listeningServer)
         agent.get("/")
             .end((err, res) => {
                 assumeSuccess(err, res);
@@ -35,7 +35,7 @@ describe("🧪🧪 20 - UI - Pages\n", () => {
     });
 
     it("get /api/about", done => {
-        agent = chai.request(expressServer.listeningServer)
+        agent = request.execute(expressServer.listeningServer)
         agent.get("/api/about")
             .end((err, res) => {
                 assumeSuccess(err, res);
