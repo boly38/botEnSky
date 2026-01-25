@@ -157,7 +157,7 @@ export default class PluginsCommonService {
         if (!isSet(replyTo)) {
             return Promise.resolve(pluginResolve(
                 `Post:\n\t${postTextOf(candidate)}\n\t${negativeText}${authorAction}`,
-                `<b>Post</b>:<div class="news-negative"><div class="bg-info">${postHtmlOf(candidate)}</div> ${negativeText}${authorAction}</div>`
+                `<div class="news-negative"><div class="bg-info">${postHtmlOf(candidate)}</div> ${negativeText}${authorAction}</div>`
             ));
         }
         // else when answer
@@ -169,7 +169,7 @@ export default class PluginsCommonService {
             const replySent = doSimulate ? "SIMULATION - Réponse prévue" : "Réponse émise";
             return Promise.resolve(pluginResolve(
                 `Post:\n\t${replyToTextOf}\n\t${replySent} : ${replyMessage}${authorAction}`,
-                `<b>Post</b>:<div class="news-negative"><div class="bg-info">${replyToHtmlOf}</div><b>${replySent}</b>: ${replyMessage}${authorAction}</div>`,
+                `<div class="news-negative"><div class="bg-info">${replyToHtmlOf}</div><b>${replySent}</b>: ${replyMessage}${authorAction}</div>`,
                 200,
                 doSimulate ? 0 : 1
             ));
@@ -206,7 +206,7 @@ export default class PluginsCommonService {
                     const replySent = doSimulate ? "SIMULATION - Réponse prévue" : "Réponse émise";
                     resolve(pluginResolve(
                         `Post:\n\t${candidateTextOf}\n\t${replySent} : ${replyMessage}`,
-                        `<b>Post</b>:<div class="bg-info">${candidateHtmlOf}</div>${imageHtml}<b>${replySent}</b>: ${replyMessage}`,
+                        `${imageHtml}<div class="bg-info">${candidateHtmlOf}</div><b>${replySent}</b>: ${replyMessage}`,
                         200,
                         doSimulate ? 0 : 1
                     ));

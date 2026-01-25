@@ -1,0 +1,166 @@
+<!-- 
+  🧭 BotEnSky Header - Modern Navigation
+  Glassmorphism sticky header with dark mode toggle
+-->
+
+<header class="bes-header glass-header-sticky" data-header>
+  <div class="container">
+    <nav class="bes-nav">
+      
+      <!-- Logo / Brand -->
+      <div class="bes-brand">
+        <a href="/" class="bes-brand-link" data-umami-event="logo-click">
+          <div class="bes-logo">
+            <i data-lucide="bot" class="bes-logo-icon"></i>
+            <span class="bes-brand-name">botEnSky</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <ul class="bes-nav-links">
+        <li class="bes-nav-item">
+          <a id="logs-menu" 
+             href="#logs" 
+             data-nav-link
+             onclick="window.BesContent.toggleContent('logs'); return false;"
+             data-umami-event="nav-home"
+             class="bes-nav-link active" 
+             aria-current="page">
+            <i data-lucide="activity" class="bes-nav-icon"></i>
+            <span><%= __('index.menu.home') %></span>
+          </a>
+        </li>
+        <li class="bes-nav-item">
+          <a id="principes-menu" 
+             href="#principes" 
+             data-nav-link
+             onclick="window.BesContent.toggleContent('principes'); return false;"
+             data-umami-event="nav-principles"
+             class="bes-nav-link">
+            <i data-lucide="book-open" class="bes-nav-icon"></i>
+            <span><%= __('index.menu.principles') %></span>
+          </a>
+        </li>
+        <li class="bes-nav-item">
+          <a id="faq-menu" 
+             href="#faq" 
+             data-nav-link
+             onclick="window.BesContent.toggleContent('faq'); return false;"
+             data-umami-event="nav-faq"
+             class="bes-nav-link">
+            <i data-lucide="help-circle" class="bes-nav-icon"></i>
+            <span><%= __('index.menu.faq') %></span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Actions (Language + Dark Mode) -->
+      <div class="bes-nav-actions">
+        
+        <!-- Language Switcher -->
+        <div class="bes-lang-switcher">
+          <button class="bes-lang-btn" 
+                  onclick="toggleLang('en')" 
+                  data-umami-event="lang-en"
+                  aria-label="Switch to English">
+            <img src="/flags/gb.svg" alt="English" class="bes-flag-icon" />
+          </button>
+          <button class="bes-lang-btn" 
+                  onclick="toggleLang('fr')" 
+                  data-umami-event="lang-fr"
+                  aria-label="Passer en Français">
+            <img src="/flags/fr.svg" alt="Français" class="bes-flag-icon" />
+          </button>
+        </div>
+
+        <!-- Dark Mode Toggle -->
+        <button class="bes-theme-toggle glass-button" 
+                data-theme-toggle
+                aria-label="Toggle dark mode">
+          <i data-lucide="moon" data-theme-icon class="bes-theme-icon"></i>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="bes-mobile-menu-toggle" 
+                data-mobile-menu-toggle
+                aria-label="Toggle menu"
+                aria-expanded="false">
+          <span class="hamburger">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </span>
+        </button>
+
+      </div>
+
+    </nav>
+  </div>
+</header>
+
+<!-- Mobile Menu Overlay -->
+<div class="bes-mobile-menu-overlay" data-mobile-menu-overlay></div>
+
+<!-- Mobile Menu -->
+<nav class="bes-mobile-menu glass-modal" data-mobile-menu>
+  <div class="bes-mobile-menu-header">
+    <div class="bes-brand">
+      <i data-lucide="bot" class="bes-logo-icon"></i>
+      <span class="bes-brand-name">botEnSky</span>
+    </div>
+  </div>
+
+  <ul class="bes-mobile-menu-links">
+    <li>
+      <a href="#logs" 
+         data-nav-link
+         onclick="window.BesContent.toggleContent('logs'); return false;"
+         data-umami-event="mobile-nav-home"
+         class="bes-mobile-menu-link active">
+        <i data-lucide="activity"></i>
+        <span><%= __('index.menu.home') %></span>
+      </a>
+    </li>
+    <li>
+      <a href="#principes" 
+         data-nav-link
+         onclick="window.BesContent.toggleContent('principes'); return false;"
+         data-umami-event="mobile-nav-principles"
+         class="bes-mobile-menu-link">
+        <i data-lucide="book-open"></i>
+        <span><%= __('index.menu.principles') %></span>
+      </a>
+    </li>
+    <li>
+      <a href="#faq" 
+         data-nav-link
+         onclick="window.BesContent.toggleContent('faq'); return false;"
+         data-umami-event="mobile-nav-faq"
+         class="bes-mobile-menu-link">
+        <i data-lucide="help-circle"></i>
+        <span><%= __('index.menu.faq') %></span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="bes-mobile-menu-footer">
+    <div class="bes-mobile-menu-actions">
+      <!-- Language in mobile -->
+      <div class="bes-lang-switcher">
+        <button class="bes-lang-btn glass-button" 
+                onclick="toggleLang('en')" 
+                data-umami-event="mobile-lang-en">
+          <img src="/flags/gb.svg" alt="English" class="bes-flag-icon" />
+          <span>English</span>
+        </button>
+        <button class="bes-lang-btn glass-button" 
+                onclick="toggleLang('fr')" 
+                data-umami-event="mobile-lang-fr">
+          <img src="/flags/fr.svg" alt="Français" class="bes-flag-icon" />
+          <span>Français</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

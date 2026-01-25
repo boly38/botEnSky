@@ -1,0 +1,428 @@
+/**
+ * 🧭 BotEnSky Navigation Styles
+ * Modern header, mobile menu, glassmorphism
+ */
+
+/* ========================================
+   📱 HEADER CONTAINER
+   ======================================== */
+
+.bes-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--bes-z-sticky);
+  width: 100%;
+  padding: var(--bes-space-4) 0;
+  transition: all var(--bes-duration-base) var(--bes-ease-in-out);
+}
+
+.bes-header.scrolled {
+  padding: var(--bes-space-3) 0;
+  box-shadow: var(--bes-shadow-md);
+}
+
+.bes-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bes-space-6);
+}
+
+/* ========================================
+   🎨 BRAND / LOGO
+   ======================================== */
+
+.bes-brand-link {
+  text-decoration: none;
+  display: block;
+  transition: var(--bes-transition-fast);
+}
+
+.bes-brand-link:hover {
+  transform: scale(1.05);
+  text-decoration: none;
+}
+
+.bes-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--bes-space-2);
+}
+
+.bes-logo-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--bes-primary);
+  stroke-width: 2.5;
+}
+
+.bes-brand-name {
+  font-family: var(--bes-font-display);
+  font-size: var(--bes-text-xl);
+  font-weight: var(--bes-font-bold);
+  color: var(--bes-text-primary);
+  letter-spacing: -0.02em;
+}
+
+/* ========================================
+   🔗 NAVIGATION LINKS (Desktop)
+   ======================================== */
+
+.bes-nav-links {
+  display: none; /* Hidden on mobile */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: var(--bes-space-2);
+}
+
+.bes-nav-item {
+  position: relative;
+}
+
+.bes-nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--bes-space-2);
+  padding: var(--bes-space-2) var(--bes-space-4);
+  font-size: var(--bes-text-base);
+  font-weight: var(--bes-font-medium);
+  color: var(--bes-text-secondary);
+  text-decoration: none;
+  border-radius: var(--bes-radius-base);
+  transition: var(--bes-transition-fast);
+  position: relative;
+}
+
+.bes-nav-link:hover {
+  color: var(--bes-primary);
+  background-color: rgba(var(--bes-primary-rgb), 0.08);
+  text-decoration: none;
+}
+
+.bes-nav-link.active {
+  color: var(--bes-primary);
+  font-weight: var(--bes-font-semibold);
+}
+
+/* Animated underline for active link */
+.bes-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: var(--bes-space-4);
+  right: var(--bes-space-4);
+  height: 2px;
+  background: var(--bes-primary);
+  border-radius: 2px;
+  animation: slideInLeft var(--bes-duration-base) var(--bes-ease-out);
+}
+
+.bes-nav-icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+}
+
+/* Desktop view */
+@media (min-width: 768px) {
+  .bes-nav-links {
+    display: flex;
+  }
+}
+
+/* ========================================
+   ⚡ ACTIONS (Language + Dark Mode)
+   ======================================== */
+
+.bes-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--bes-space-3);
+}
+
+/* Language Switcher */
+.bes-lang-switcher {
+  display: flex;
+  gap: var(--bes-space-2);
+  padding: var(--bes-space-1);
+  background: rgba(var(--bes-primary-rgb), 0.05);
+  border-radius: var(--bes-radius-base);
+}
+
+.bes-lang-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--bes-space-2);
+  padding: var(--bes-space-2);
+  background: transparent;
+  border: none;
+  border-radius: var(--bes-radius-sm);
+  cursor: pointer;
+  transition: var(--bes-transition-fast);
+}
+
+.bes-lang-btn:hover {
+  background: rgba(var(--bes-primary-rgb), 0.1);
+  transform: scale(1.05);
+}
+
+.bes-flag-icon {
+  width: 20px;
+  height: 15px;
+  border-radius: 2px;
+  box-shadow: var(--bes-shadow-sm);
+}
+
+/* Dark Mode Toggle */
+.bes-theme-toggle {
+  padding: var(--bes-space-2);
+  border: 1px solid var(--bes-border-light);
+  background: var(--bes-surface-glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--bes-radius-base);
+  cursor: pointer;
+  transition: var(--bes-transition-fast);
+}
+
+.bes-theme-toggle:hover {
+  background: var(--bes-surface-hover);
+  border-color: var(--bes-primary);
+  transform: rotate(15deg) scale(1.05);
+}
+
+.bes-theme-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--bes-text-primary);
+  stroke-width: 2;
+}
+
+/* ========================================
+   🍔 MOBILE MENU TOGGLE (Hamburger)
+   ======================================== */
+
+.bes-mobile-menu-toggle {
+  display: flex;
+  padding: var(--bes-space-2);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: calc(var(--bes-z-modal) + 10);
+}
+
+@media (min-width: 768px) {
+  .bes-mobile-menu-toggle {
+    display: none;
+  }
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 24px;
+  height: 20px;
+}
+
+.hamburger-line {
+  width: 100%;
+  height: 2px;
+  background-color: var(--bes-text-primary);
+  border-radius: 2px;
+  transition: all var(--bes-duration-base) var(--bes-ease-in-out);
+  transform-origin: center;
+}
+
+/* Hamburger → X animation */
+.bes-mobile-menu-toggle.open .hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.bes-mobile-menu-toggle.open .hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.bes-mobile-menu-toggle.open .hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ========================================
+   📱 MOBILE MENU
+   ======================================== */
+
+/* Overlay */
+.bes-mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--bes-duration-base) var(--bes-ease-in-out);
+  z-index: var(--bes-z-modal-backdrop);
+}
+
+.bes-mobile-menu-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Mobile Menu Panel */
+.bes-mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 85%;
+  max-width: 400px;
+  height: 100vh;
+  background: var(--bes-surface-glass);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border-left: 1px solid var(--bes-border-light);
+  box-shadow: var(--bes-shadow-2xl);
+  transform: translateX(100%);
+  transition: transform var(--bes-duration-base) var(--bes-ease-in-out);
+  z-index: var(--bes-z-modal);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.bes-mobile-menu.open {
+  transform: translateX(0);
+}
+
+[data-theme="dark"] .bes-mobile-menu {
+  background: rgba(13, 27, 42, 0.95);
+  border-left-color: var(--bes-border-medium);
+}
+
+/* Mobile Menu Header */
+.bes-mobile-menu-header {
+  padding: var(--bes-space-6);
+  border-bottom: 1px solid var(--bes-border-light);
+}
+
+.bes-mobile-menu-header .bes-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--bes-space-2);
+}
+
+/* Mobile Menu Links */
+.bes-mobile-menu-links {
+  flex: 1;
+  list-style: none;
+  margin: 0;
+  padding: var(--bes-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--bes-space-2);
+}
+
+.bes-mobile-menu-link {
+  display: flex;
+  align-items: center;
+  gap: var(--bes-space-3);
+  padding: var(--bes-space-4);
+  font-size: var(--bes-text-lg);
+  font-weight: var(--bes-font-medium);
+  color: var(--bes-text-secondary);
+  text-decoration: none;
+  border-radius: var(--bes-radius-md);
+  transition: var(--bes-transition-fast);
+}
+
+.bes-mobile-menu-link:hover {
+  color: var(--bes-primary);
+  background: rgba(var(--bes-primary-rgb), 0.1);
+  text-decoration: none;
+  transform: translateX(5px);
+}
+
+.bes-mobile-menu-link.active {
+  color: var(--bes-primary);
+  background: rgba(var(--bes-primary-rgb), 0.15);
+  font-weight: var(--bes-font-semibold);
+}
+
+.bes-mobile-menu-link i {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2;
+}
+
+/* Mobile Menu Footer */
+.bes-mobile-menu-footer {
+  padding: var(--bes-space-6);
+  border-top: 1px solid var(--bes-border-light);
+}
+
+.bes-mobile-menu-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bes-space-4);
+}
+
+.bes-mobile-menu-footer .bes-lang-switcher {
+  flex-direction: column;
+  padding: 0;
+  background: transparent;
+}
+
+.bes-mobile-menu-footer .bes-lang-btn {
+  justify-content: flex-start;
+  padding: var(--bes-space-3) var(--bes-space-4);
+  border: 1px solid var(--bes-border-light);
+  background: var(--bes-surface-glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--bes-radius-base);
+  font-size: var(--bes-text-base);
+  font-weight: var(--bes-font-medium);
+  color: var(--bes-text-primary);
+}
+
+.bes-mobile-menu-footer .bes-lang-btn span {
+  flex: 1;
+  text-align: left;
+}
+
+/* ========================================
+   🎨 THEME TRANSITION SMOOTH
+   ======================================== */
+
+body.theme-transitioning,
+body.theme-transitioning * {
+  transition: background-color var(--bes-duration-base) var(--bes-ease-in-out),
+              color var(--bes-duration-base) var(--bes-ease-in-out),
+              border-color var(--bes-duration-base) var(--bes-ease-in-out) !important;
+}
+
+/* ========================================
+   📱 RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+  .bes-nav-actions .bes-lang-switcher {
+    display: none; /* Language only in mobile menu */
+  }
+}
+
+@media (max-width: 480px) {
+  .bes-mobile-menu {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .bes-brand-name {
+    font-size: var(--bes-text-lg);
+  }
+}

@@ -1,0 +1,471 @@
+/**
+ * ✨ BotEnSky Animations
+ * Keyframes, utilities & micro-interactions
+ */
+
+/* ========================================
+   🎬 KEYFRAME ANIMATIONS
+   ======================================== */
+
+/* Fade In */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Fade In Up */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade In Down */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide In Left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide In Right */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scale In */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Bounce In */
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Pulse */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+/* Rotate */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Shimmer (for loading states) */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Float */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Gradient Shift */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ========================================
+   🎯 UTILITY ANIMATION CLASSES
+   ======================================== */
+
+/* Fade In variants */
+.animate-fade-in {
+  animation: fadeIn var(--bes-duration-base) var(--bes-ease-out);
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp var(--bes-duration-slow) var(--bes-ease-bounce);
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown var(--bes-duration-slow) var(--bes-ease-bounce);
+}
+
+/* Slide variants */
+.animate-slide-in-left {
+  animation: slideInLeft var(--bes-duration-slow) var(--bes-ease-bounce);
+}
+
+.animate-slide-in-right {
+  animation: slideInRight var(--bes-duration-slow) var(--bes-ease-bounce);
+}
+
+/* Scale In */
+.animate-scale-in {
+  animation: scaleIn var(--bes-duration-base) var(--bes-ease-out);
+}
+
+/* Bounce In */
+.animate-bounce-in {
+  animation: bounceIn var(--bes-duration-slower) var(--bes-ease-out);
+}
+
+/* Pulse */
+.animate-pulse {
+  animation: pulse 2s var(--bes-ease-in-out) infinite;
+}
+
+/* Rotate (loading spinner) */
+.animate-rotate {
+  animation: rotate 1s linear infinite;
+}
+
+/* Float */
+.animate-float {
+  animation: float 3s var(--bes-ease-in-out) infinite;
+}
+
+/* ========================================
+   🌊 SCROLL ANIMATIONS (with JS)
+   ======================================== */
+
+/* Hidden state before animation */
+.scroll-animate {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity var(--bes-duration-slow) var(--bes-ease-bounce),
+              transform var(--bes-duration-slow) var(--bes-ease-bounce);
+}
+
+/* Visible state when in viewport */
+.scroll-animate.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delay for multiple elements */
+.scroll-animate-delay-1 { transition-delay: 100ms; }
+.scroll-animate-delay-2 { transition-delay: 200ms; }
+.scroll-animate-delay-3 { transition-delay: 300ms; }
+.scroll-animate-delay-4 { transition-delay: 400ms; }
+.scroll-animate-delay-5 { transition-delay: 500ms; }
+
+/* ========================================
+   💫 HOVER EFFECTS
+   ======================================== */
+
+/* Lift on Hover */
+.hover-lift {
+  transition: var(--bes-transition-base);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--bes-shadow-lg);
+}
+
+/* Grow on Hover */
+.hover-grow {
+  transition: var(--bes-transition-fast);
+}
+
+.hover-grow:hover {
+  transform: scale(1.05);
+}
+
+/* Glow on Hover */
+.hover-glow {
+  transition: var(--bes-transition-base);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(var(--bes-accent-rgb), 0.4);
+}
+
+/* Underline Slide In */
+.hover-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.hover-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--bes-primary);
+  transition: width var(--bes-duration-base) var(--bes-ease-out);
+}
+
+.hover-underline:hover::after {
+  width: 100%;
+}
+
+/* Shine Effect */
+.hover-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.hover-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left var(--bes-duration-slower) var(--bes-ease-out);
+}
+
+.hover-shine:hover::before {
+  left: 100%;
+}
+
+/* ========================================
+   🔄 LOADING STATES
+   ======================================== */
+
+/* Skeleton Loader */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bes-surface) 0%,
+    rgba(var(--bes-primary-rgb), 0.1) 50%,
+    var(--bes-surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--bes-radius-base);
+}
+
+.skeleton-text {
+  height: 1em;
+  margin-bottom: var(--bes-space-2);
+}
+
+.skeleton-title {
+  height: 2em;
+  margin-bottom: var(--bes-space-4);
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+  aspect-ratio: 1;
+}
+
+/* Spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--bes-border-light);
+  border-top-color: var(--bes-primary);
+  border-radius: 50%;
+  animation: rotate 0.8s linear infinite;
+}
+
+.spinner-sm {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+.spinner-lg {
+  width: 60px;
+  height: 60px;
+  border-width: 4px;
+}
+
+/* Dots Loader */
+.dots-loader {
+  display: inline-flex;
+  gap: var(--bes-space-2);
+}
+
+.dots-loader span {
+  width: 8px;
+  height: 8px;
+  background-color: var(--bes-primary);
+  border-radius: 50%;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.dots-loader span:nth-child(1) { animation-delay: 0s; }
+.dots-loader span:nth-child(2) { animation-delay: 0.2s; }
+.dots-loader span:nth-child(3) { animation-delay: 0.4s; }
+
+/* ========================================
+   🎨 GRADIENT ANIMATIONS
+   ======================================== */
+
+.gradient-animated {
+  background: linear-gradient(
+    270deg,
+    var(--bes-primary),
+    var(--bes-accent),
+    var(--bes-secondary)
+  );
+  background-size: 600% 600%;
+  animation: gradientShift 8s ease infinite;
+}
+
+/* ========================================
+   🎪 ENTRANCE DELAYS (for stagger effect)
+   ======================================== */
+
+.entrance-delay-1 { animation-delay: 100ms; }
+.entrance-delay-2 { animation-delay: 200ms; }
+.entrance-delay-3 { animation-delay: 300ms; }
+.entrance-delay-4 { animation-delay: 400ms; }
+.entrance-delay-5 { animation-delay: 500ms; }
+.entrance-delay-6 { animation-delay: 600ms; }
+
+/* ========================================
+   🌀 SPECIAL EFFECTS
+   ======================================== */
+
+/* Blur In */
+@keyframes blurIn {
+  from {
+    filter: blur(10px);
+    opacity: 0;
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+.animate-blur-in {
+  animation: blurIn var(--bes-duration-slower) var(--bes-ease-out);
+}
+
+/* Slide Down Fade In (for dropdowns) */
+@keyframes slideDownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-dropdown {
+  animation: slideDownFadeIn var(--bes-duration-base) var(--bes-ease-out);
+  transform-origin: top;
+}
+
+/* Shake (for errors) */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.5s var(--bes-ease-in-out);
+}
+
+/* ========================================
+   🎯 REDUCED MOTION (Accessibility)
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .scroll-animate {
+    opacity: 1;
+    transform: none;
+  }
+}

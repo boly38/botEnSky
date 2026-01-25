@@ -1,16 +1,23 @@
+/* Legacy main.css - Progressivement remplacé par design-system.css */
+
 html, body {
     margin: 0px !important;
     padding: 0px !important;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    /* Font family now in design-system.css */
     width: 100%;
 
+    /* Legacy variables - kept for backward compatibility */
     --bes-text-background-first: rgba(236, 227, 227, 0.6);
     --bes-text-background-second: rgb(167, 211, 167, 0.8);
-    --bes-text-background-negative: rgb(243, 202, 128);
+    --bes-text-background-negative: rgba(255, 220, 200, 0.9); /* Orange pâle plus agréable */
+}
+
+/* Adjust container for new header */
+.container {
+    margin-top: var(--bes-space-6);
+    max-width: 1400px; /* Limite sur ultra-wide */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .flag-img {
@@ -95,20 +102,33 @@ li.msgContainer {
 
 /** backend news injected styles **/
 .bg-info {
-    margin-left: 20px;
-    margin-right: 100px;
+    margin-left: 0; /* Supprimé pour aligner avec l'image */
+    margin-right: 0; /* Supprimé pour layout propre */
+    margin-bottom: 0; /* Géré par gap du parent flex */
     padding: 10px;
     border: 1px solid lightgrey;
     border-radius: 15px;
     background-color: var(--bes-text-background-second) !important;
+    /* FIX CONTRAST : texte plus foncé sur fond vert */
+    color: #1B4332 !important; /* Vert très foncé pour bon contraste */
+    font-weight: 500; /* Semi-bold pour meilleure lisibilité */
+}
+
+/* Améliorer contraste sur liens/petits textes dans bg-info */
+.bg-info small,
+.bg-info a {
+    color: #0D1B1A !important; /* Presque noir-vert */
+    text-shadow: 0 1px 1px rgba(255,255,255,0.5); /* Ombre blanche pour lisibilité */
 }
 /** backend news negative result **/
 .news-negative{
     padding: 10px;
-    border: 1px solid lightgrey;
+    border-left: 3px solid #FF6B6B; /* Bordure gauche rouge pour attirer l'oeil */
     border-radius: 15px;
     background-color: var(--bes-text-background-negative) !important;
-    opacity: 0.5;
+    color: #5D2A2A !important; /* Marron rouge foncé pour bon contraste */
+    font-weight: 500; /* Semi-bold pour lisibilité */
+    line-height: 1.5;
 }
 
 /* Responsive adjustments */
@@ -144,16 +164,34 @@ li.msgContainer {
     }
 }
 
-.post-image {
-    width: 80px;
-}
-.medium-post-image {
-    width: 180px;
-}
+/* Images dans les logs - Option B : gauche, hauteur fixe */
 .post-image-container {
-    padding: 5px;
-    position: relative;
-    float: right;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: var(--bes-space-4); /* Plus d'espace à droite de l'image */
+    margin-bottom: var(--bes-space-2);
+    margin-left: 0; /* Pas de marge gauche pour aligner au début */
+    max-width: 120px;
+    float: left; /* À GAUCHE maintenant */
+}
+
+.post-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: var(--bes-radius-md);
+    box-shadow: var(--bes-shadow-sm);
+    transition: var(--bes-transition-fast);
+}
+
+.post-image:hover {
+    transform: scale(1.05);
+    box-shadow: var(--bes-shadow-md);
+}
+
+.medium-post-image {
+    width: 120px;
+    height: 120px;
 }
 
 .fixed-div {

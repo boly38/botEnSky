@@ -4,6 +4,26 @@
     <meta charset="utf-8">
     <title><%= __('index.title') %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Bot Bluesky automatique pour l'identification d'oiseaux et plantes via BioClip et Pl@ntNet. Activité en temps réel et statistiques.">
+    <meta name="theme-color" content="#2D6A4F">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://botensky.bsky.social/">
+    <meta property="og:title" content="botEnSky - Bot Nature Bluesky">
+    <meta property="og:description" content="Bot Bluesky automatique pour l'identification d'oiseaux et plantes via BioClip et Pl@ntNet.">
+    <meta property="og:image" content="/botensky_og.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://botensky.bsky.social/">
+    <meta property="twitter:title" content="botEnSky - Bot Nature Bluesky">
+    <meta property="twitter:description" content="Bot Bluesky automatique pour l'identification d'oiseaux et plantes via BioClip et Pl@ntNet.">
+    <meta property="twitter:image" content="/botensky_og.jpg">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" href="/favicon.png">
 
     <!-- bootstrap - https://getbootstrap.com/docs/5.3/getting-started/introduction/-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -13,53 +33,34 @@
     <!-- Umami cloud - https://cloud.umami.is/ -->
     <script defer src="https://cloud.umami.is/script.js" data-website-id="ca7cc5f5-a84c-42bf-b34f-359beed91b11"></script>
 
-    <!-- BotEnSky -->
+    <!-- Google Fonts - Inter & Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- BotEnSky Design System -->
+    <link rel="stylesheet" type="text/css" href="/css/design-system.css" />
+    <link rel="stylesheet" type="text/css" href="/css/glassmorphism.css" />
+    <link rel="stylesheet" type="text/css" href="/css/animations.css" />
+    <link rel="stylesheet" type="text/css" href="/css/navigation.css" />
+    <link rel="stylesheet" type="text/css" href="/css/home.css" />
+    <link rel="stylesheet" type="text/css" href="/css/principes.css" />
+    <link rel="stylesheet" type="text/css" href="/css/faq.css" />
+    <link rel="stylesheet" type="text/css" href="/css/lightbox.css" />
     <link rel="stylesheet" type="text/css" href="/main.css" />
 
-    <!-- MENU handlers-->
+    <!-- Log Date IDs (for navigation.js) -->
     <script type="text/javascript">
-      const contentIds = ["logs", "principes", "faq"]
-      window.toggleContent = function(content) {
-        contentIds.forEach( id => {
-          const idMenu = `${id}-menu`;
-          if (id === content) {
-            $(`#${id}`).show();
-            $(`#${idMenu}`).addClass("active");
-          } else {
-            $(`#${id}`).hide();
-            $(`#${idMenu}`).removeClass("active");
-          }
-        })
-      }
-      let logDateIds = [<%- news?.data ? Object.keys(news.data).map((item, index) => "\"logDate-" + index + "\"") : [] %>];
-      logDateIds.push("logDate-week");
-      window.toggleLogDateContent = content => {
-        logDateIds.length > 0 && logDateIds.forEach( id => {
-          const idMenu = `${id}-menu`;
-          if (id === content) {
-            $(`#${id}`).show();
-            $(`#${idMenu}`).addClass("active");
-          } else {
-            $(`#${id}`).hide();
-            $(`#${idMenu}`).removeClass("active");
-          }
-        })
-      }
-
-      window.toggleLang = function(lang) {
-        if (['fr','en'].includes(lang)) {
-            document.location.href="?lang="+lang;
-        }
-      }
-
-      $(document).ready(function () {
-         window.toggleContent(contentIds[0]);
-         window.toggleLogDateContent(logDateIds[0]);
-      });
+      window.logDateIds = [<%- news?.data ? Object.keys(news.data).map((item, index) => "\"logDate-" + index + "\"") : [] %>];
+      window.logDateIds.push("logDate-week");
     </script>
 </head>
 
-<body>
+<body data-theme="light">
     <!-- https://getbootstrap.com/docs/5.3/getting-started/introduction/ -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -68,58 +69,48 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
             integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 
+   <!-- New Modern Header -->
+   <%- include ('../partials/header') %>
+
    <div class="container">
 
    <!-- BG image-->
     <div class="bg-image">
 
-        <!-- MENU -->
-        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-          <!-- Logo?
-          <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            @botEnSky
-          </a>
-           -->
-
-          <!-- Sections -->
-          <ul class="nav nav-underline">
-            <li class="nav-item">
-                  <img src="/flags/gb.svg" alt="en"
-                       id="img-switch-lang-en"
-                       data-umami-event="{lang en link}"
-                       class="flag-img" href="#" onClick="toggleLang('en')"/>
-                  <img src="/flags/fr.svg" alt="fr"
-                       id="img-switch-lang-fr"
-                       data-umami-event="{lang fr link}"
-                       class="flag-img" href="#" onClick="toggleLang('fr')"/>
-            </li>
-            <li class="nav-item">
-                <a id="logs-menu" href="#" onClick="toggleContent('logs')"
-                    data-umami-event="{home logs link}"
-                    class="nav-link" aria-current="page"><%= __('index.menu.home') %></a>
-            </li>
-            <li class="nav-item">
-                <a id="principes-menu" href="#" onClick="toggleContent('principes')"
-                    data-umami-event="{principes link}"
-                    class="nav-link"><%= __('index.menu.principles') %></a>
-            </li>
-            <li class="nav-item">
-                <a id="faq-menu" href="#" onClick="toggleContent('faq')"
-                    data-umami-event="{faq link}" id="faq-link"
-                    class="nav-link"><%= __('index.menu.faq') %></a>
-            </li>
-          </ul>
-        </header>
-
         <!-- Sections content-->
 
-        <%- include ('../partials/home') %>
-        <%- include ('../partials/principes') %>
-        <%- include ('../partials/faq') %>
+        <%- include ('../partials/home-new') %>
+        <%- include ('../partials/principes-new') %>
+        <%- include ('../partials/faq-new') %>
 
      </div><!-- bg image -->
    </div>
 
+   <!-- BotEnSky JavaScript -->
+   <script src="/js/theme-switcher.js"></script>
+   <script src="/js/navigation.js"></script>
+   <script src="/js/scroll-animations.js"></script>
+   <script src="/js/principes.js"></script>
+   <script src="/js/faq.js"></script>
+   <script src="/js/lightbox.js"></script>
+
+   <!-- Initialize on load -->
+   <script>
+     // Initialize Lucide Icons
+     if (window.lucide) {
+       lucide.createIcons();
+     }
+
+     // Initialize content visibility
+     document.addEventListener('DOMContentLoaded', function() {
+       if (window.BesContent) {
+         window.BesContent.toggleContent('logs');
+         if (window.logDateIds && window.logDateIds.length > 0) {
+           window.BesContent.toggleLogDateContent(window.logDateIds[0], window.logDateIds);
+         }
+       }
+     });
+   </script>
 
 </body>
 </html>
