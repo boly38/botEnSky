@@ -63,7 +63,8 @@ export default class BioClip {
             } = await grBirdApiService.birdIdentify({
                 imageUrl,
                 tags,
-                context
+                context,
+                post: candidate
             });
 
             step = "birdIdentify handle response";

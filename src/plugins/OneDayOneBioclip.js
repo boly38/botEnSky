@@ -61,7 +61,8 @@ export default class OneDayOneBioclip {
                 } = await grBirdApiService.birdIdentify({
                     imageUrl,
                     tags,
-                    context
+                    context,
+                    post: null // Unsplash photo, not a Bluesky post
                 });
                 if (result === IDENTIFY_RESULT.OK) {
                     const {scoredResult} = bioResult;
