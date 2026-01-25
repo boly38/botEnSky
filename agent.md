@@ -90,6 +90,7 @@ PORT=3000                    # Web UI
 ## Conventions
 
 Code: **Français** (logs, messages) | JSDoc **anglais**  
+Commits: **Anglais** (messages, descriptions)  
 ESM: `import/export` (pas CommonJS)
 
 ## Services clés
