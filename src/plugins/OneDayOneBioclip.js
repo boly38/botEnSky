@@ -120,11 +120,11 @@ ${tags}`.trim();
                     const textOf = postTextOf(newPost);
                     const imageHtml = pluginsCommonService.imageHtmlOf(imageUrl, imageAlt);
                     const postSent = doSimulate ? "SIMULATION - Réponse prévue" : "Réponse émise";
-                    resolve(pluginResolve(
-                        `Post:\n\t${textOf}\n\t${postSent} : ${textOf}`,
-                        `<b>Post</b>:<div class="bg-info">${htmlOf}</div>${imageHtml}<b>${postSent}</b>`,
-                        200,
-                        doSimulate ? 0 : 1
+                      resolve(pluginResolve(
+      `Post:\n\t${textOf}\n\t${postSent} : ${textOf}`,
+      `${imageHtml}<div class="bg-info">${htmlOf}</div><b>${postSent}</b>`,
+      200,
+      doSimulate ? 0 : 1
                     ));
                 })
                 .catch(err => {

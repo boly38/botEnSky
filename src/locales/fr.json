@@ -53,5 +53,7 @@
 	"server.error.internal": "une erreur interne s'est produite, l'équipe sera prévenue, retentez dans quelques jours ou consultez les tickets",
 	"server.error.tooManyRequests": "Demande trop rapprochée, retentez plus tard",
 	"server.pleaseReportIssue": "merci de la rechercher ou de la signaler sur ",
-	"server.issueLinkLabel": "les tickets"
+	"server.issueLinkLabel": "les tickets",
+	"project.title": "Projet",
+	"project.info": "Informations"
 }

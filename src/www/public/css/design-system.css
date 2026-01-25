@@ -1,0 +1,342 @@
+/**
+ * 🎨 BotEnSky Design System
+ * Modern CSS Variables & Design Tokens
+ * Mobile-first, nature-inspired palette
+ */
+
+:root {
+  /* ========================================
+     🌈 COLOR PALETTE - LIGHT MODE (Default)
+     ======================================== */
+  
+  /* Primary Colors - Nature Green */
+  --bes-primary: #2D6A4F;
+  --bes-primary-light: #40916C;
+  --bes-primary-dark: #1B4332;
+  --bes-primary-rgb: 45, 106, 79;
+  
+  /* Secondary Colors - Prairie Green */
+  --bes-secondary: #52B788;
+  --bes-secondary-light: #74C69D;
+  --bes-secondary-dark: #2D6A4F;
+  --bes-secondary-rgb: 82, 183, 136;
+  
+  /* Accent Colors - Sky Blue */
+  --bes-accent: #74C0FC;
+  --bes-accent-light: #A5D8FF;
+  --bes-accent-dark: #339AF0;
+  --bes-accent-rgb: 116, 192, 252;
+  
+  /* Neutral Colors */
+  --bes-background: #FEFCF3;
+  --bes-surface: #FFFFFF;
+  --bes-surface-glass: rgba(255, 255, 255, 0.7);
+  --bes-surface-hover: rgba(255, 255, 255, 0.9);
+  
+  /* Text Colors */
+  --bes-text-primary: #1B263B;
+  --bes-text-secondary: #415A77;
+  --bes-text-tertiary: #778DA9;
+  --bes-text-inverse: #FFFFFF;
+  
+  /* Border Colors */
+  --bes-border-light: rgba(27, 38, 59, 0.1);
+  --bes-border-medium: rgba(27, 38, 59, 0.2);
+  --bes-border-strong: rgba(27, 38, 59, 0.3);
+  
+  /* Status Colors */
+  --bes-success: #52B788;
+  --bes-warning: #F4A261;
+  --bes-error: #E76F51;
+  --bes-info: #74C0FC;
+  
+  /* ========================================
+     📏 SPACING SYSTEM (4pt base)
+     ======================================== */
+  --bes-space-1: 0.25rem;   /* 4px */
+  --bes-space-2: 0.5rem;    /* 8px */
+  --bes-space-3: 0.75rem;   /* 12px */
+  --bes-space-4: 1rem;      /* 16px */
+  --bes-space-5: 1.5rem;    /* 24px */
+  --bes-space-6: 2rem;      /* 32px */
+  --bes-space-8: 3rem;      /* 48px */
+  --bes-space-10: 4rem;     /* 64px */
+  --bes-space-12: 6rem;     /* 96px */
+  --bes-space-16: 8rem;     /* 128px */
+  
+  /* ========================================
+     🔤 TYPOGRAPHY
+     ======================================== */
+  
+  /* Font Families */
+  --bes-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+                   'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  --bes-font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --bes-font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  
+  /* Font Sizes */
+  --bes-text-xs: 0.75rem;      /* 12px */
+  --bes-text-sm: 0.875rem;     /* 14px */
+  --bes-text-base: 1rem;       /* 16px */
+  --bes-text-lg: 1.125rem;     /* 18px */
+  --bes-text-xl: 1.25rem;      /* 20px */
+  --bes-text-2xl: 1.5rem;      /* 24px */
+  --bes-text-3xl: 1.875rem;    /* 30px */
+  --bes-text-4xl: 2.25rem;     /* 36px */
+  --bes-text-5xl: 3rem;        /* 48px */
+  --bes-text-6xl: 3.75rem;     /* 60px */
+  
+  /* Font Weights */
+  --bes-font-normal: 400;
+  --bes-font-medium: 500;
+  --bes-font-semibold: 600;
+  --bes-font-bold: 700;
+  
+  /* Line Heights */
+  --bes-leading-tight: 1.25;
+  --bes-leading-normal: 1.5;
+  --bes-leading-relaxed: 1.75;
+  --bes-leading-loose: 2;
+  
+  /* ========================================
+     📐 BORDER RADIUS
+     ======================================== */
+  --bes-radius-sm: 0.375rem;   /* 6px */
+  --bes-radius-base: 0.5rem;   /* 8px */
+  --bes-radius-md: 0.75rem;    /* 12px */
+  --bes-radius-lg: 1rem;       /* 16px */
+  --bes-radius-xl: 1.5rem;     /* 24px */
+  --bes-radius-2xl: 2rem;      /* 32px */
+  --bes-radius-full: 9999px;   /* Pill shape */
+  
+  /* ========================================
+     🌑 SHADOWS (5 levels of elevation)
+     ======================================== */
+  --bes-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --bes-shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+                     0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --bes-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                   0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --bes-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                   0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --bes-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                   0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --bes-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  /* Colored Shadows */
+  --bes-shadow-primary: 0 10px 40px -10px rgba(var(--bes-primary-rgb), 0.3);
+  --bes-shadow-accent: 0 10px 40px -10px rgba(var(--bes-accent-rgb), 0.3);
+  
+  /* ========================================
+     ⏱️ TRANSITIONS & ANIMATIONS
+     ======================================== */
+  
+  /* Durations */
+  --bes-duration-fast: 150ms;
+  --bes-duration-base: 250ms;
+  --bes-duration-slow: 400ms;
+  --bes-duration-slower: 600ms;
+  
+  /* Easing Functions */
+  --bes-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --bes-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --bes-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --bes-ease-bounce: cubic-bezier(0.16, 1, 0.3, 1);
+  
+  /* Standard Transitions */
+  --bes-transition-fast: all var(--bes-duration-fast) var(--bes-ease-in-out);
+  --bes-transition-base: all var(--bes-duration-base) var(--bes-ease-in-out);
+  --bes-transition-slow: all var(--bes-duration-slow) var(--bes-ease-bounce);
+  
+  /* ========================================
+     📱 BREAKPOINTS (for reference in media queries)
+     ======================================== */
+  --bes-screen-sm: 640px;
+  --bes-screen-md: 768px;
+  --bes-screen-lg: 1024px;
+  --bes-screen-xl: 1280px;
+  --bes-screen-2xl: 1536px;
+  
+  /* ========================================
+     🎯 Z-INDEX SCALE
+     ======================================== */
+  --bes-z-base: 0;
+  --bes-z-dropdown: 1000;
+  --bes-z-sticky: 1020;
+  --bes-z-fixed: 1030;
+  --bes-z-modal-backdrop: 1040;
+  --bes-z-modal: 1050;
+  --bes-z-popover: 1060;
+  --bes-z-tooltip: 1070;
+}
+
+/* ========================================
+   🌙 DARK MODE
+   ======================================== */
+
+[data-theme="dark"] {
+  /* Primary Colors - Brighter for dark bg */
+  --bes-primary: #52B788;
+  --bes-primary-light: #74C69D;
+  --bes-primary-dark: #40916C;
+  --bes-primary-rgb: 82, 183, 136;
+  
+  /* Secondary Colors */
+  --bes-secondary: #2D6A4F;
+  --bes-secondary-light: #40916C;
+  --bes-secondary-dark: #1B4332;
+  --bes-secondary-rgb: 45, 106, 79;
+  
+  /* Accent Colors - More vibrant */
+  --bes-accent: #339AF0;
+  --bes-accent-light: #74C0FC;
+  --bes-accent-dark: #1C7ED6;
+  --bes-accent-rgb: 51, 154, 240;
+  
+  /* Backgrounds - Dark navy */
+  --bes-background: #0D1B2A;
+  --bes-surface: #1E293B;
+  --bes-surface-glass: rgba(30, 41, 59, 0.7);
+  --bes-surface-hover: rgba(30, 41, 59, 0.9);
+  
+  /* Text Colors - Inverted */
+  --bes-text-primary: #E0E1DD;
+  --bes-text-secondary: #B0B4BA;
+  --bes-text-tertiary: #778DA9;
+  --bes-text-inverse: #0D1B2A;
+  
+  /* Borders - Lighter for dark mode */
+  --bes-border-light: rgba(224, 225, 221, 0.1);
+  --bes-border-medium: rgba(224, 225, 221, 0.2);
+  --bes-border-strong: rgba(224, 225, 221, 0.3);
+  
+  /* Shadows - Deeper in dark mode */
+  --bes-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --bes-shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.4),
+                     0 1px 2px -1px rgba(0, 0, 0, 0.4);
+  --bes-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
+                   0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --bes-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5),
+                   0 4px 6px -4px rgba(0, 0, 0, 0.5);
+  --bes-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6),
+                   0 8px 10px -6px rgba(0, 0, 0, 0.6);
+  --bes-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* ========================================
+   🎨 UTILITY CLASSES
+   ======================================== */
+
+/* Text Colors */
+.text-primary { color: var(--bes-text-primary); }
+.text-secondary { color: var(--bes-text-secondary); }
+.text-tertiary { color: var(--bes-text-tertiary); }
+.text-inverse { color: var(--bes-text-inverse); }
+
+/* Background Colors */
+.bg-primary { background-color: var(--bes-primary); }
+.bg-secondary { background-color: var(--bes-secondary); }
+.bg-accent { background-color: var(--bes-accent); }
+.bg-surface { background-color: var(--bes-surface); }
+
+/* Transitions */
+.transition-fast { transition: var(--bes-transition-fast); }
+.transition-base { transition: var(--bes-transition-base); }
+.transition-slow { transition: var(--bes-transition-slow); }
+
+/* Border Radius */
+.rounded-sm { border-radius: var(--bes-radius-sm); }
+.rounded { border-radius: var(--bes-radius-base); }
+.rounded-md { border-radius: var(--bes-radius-md); }
+.rounded-lg { border-radius: var(--bes-radius-lg); }
+.rounded-xl { border-radius: var(--bes-radius-xl); }
+.rounded-full { border-radius: var(--bes-radius-full); }
+
+/* Shadows */
+.shadow-sm { box-shadow: var(--bes-shadow-sm); }
+.shadow { box-shadow: var(--bes-shadow-base); }
+.shadow-md { box-shadow: var(--bes-shadow-md); }
+.shadow-lg { box-shadow: var(--bes-shadow-lg); }
+.shadow-xl { box-shadow: var(--bes-shadow-xl); }
+.shadow-2xl { box-shadow: var(--bes-shadow-2xl); }
+
+/* ========================================
+   🌐 GLOBAL STYLES
+   ======================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--bes-font-sans);
+  font-size: var(--bes-text-base);
+  font-weight: var(--bes-font-normal);
+  line-height: var(--bes-leading-normal);
+  color: var(--bes-text-primary);
+  background-color: var(--bes-background);
+  transition: background-color var(--bes-duration-base) var(--bes-ease-in-out),
+              color var(--bes-duration-base) var(--bes-ease-in-out);
+}
+
+/* Typography Defaults */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--bes-font-display);
+  font-weight: var(--bes-font-bold);
+  line-height: var(--bes-leading-tight);
+  color: var(--bes-text-primary);
+}
+
+h1 { font-size: var(--bes-text-5xl); }
+h2 { font-size: var(--bes-text-4xl); }
+h3 { font-size: var(--bes-text-3xl); }
+h4 { font-size: var(--bes-text-2xl); }
+h5 { font-size: var(--bes-text-xl); }
+h6 { font-size: var(--bes-text-lg); }
+
+p {
+  margin-bottom: var(--bes-space-4);
+}
+
+a {
+  color: var(--bes-primary);
+  text-decoration: none;
+  transition: var(--bes-transition-fast);
+}
+
+a:hover {
+  color: var(--bes-primary-light);
+  text-decoration: underline;
+}
+
+/* Focus States (Accessibility) */
+*:focus-visible {
+  outline: 2px solid var(--bes-accent);
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--bes-primary);
+  color: var(--bes-text-inverse);
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  h1 { font-size: var(--bes-text-4xl); }
+  h2 { font-size: var(--bes-text-3xl); }
+  h3 { font-size: var(--bes-text-2xl); }
+}

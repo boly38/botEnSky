@@ -53,5 +53,7 @@
 	"server.error.internal": "an internal error has occurred, the team will be notified, try again in a few days or check the tickets",
 	"server.error.tooManyRequests": "Request too close together, please try again later",
 	"server.pleaseReportIssue": "please look for or report it on ",
-	"server.issueLinkLabel": "issues"
+	"server.issueLinkLabel": "issues",
+	"project.title": "Project",
+	"project.info": "Information"
 }

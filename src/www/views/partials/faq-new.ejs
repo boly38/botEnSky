@@ -1,0 +1,116 @@
+<!-- 
+  ❓ BotEnSky FAQ Page - Modern Design
+  Accordion, search, badges
+-->
+
+<div id="faq" class="bes-page-content">
+
+  <div class="bes-faq-container">
+
+    <!-- Page Header -->
+    <header class="bes-faq-header scroll-animate">
+      <h1 class="bes-faq-title">
+        <%= __('faq.title') %>
+      </h1>
+      <p class="bes-faq-subtitle">
+        Questions fréquentes sur botEnSky
+      </p>
+    </header>
+
+    <!-- Search Bar -->
+    <div class="bes-faq-search-wrapper scroll-animate">
+      <div class="bes-faq-search-container">
+        <i data-lucide="search" class="bes-faq-search-icon"></i>
+        <input type="text" 
+               class="bes-faq-search" 
+               placeholder="Rechercher dans la FAQ..."
+               data-faq-search
+               aria-label="Search FAQ">
+      </div>
+    </div>
+
+    <!-- FAQ List (Accordion) -->
+    <div class="bes-faq-list scroll-animate">
+
+      <!-- FAQ Item 1 -->
+      <article class="bes-faq-item" data-faq-item>
+        <div class="bes-faq-question" data-faq-question>
+          <div class="bes-faq-question-content">
+            <h3 class="bes-faq-question-title" data-faq-title>
+              <%= __('faq.head1') %>
+            </h3>
+            <span class="bes-faq-question-badge">
+              <i data-lucide="tag"></i>
+              <%= __('faq.tag1') %>
+            </span>
+          </div>
+          <div class="bes-faq-toggle">
+            <i data-lucide="chevron-down"></i>
+          </div>
+        </div>
+        <div class="bes-faq-answer">
+          <div class="bes-faq-answer-content" data-faq-content>
+            <p><%= __('faq.body1') %></p>
+            <p><small>(<%= __('faq.body1b') %>)</small></p>
+            <p><%= __('faq.body1c') %></p>
+          </div>
+        </div>
+      </article>
+
+      <!-- FAQ Item 2 -->
+      <article class="bes-faq-item" data-faq-item>
+        <div class="bes-faq-question" data-faq-question>
+          <div class="bes-faq-question-content">
+            <h3 class="bes-faq-question-title" data-faq-title>
+              <%= __('faq.head2') %>
+            </h3>
+            <span class="bes-faq-question-badge">
+              <i data-lucide="tag"></i>
+              <%= __('faq.tag2') %>
+            </span>
+          </div>
+          <div class="bes-faq-toggle">
+            <i data-lucide="chevron-down"></i>
+          </div>
+        </div>
+        <div class="bes-faq-answer">
+          <div class="bes-faq-answer-content" data-faq-content>
+            <%- __('faq.body2') %><br/>
+            <%- __('faq.body2a') %><br/>
+            <%- __('faq.body2b') %><br/>
+            <%- __('faq.body2c') %><br/>
+            <%- __('faq.body2d') %>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Empty State (No results) -->
+    <div class="bes-faq-empty" data-faq-empty>
+      <i data-lucide="search-x"></i>
+      <h3 class="bes-faq-empty-title">Aucun résultat trouvé</h3>
+      <p class="bes-faq-empty-text">
+        Essayez avec d'autres mots-clés
+      </p>
+    </div>
+
+    <!-- Example Section -->
+    <aside class="bes-faq-example scroll-animate">
+      <h3 class="bes-faq-example-title">
+        <i data-lucide="sparkles"></i>
+        Exemple de résultat
+      </h3>
+      <div class="bes-faq-example-embed">
+        <blockquote class="bluesky-embed" 
+                    data-bluesky-uri="at://did:plc:jkvb3exm4wg3jt5veu75qppn/app.bsky.feed.post/3kv7jfvbluh2d" 
+                    data-bluesky-cid="bafyreig6n4yrk7fwx5722vncxputom5s34fzlh5y5cx7v57s3picub6qmy">
+          <p lang="">Pl@ntNet identifie (à 94.44%) Prunus × yedoensis (fam Rosaceae) com. Cerisier Yoshino
+          #BeSPlantnet #IndentificationDePlantes<br><br><a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3kv7jfvbluh2d?ref_src=embed">[image or embed]</a></p>&mdash; botEnSky (<a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn?ref_src=embed">@botensky.bsky.social</a>) <a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3kv7jfvbluh2d?ref_src=embed">Jun 18, 2024 at 17:36</a>
+        </blockquote>
+      </div>
+    </aside>
+
+  </div>
+
+</div>

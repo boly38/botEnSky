@@ -1,0 +1,306 @@
+<!-- 
+  📚 BotEnSky Principes Page - Modern Design
+  Sticky TOC, scroll-spy, function cards
+-->
+
+<div id="principes" class="bes-page-content">
+
+  <div class="bes-principes-container">
+
+    <!-- Sticky Table of Contents (Desktop) -->
+    <aside class="bes-toc" aria-label="Table of contents">
+      <h2 class="bes-toc-title">
+        <i data-lucide="list"></i>
+        <%= __('principles.functions') %>
+      </h2>
+      <ul class="bes-toc-list" role="list">
+        <li>
+          <a href="#BeSPlantnet" class="bes-toc-link" data-toc-link>
+            <i data-lucide="flower-2"></i>
+            <span>BeSPlantnet</span>
+          </a>
+        </li>
+        <li>
+          <a href="#BeSAskPlantnet" class="bes-toc-link" data-toc-link>
+            <i data-lucide="message-circle-question"></i>
+            <span>BeSAskPlantnet</span>
+          </a>
+        </li>
+        <li>
+          <a href="#BeSBioClip" class="bes-toc-link" data-toc-link>
+            <i data-lucide="bird"></i>
+            <span>BeSBioClip</span>
+          </a>
+        </li>
+        <li>
+          <a href="#BeSAskBioClip" class="bes-toc-link" data-toc-link>
+            <i data-lucide="message-circle-question"></i>
+            <span>BeSAskBioClip</span>
+          </a>
+        </li>
+        <li>
+          <a href="#1Day1Bioclip" class="bes-toc-link" data-toc-link>
+            <i data-lucide="calendar"></i>
+            <span>1Day1Bioclip</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Projet (section séparée niveau 0) -->
+      <h2 class="bes-toc-title" style="margin-top: var(--bes-space-6);">
+        <i data-lucide="code-2"></i>
+        Projet
+      </h2>
+      <ul class="bes-toc-list" role="list">
+        <li>
+          <a href="#projet" class="bes-toc-link" data-toc-link>
+            <i data-lucide="info"></i>
+            <span>Informations</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="bes-principes-content">
+
+      <!-- Page Header -->
+      <header class="bes-principes-header scroll-animate">
+        <h1 class="bes-principes-title" id="top">
+          <%= __('principles.bot_principles') %>
+        </h1>
+      </header>
+
+      <!-- Bluesky Embed Script (lazy load) -->
+      <script>
+        // Lazy load Bluesky embeds script when first embed is visible
+        if ('IntersectionObserver' in window) {
+          const embedObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting && !window.blueskyEmbedLoaded) {
+                window.blueskyEmbedLoaded = true;
+                const script = document.createElement('script');
+                script.async = true;
+                script.src = 'https://embed.bsky.app/static/embed.js';
+                script.charset = 'utf-8';
+                document.head.appendChild(script);
+                embedObserver.disconnect();
+              }
+            });
+          }, { rootMargin: '200px' });
+
+          document.addEventListener('DOMContentLoaded', () => {
+            const firstEmbed = document.querySelector('.bluesky-embed');
+            if (firstEmbed) embedObserver.observe(firstEmbed);
+          });
+        } else {
+          // Fallback pour anciens navigateurs
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://embed.bsky.app/static/embed.js';
+          script.charset = 'utf-8';
+          document.head.appendChild(script);
+        }
+      </script>
+
+      <!-- BeSPlantnet -->
+      <section id="BeSPlantnet" class="bes-function-section scroll-animate">
+        <div class="bes-function-card">
+          <div class="bes-function-header">
+            <i data-lucide="flower-2" class="bes-function-icon"></i>
+            <h2 class="bes-function-title">BeSPlantnet</h2>
+            <a href="https://bsky.app/hashtag/BeSPlantnet" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="bes-function-hashtag"
+               data-umami-event="hashtag-besplantnet">
+              <i data-lucide="hash"></i>
+              <span>BeSPlantnet</span>
+            </a>
+          </div>
+          
+          <div class="bes-function-description">
+            <strong><%= __('principles.besplantnet.head') %></strong><br/><br/>
+            <%= __('principles.besplantnet.body') %>
+          </div>
+
+          <h4 class="bes-function-example-title">
+            <i data-lucide="lightbulb"></i>
+            Example
+          </h4>
+          <div class="bes-bluesky-embed-wrapper">
+            <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:jkvb3exm4wg3jt5veu75qppn/app.bsky.feed.post/3kv2rkoqy5x2w" data-bluesky-cid="bafyreia7axfc4pwo5jvuw5mb5ap7zpmxhmkqk6k2cpwtsrldtn66gfncaa">
+              <p lang="">Pl@ntNet identifie (à 80.29%) Couroupita guianensis (fam Lecythidaceae) com. Arbre à boulet de canon, Calabasse Colin, Abricot-macaque
+              #BeSPlantnet #IndentificationDePlantes<br><br><a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3kv2rkoqy5x2w?ref_src=embed">[image or embed]</a></p>&mdash; botEnSky (<a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn?ref_src=embed">@botensky.bsky.social</a>) <a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3kv2rkoqy5x2w?ref_src=embed">Jun 16, 2024 at 20:18</a>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <!-- BeSAskPlantnet -->
+      <section id="BeSAskPlantnet" class="bes-function-section scroll-animate">
+        <div class="bes-function-card">
+          <div class="bes-function-header">
+            <i data-lucide="message-circle-question" class="bes-function-icon"></i>
+            <h2 class="bes-function-title">BeSAskPlantnet</h2>
+            <a href="https://bsky.app/hashtag/BeSAskPlantnet" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="bes-function-hashtag"
+               data-umami-event="hashtag-besaskplantnet">
+              <i data-lucide="hash"></i>
+              <span>BeSAskPlantnet</span>
+            </a>
+          </div>
+          
+          <div class="bes-function-description">
+            <strong><%= __('principles.besaskplantnet.head') %></strong><br/><br/>
+            <%- __('principles.besaskplantnet.body') %>
+          </div>
+
+          <h4 class="bes-function-example-title">
+            <i data-lucide="lightbulb"></i>
+            Example
+          </h4>
+          <div class="bes-bluesky-embed-wrapper">
+            <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:jkvb3exm4wg3jt5veu75qppn/app.bsky.feed.post/3ku6ujolvd22w" data-bluesky-cid="bafyreig7yo3pptqetfbfagvzsebxeaitwzwxf3fyfpx3ee6irk7aawygky">
+              <p lang="">Pl@ntNet identifie (à 27.70%) Myosotis decumbens (fam Boraginaceae) com. Myosotis retombant, Myosotis étalé
+              #BeSAskPlantnet #IndentificationDePlantes<br><br><a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3ku6ujolvd22w?ref_src=embed">[image or embed]</a></p>&mdash; botEnSky (<a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn?ref_src=embed">@botensky.bsky.social</a>) <a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3ku6ujolvd22w?ref_src=embed">Jun 5, 2024 at 17:57</a>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <!-- BeSBioClip -->
+      <section id="BeSBioClip" class="bes-function-section scroll-animate">
+        <div class="bes-function-card">
+          <div class="bes-function-header">
+            <i data-lucide="bird" class="bes-function-icon"></i>
+            <h2 class="bes-function-title">BeSBioClip</h2>
+            <a href="https://bsky.app/hashtag/BeSBioClip" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="bes-function-hashtag"
+               data-umami-event="hashtag-besbioclip">
+              <i data-lucide="hash"></i>
+              <span>BeSBioClip</span>
+            </a>
+          </div>
+          
+          <div class="bes-function-description">
+            <strong><%= __('principles.besbioclip.head') %></strong><br/><br/>
+            <%- __('principles.besbioclip.body') %>
+          </div>
+
+          <h4 class="bes-function-example-title">
+            <i data-lucide="lightbulb"></i>
+            Example
+          </h4>
+          <div class="bes-bluesky-embed-wrapper">
+            <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:twu4iqyasazfles5q5ci2dz3/app.bsky.feed.post/3l2s6yrmnnc2h" data-bluesky-cid="bafyreiflmpktoy6zm5cpu3hsmxl2e2sbmytmimlw63jwqnbvl6xozkc65m">
+              <p lang="en">Another great antbird of Amazonas is the White-browed Antbird. These are not common birds, but are very cooperative photo subjects.
+              #birds<br><br><a href="https://bsky.app/profile/did:plc:twu4iqyasazfles5q5ci2dz3/post/3l2s6yrmnnc2h?ref_src=embed">[image or embed]</a></p>&mdash; Mike Melton (<a href="https://bsky.app/profile/did:plc:twu4iqyasazfles5q5ci2dz3?ref_src=embed">@mikemelton.bsky.social</a>) <a href="https://bsky.app/profile/did:plc:twu4iqyasazfles5q5ci2dz3/post/3l2s6yrmnnc2h?ref_src=embed">28 août 2024 à 18:56</a>
+            </blockquote>
+            
+            <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:jkvb3exm4wg3jt5veu75qppn/app.bsky.feed.post/3l2ultjeyvp2z" data-bluesky-cid="bafyreidhfsmvhtldb67xwtwpa7yc2dlu3b2a2obnqk3hephh2tiryh2a64">
+              <p lang="">BioClip identify (at 99.49%) Myrmoborus leucophrys genus:Myrmoborus (fam. Thamnophilidae) com. White-browed Antbird
+              Avibase flickr https://tinyurl.com/27hn4pwo
+              #BeSBioClip #TreeOfLife10MPrediction</p>&mdash; botEnSky (<a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn?ref_src=embed">@botensky.bsky.social</a>) <a href="https://bsky.app/profile/did:plc:jkvb3exm4wg3jt5veu75qppn/post/3l2ultjeyvp2z?ref_src=embed">29 août 2024 à 17:51</a>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <!-- BeSAskBioClip -->
+      <section id="BeSAskBioClip" class="bes-function-section scroll-animate">
+        <div class="bes-function-card">
+          <div class="bes-function-header">
+            <i data-lucide="message-circle-question" class="bes-function-icon"></i>
+            <h2 class="bes-function-title">BeSAskBioClip</h2>
+            <a href="https://bsky.app/hashtag/BeSAskBioClip" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="bes-function-hashtag"
+               data-umami-event="hashtag-besaskbioclip">
+              <i data-lucide="hash"></i>
+              <span>BeSAskBioClip</span>
+            </a>
+          </div>
+          
+          <div class="bes-function-description">
+            <strong><%= __('principles.besaskbioclip.head') %></strong><br/><br/>
+            <%- __('principles.besaskbioclip.body') %>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1Day1Bioclip -->
+      <section id="1Day1Bioclip" class="bes-function-section scroll-animate">
+        <div class="bes-function-card">
+          <div class="bes-function-header">
+            <i data-lucide="calendar" class="bes-function-icon"></i>
+            <h2 class="bes-function-title">1Day1Bioclip</h2>
+            <a href="https://bsky.app/hashtag/1Day1Bioclip" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="bes-function-hashtag"
+               data-umami-event="hashtag-1day1bioclip">
+              <i data-lucide="hash"></i>
+              <span>1Day1Bioclip</span>
+            </a>
+          </div>
+          
+          <div class="bes-function-description">
+            <strong><%= __('principles.onedayonebioclip.head') %></strong><br/><br/>
+            <%- __('principles.onedayonebioclip.body') %>
+          </div>
+        </div>
+      </section>
+
+      <!-- Project Info -->
+      <aside id="projet" class="bes-project-card bes-function-section scroll-animate">
+        <h3 class="bes-project-title">
+          <i data-lucide="code-2"></i>
+          <%= __('project.title') || 'Projet' %>
+        </h3>
+        <ul class="bes-project-list">
+          <li><%= __('project.line1') %></li>
+          <li>
+            <%= __('project.line2') %>
+            <a href="<%- projectIssues %>" 
+               data-umami-event="project-issues"
+               target="_blank"
+               rel="noopener noreferrer">
+              <%= __('project.line2link') %>
+            </a>
+          </li>
+          <li><%= __('project.line3') %></li>
+          <li><%= __('project.line4') %></li>
+          <li><%= __('project.line5') %></li>
+          <li>
+            <%= __('project.line6') %>
+            <a href="<%- projectDiscussions %>" 
+               data-umami-event="project-discussions"
+               target="_blank"
+               rel="noopener noreferrer">
+              <%= __('project.line6link') %>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+    </main>
+
+  </div>
+
+  <!-- Back to Top Button with Progress -->
+  <button class="bes-back-to-top" 
+          data-back-to-top
+          aria-label="Back to top">
+    <svg class="bes-back-to-top-progress" width="56" height="56">
+      <circle cx="28" cy="28" r="26" />
+    </svg>
+    <i data-lucide="arrow-up"></i>
+  </button>
+
+</div>

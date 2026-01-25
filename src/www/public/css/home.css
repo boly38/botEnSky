@@ -1,0 +1,659 @@
+/**
+ * 🏠 BotEnSky Home Page Styles
+ * Hero, logs timeline, stats dashboard
+ */
+
+/* ========================================
+   🎨 HERO SECTION
+   ======================================== */
+
+.bes-hero {
+  position: relative;
+  padding: var(--bes-space-12) 0 var(--bes-space-10);
+  overflow: hidden;
+}
+
+.bes-hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--bes-primary-rgb), 0.1) 0%,
+    rgba(var(--bes-accent-rgb), 0.1) 50%,
+    rgba(var(--bes-secondary-rgb), 0.1) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  z-index: -1;
+}
+
+.bes-hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.bes-hero-title {
+  font-size: var(--bes-text-4xl);
+  margin-bottom: var(--bes-space-4);
+  background: linear-gradient(
+    135deg,
+    var(--bes-primary) 0%,
+    var(--bes-accent) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: fadeInDown var(--bes-duration-slow) var(--bes-ease-bounce);
+}
+
+.bes-hero-description {
+  font-size: var(--bes-text-lg);
+  color: var(--bes-text-secondary);
+  margin-bottom: var(--bes-space-6);
+  animation: fadeInUp var(--bes-duration-slow) var(--bes-ease-bounce);
+  animation-delay: 100ms;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+.bes-hero-meta {
+  display: flex;
+  justify-content: center;
+  gap: var(--bes-space-4);
+  flex-wrap: wrap;
+  font-size: var(--bes-text-sm);
+  color: var(--bes-text-tertiary);
+  animation: fadeInUp var(--bes-duration-slow) var(--bes-ease-bounce);
+  animation-delay: 200ms;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+.bes-hero-link {
+  color: var(--bes-primary);
+  font-weight: var(--bes-font-semibold);
+  transition: var(--bes-transition-fast);
+}
+
+.bes-hero-link:hover {
+  color: var(--bes-accent);
+  text-decoration: underline;
+}
+
+/* ========================================
+   🔄 REFRESH BUTTON
+   ======================================== */
+
+.bes-refresh-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--bes-space-6);
+  flex-wrap: wrap;
+  gap: var(--bes-space-4);
+}
+
+.bes-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bes-space-2);
+  padding: var(--bes-space-2) var(--bes-space-4);
+  background: var(--bes-surface-glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--bes-border-light);
+  border-radius: var(--bes-radius-base);
+  color: var(--bes-text-primary);
+  font-weight: var(--bes-font-medium);
+  text-decoration: none;
+  transition: var(--bes-transition-fast);
+}
+
+.bes-refresh-btn:hover {
+  background: var(--bes-surface-hover);
+  border-color: var(--bes-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--bes-shadow-md);
+  text-decoration: none;
+}
+
+.bes-refresh-icon {
+  width: 18px;
+  height: 18px;
+  transition: transform var(--bes-duration-base) var(--bes-ease-out);
+}
+
+.bes-refresh-btn:hover .bes-refresh-icon {
+  transform: rotate(180deg);
+}
+
+.bes-freshness {
+  font-size: var(--bes-text-sm);
+  color: var(--bes-text-tertiary);
+}
+
+/* ========================================
+   📅 LOGS TABS (Date selector)
+   ======================================== */
+
+.bes-logs-tabs {
+  display: flex;
+  gap: var(--bes-space-2);
+  padding: var(--bes-space-2);
+  background: rgba(var(--bes-primary-rgb), 0.05);
+  border-radius: var(--bes-radius-lg);
+  margin-bottom: var(--bes-space-6);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.bes-logs-tabs::-webkit-scrollbar {
+  height: 6px;
+}
+
+.bes-logs-tabs::-webkit-scrollbar-thumb {
+  background: var(--bes-primary);
+  border-radius: 3px;
+}
+
+.bes-logs-tab {
+  padding: var(--bes-space-2) var(--bes-space-4);
+  font-size: var(--bes-text-sm);
+  font-weight: var(--bes-font-medium);
+  color: var(--bes-text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--bes-radius-base);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: var(--bes-transition-fast);
+  cursor: pointer;
+}
+
+.bes-logs-tab:hover {
+  color: var(--bes-primary);
+  background: rgba(var(--bes-primary-rgb), 0.1);
+  text-decoration: none;
+}
+
+.bes-logs-tab.active {
+  color: var(--bes-primary);
+  background: var(--bes-surface);
+  border-color: var(--bes-primary);
+  box-shadow: var(--bes-shadow-sm);
+}
+
+/* ========================================
+   📋 LOGS TIMELINE
+   ======================================== */
+
+.bes-logs-timeline {
+  position: relative;
+  padding-left: var(--bes-space-8);
+}
+
+.bes-logs-timeline::before {
+  content: '';
+  position: absolute;
+  left: var(--bes-space-4);
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(
+    180deg,
+    var(--bes-primary) 0%,
+    var(--bes-accent) 50%,
+    var(--bes-secondary) 100%
+  );
+  border-radius: 2px;
+}
+
+.bes-log-entry {
+  position: relative;
+  padding: var(--bes-space-4);
+  margin-bottom: var(--bes-space-3);
+  background: var(--bes-surface-glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--bes-border-light);
+  border-left: 3px solid var(--bes-primary);
+  border-radius: var(--bes-radius-md);
+  transition: var(--bes-transition-fast);
+  animation: fadeInUp var(--bes-duration-base) var(--bes-ease-out);
+}
+
+.bes-log-entry:hover {
+  background: var(--bes-surface-hover);
+  border-left-color: var(--bes-accent);
+  transform: translateX(4px);
+  box-shadow: var(--bes-shadow-md);
+}
+
+.bes-log-entry::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--bes-space-8) - 2px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: var(--bes-primary);
+  border: 3px solid var(--bes-background);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(var(--bes-primary-rgb), 0.2);
+}
+
+.bes-log-time {
+  font-size: var(--bes-text-xs);
+  font-weight: var(--bes-font-semibold);
+  color: var(--bes-primary);
+  margin-bottom: var(--bes-space-1);
+  font-family: var(--bes-font-mono);
+}
+
+.bes-log-message {
+  font-size: var(--bes-text-sm);
+  color: var(--bes-text-primary);
+  line-height: var(--bes-leading-relaxed);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bes-space-2);
+  align-items: flex-start;
+}
+
+/* Image container en flex item */
+.bes-log-message .post-image-container {
+  flex-shrink: 0; /* Ne pas rétrécir */
+  float: none; /* Désactiver float dans contexte flex */
+}
+
+/* Box verte prend l'espace restant */
+.bes-log-message .bg-info {
+  flex: 1;
+  min-width: 0; /* Permet text-wrap correct */
+}
+
+/* Réponse émise sur nouvelle ligne complète */
+.bes-log-message > b {
+  flex-basis: 100%; /* Force nouvelle ligne */
+}
+
+/* Espacement dans le message pour éviter coller au contenu */
+.bes-log-message b {
+  display: inline-block;
+  margin-bottom: var(--bes-space-1); /* Petit espace après les labels "Post:", "Réponse émise:" */
+}
+
+.bes-log-message .bg-info {
+  margin-top: var(--bes-space-2); /* Espace avant la box verte */
+  margin-bottom: var(--bes-space-2); /* Espace après la box verte */
+  clear: both; /* Clear le float de l'image */
+}
+
+/* Clearfix pour les images floatantes dans les logs */
+.bes-log-entry::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Empty state */
+.bes-logs-empty {
+  text-align: center;
+  padding: var(--bes-space-12) var(--bes-space-6);
+  color: var(--bes-text-tertiary);
+}
+
+.bes-logs-empty i {
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--bes-space-4);
+  color: var(--bes-border-medium);
+}
+
+/* ========================================
+   📊 STATS DASHBOARD (7 days)
+   ======================================== */
+
+.bes-stats-section {
+  margin-bottom: var(--bes-space-8);
+}
+
+.bes-stats-header {
+  text-align: center;
+  margin-bottom: var(--bes-space-6);
+}
+
+.bes-stats-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bes-space-3);
+  font-size: var(--bes-text-3xl);
+  font-weight: var(--bes-font-bold);
+  font-family: var(--bes-font-display);
+  color: var(--bes-text-primary);
+  margin-bottom: var(--bes-space-2);
+  background: linear-gradient(
+    135deg,
+    var(--bes-primary) 0%,
+    var(--bes-accent) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bes-stats-title i {
+  width: 32px;
+  height: 32px;
+  color: var(--bes-primary);
+  -webkit-text-fill-color: var(--bes-primary); /* Override gradient pour icon */
+}
+
+.bes-stats-subtitle {
+  font-size: var(--bes-text-base);
+  color: var(--bes-text-secondary);
+  margin: 0;
+}
+
+.bes-stats-dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--bes-space-4);
+  margin-bottom: var(--bes-space-6);
+}
+
+.bes-stat-card {
+  padding: var(--bes-space-5);
+  background: var(--bes-surface-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--bes-border-light);
+  border-radius: var(--bes-radius-lg);
+  transition: var(--bes-transition-base);
+  animation: scaleIn var(--bes-duration-base) var(--bes-ease-out);
+}
+
+.bes-stat-card:hover {
+  background: var(--bes-surface-hover);
+  transform: translateY(-4px);
+  box-shadow: var(--bes-shadow-lg);
+}
+
+.bes-stat-header {
+  display: flex;
+  align-items: center;
+  gap: var(--bes-space-3);
+  margin-bottom: var(--bes-space-3);
+}
+
+.bes-stat-icon {
+  width: 40px;
+  height: 40px;
+  padding: var(--bes-space-2);
+  background: rgba(var(--bes-primary-rgb), 0.1);
+  border-radius: var(--bes-radius-base);
+  color: var(--bes-primary);
+  stroke-width: 2;
+}
+
+.bes-stat-label {
+  font-size: var(--bes-text-sm);
+  font-weight: var(--bes-font-medium);
+  color: var(--bes-text-secondary);
+}
+
+.bes-stat-value {
+  font-size: var(--bes-text-3xl);
+  font-weight: var(--bes-font-bold);
+  font-family: var(--bes-font-display);
+  color: var(--bes-text-primary);
+  line-height: 1;
+}
+
+.bes-stat-link {
+  color: inherit;
+  text-decoration: none;
+  transition: var(--bes-transition-fast);
+}
+
+.bes-stat-link:hover {
+  color: var(--bes-primary);
+  text-decoration: none;
+}
+
+/* ========================================
+   🏆 BEST POSTS SECTION
+   ======================================== */
+
+.bes-best-posts-section {
+  margin-top: var(--bes-space-8);
+}
+
+.bes-section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--bes-space-3);
+  font-size: var(--bes-text-2xl);
+  font-weight: var(--bes-font-bold);
+  margin-bottom: var(--bes-space-5);
+  color: var(--bes-text-primary);
+}
+
+.bes-section-title i {
+  width: 32px;
+  height: 32px;
+  color: var(--bes-primary);
+}
+
+.bes-best-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--bes-space-5);
+}
+
+.bes-post-card {
+  position: relative;
+  display: flex; /* Flexbox pour layout gauche/droite */
+  gap: var(--bes-space-4);
+  padding: var(--bes-space-4);
+  background: var(--bes-surface-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--bes-border-light);
+  border-radius: var(--bes-radius-xl);
+  transition: var(--bes-transition-base);
+  overflow: hidden;
+  min-height: 200px; /* Hauteur minimum pour cohérence */
+  animation: fadeInUp var(--bes-duration-slow) var(--bes-ease-bounce);
+}
+
+.bes-post-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--bes-primary) 0%,
+    var(--bes-accent) 100%
+  );
+}
+
+.bes-post-card:hover {
+  background: var(--bes-surface-hover);
+  transform: translateY(-6px);
+  box-shadow: var(--bes-shadow-xl);
+  border-color: var(--bes-primary);
+}
+
+.bes-post-images {
+  display: flex;
+  flex-direction: column; /* Images empilées verticalement */
+  gap: var(--bes-space-2);
+  flex-shrink: 0; /* Ne pas rétrécir */
+  width: 120px; /* Largeur fixe colonne gauche */
+  height: 180px; /* HAUTEUR FIXE pour aligner toutes les cards */
+  overflow-y: auto; /* Scroll vertical si trop d'images */
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bes-primary) transparent;
+}
+
+.bes-post-image {
+  width: 120px; /* Même largeur que le container */
+  height: 120px; /* Carré */
+  border-radius: var(--bes-radius-md);
+  object-fit: cover; /* Crop centré */
+  flex-shrink: 0;
+  transition: var(--bes-transition-fast);
+  box-shadow: var(--bes-shadow-sm);
+}
+
+.bes-post-image:hover {
+  transform: scale(1.05);
+  box-shadow: var(--bes-shadow-md);
+  cursor: pointer;
+}
+
+/* Contenu à droite des images */
+.bes-post-content {
+  flex: 1; /* Prend l'espace restant */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0; /* Fix overflow text */
+  overflow: hidden; /* Empêche débordement */
+}
+
+/* Custom scrollbar pour images */
+.bes-post-images::-webkit-scrollbar {
+  width: 4px;
+}
+
+.bes-post-images::-webkit-scrollbar-thumb {
+  background: var(--bes-primary);
+  border-radius: 2px;
+}
+
+/* ========================================
+   🐙 GITHUB CORNER (modernized)
+   ======================================== */
+
+.bes-github-corner {
+  position: fixed;
+  top: 80px; /* Below header */
+  right: 0;
+  z-index: var(--bes-z-sticky);
+  transition: var(--bes-transition-base);
+}
+
+.bes-github-corner:hover {
+  transform: scale(1.1);
+}
+
+.bes-github-corner svg {
+  fill: var(--bes-primary);
+  color: var(--bes-background);
+  transition: var(--bes-transition-fast);
+}
+
+[data-theme="dark"] .bes-github-corner svg {
+  fill: var(--bes-primary);
+  color: var(--bes-surface);
+}
+
+/* ========================================
+   📱 RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .bes-hero {
+    padding: var(--bes-space-8) 0 var(--bes-space-6);
+  }
+
+  .bes-hero-title {
+    font-size: var(--bes-text-3xl);
+  }
+
+  .bes-hero-description {
+    font-size: var(--bes-text-base);
+  }
+
+  .bes-stats-title {
+    font-size: var(--bes-text-2xl);
+  }
+
+  .bes-stats-title i {
+    width: 24px;
+    height: 24px;
+  }
+
+  .bes-stats-subtitle {
+    font-size: var(--bes-text-sm);
+  }
+
+  .bes-logs-timeline {
+    padding-left: var(--bes-space-6);
+  }
+
+  .bes-logs-timeline::before {
+    left: var(--bes-space-2);
+  }
+
+  .bes-log-entry::before {
+    left: calc(-1 * var(--bes-space-6) - 2px);
+  }
+
+  .bes-stats-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .bes-best-posts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Post cards : stack vertical sur mobile */
+  .bes-post-card {
+    flex-direction: column; /* Images au-dessus sur mobile */
+  }
+
+  .bes-post-images {
+    width: 100%; /* Pleine largeur mobile */
+    flex-direction: row; /* Horizontal sur mobile */
+    max-height: 180px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .bes-post-image {
+    width: 140px;
+    height: 140px;
+  }
+
+  .bes-github-corner {
+    top: 70px;
+  }
+
+  .bes-github-corner svg {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bes-refresh-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bes-section-title {
+    font-size: var(--bes-text-xl);
+  }
+}
