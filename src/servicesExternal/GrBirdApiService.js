@@ -10,6 +10,7 @@
  */
 import {Client} from "@gradio/client";
 import {isSet} from "../lib/Common.js";
+import {postLinkOf} from "../domain/post.js";
 
 const GRADIO_APPLICATION_REFERENCE = "3oly/grBird";
 
@@ -36,10 +37,12 @@ export default class GrBirdApiService {
     }
 
     async birdIdentify(options) {
-        const {imageUrl, context} = options;
-        this.logger.debug(`birdIdentify options : ${JSON.stringify({imageUrl})}`, context);
-        let birdResults = await this.api_classification(imageUrl);
-        this.logger.debug(`birdResults : ${JSON.stringify(birdResults)}`, context);
+        const {imageUrl, context, post} = options;
+        const postUrl = isSet(post) ? postLinkOf(post) : null;
+        const logContext = isSet(postUrl) ? `post: ${postUrl}` : '';
+        this.logger.debug(`birdIdentify options : ${JSON.stringify({imageUrl, postUrl})}`, context);
+        let birdResults = await this.api_classification(imageUrl, postUrl);
+        this.logger.debug(`birdResults : ${JSON.stringify(birdResults)} ${logContext}`, context);
         const firstScoredResult = this.hasScoredResult(birdResults, GR_BIRD_MINIMAL_RATIO);
         if (!firstScoredResult) {
             return {"result": IDENTIFY_RESULT.BAD_SCORE};
@@ -55,8 +58,9 @@ export default class GrBirdApiService {
         return {"result": IDENTIFY_RESULT.OK, "bioResult": {species, scoredResult}};
     }
 
-    async api_classification(image_url = null) {
-        this.logger.info(`Bioclip classification for the following image : ${image_url}`);
+    async api_classification(image_url = null, postUrl = null) {
+        const logContext = isSet(postUrl) ? ` from post: ${postUrl}` : '';
+        this.logger.info(`Bioclip classification for the following image : ${image_url}${logContext}`);
         const client = await Client.connect("3oly/grBird");
         const result = await client.predict("/api_classification", [image_url]);
         const {data} = result;
