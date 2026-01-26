@@ -1,13 +1,18 @@
 // https://eslint.org/docs/latest
 import js from "@eslint/js";
 import globals from "globals";
-import mochaPlugin from 'eslint-plugin-mocha'; // https://www.npmjs.com/package/eslint-plugin-mocha
 import stylisticJs from '@stylistic/eslint-plugin-js'
+
 export default [
-    js.configs.recommended, // Recommended config applied to all files
-    mochaPlugin.configs.flat.recommended, // or `mochaPlugin.configs.flat.all` to enable all
     {
-        "files": ["lib/**/*.js", "examples/**/*.js", "tests/**/*.js"],
+        "ignores": [
+            "src/www/public/js/**", // Browser-side JS files
+            "node_modules/**"
+        ]
+    },
+    js.configs.recommended, // Recommended config applied to all files
+    {
+        "files": ["**/*.js"],
         "languageOptions": {
             ecmaVersion: 2022,
             sourceType: "module",
@@ -24,7 +29,6 @@ export default [
             '@stylistic/js': stylisticJs
         },
         "rules": {
-            "mocha/no-mocha-arrows": "off", /* pff */
             '@stylistic/js/no-extra-semi': "error", /* to match houndci : https://eslint.org/docs/latest/rules/no-extra-semi */
         }
     }

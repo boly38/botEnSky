@@ -228,8 +228,19 @@ export default class BlueSkyService {
             logger.info(`replyTo ${postLinkOf(post)} : ${text}`);
             return postReplyResponse;
         } catch (postException) {
-            logger.error(`agent.post error ${postException.message}`);
-            throw new InternalServerErrorException(`Bluesky replyTo was failed`);
+            const postUrl = postLinkOf(post);
+            const errorMsg = postException.message;
+
+            // Log detailed error with URL and payload
+            logger.error(`agent.post error on ${postUrl}: ${errorMsg}`);
+            logger.error(`Failed replyTo payload: ${JSON.stringify(replyPost, null, 2)}`);
+
+            // Detect service unavailability (temporary Bluesky API issues)
+            if (errorMsg.includes("fetch failed") || errorMsg.includes("TypeError")) {
+                logger.info(`Bluesky service temporarily unavailable (replyTo to ${postUrl})`);
+                throw new ServiceUnavailableException(`Bluesky service temporarily unavailable (replyTo)`);
+            }
+            throw new InternalServerErrorException(`Bluesky replyTo failed: ${errorMsg}`);
         }
     }
 
@@ -316,8 +327,18 @@ export default class BlueSkyService {
             logger.info(`newPost ${postLinkOf(newPostResponse)}`);
             return newPostResponse;
         } catch (postException) {
-            logger.error(`agent.post error ${postException.message}`);
-            throw new InternalServerErrorException(`Bluesky post was failed`);
+            const errorMsg = postException.message;
+
+            // Log detailed error with payload
+            logger.error(`agent.post error: ${errorMsg}`);
+            logger.error(`Failed newPost payload: ${JSON.stringify(newPost, null, 2)}`);
+
+            // Detect service unavailability (temporary Bluesky API issues)
+            if (errorMsg.includes("fetch failed") || errorMsg.includes("TypeError")) {
+                logger.info(`Bluesky service temporarily unavailable (newPost)`);
+                throw new ServiceUnavailableException(`Bluesky service temporarily unavailable (newPost)`);
+            }
+            throw new InternalServerErrorException(`Bluesky post failed: ${errorMsg}`);
         }
     }
 

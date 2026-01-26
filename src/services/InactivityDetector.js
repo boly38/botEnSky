@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+ 
 /**
  * handle app inactivity trigger
  */

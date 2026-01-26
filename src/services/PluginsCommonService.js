@@ -176,6 +176,19 @@ export default class PluginsCommonService {
                 doSimulate ? 0 : 1
             ));
         } catch (err) {
+            const isServiceUnavailable = err.status === 503 || err.code === 'Service Unavailable';
+
+            if (isServiceUnavailable) {
+                this.logger.info(`Service Bluesky temporairement indisponible pour répondre`, context);
+                return Promise.reject(pluginReject(
+                    `Service Bluesky indisponible`,
+                    `Service Bluesky indisponible`,
+                    503,
+                    "bluesky unavailable",
+                    false // mustBeReported = false
+                ));
+            }
+
             this.logError("replyTo", err, {...context, doSimulate, candidate, replyMessage});
             return Promise.reject(new Error("impossible de répondre au post"));
         }
@@ -214,9 +227,23 @@ export default class PluginsCommonService {
                     ));
                 })
                 .catch(err => {
-                    console.log(err);// print err
-                    console.log(err?.stack);// print stack
-                    console.trace();// print stack
+                    const isServiceUnavailable = err.status === 503 || err.code === 'Service Unavailable';
+
+                    if (isServiceUnavailable) {
+                        plugin.logger.info(`Service Bluesky temporairement indisponible pour répondre`, context);
+                        reject(pluginReject(
+                            `Service Bluesky indisponible`,
+                            `Service Bluesky indisponible`,
+                            503,
+                            "bluesky unavailable",
+                            false // mustBeReported = false
+                        ));
+                        return;
+                    }
+
+                    // Log with logger instead of console
+                    plugin.logger.error(`replyTo error: ${err.message}`, context);
+                    plugin.logger.debug(`Error stack: ${err?.stack}`, context);
                     plugin.logError("replyTo", err, {...context, doSimulate, replyTo, replyMessage});
                     reject(new Error("impossible de répondre au post"));
                 });

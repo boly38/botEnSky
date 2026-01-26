@@ -5,7 +5,7 @@ import {before, describe, it} from "mocha";
 import {_expectNoError, assumeSuccess, initEnv, testLogger} from "./libTest.js";
 import {after} from "node:test";
 
-const chai = chaiModule.use(chaiHttp);
+chaiModule.use(chaiHttp);
 let agent;
 let expressServer;
 
