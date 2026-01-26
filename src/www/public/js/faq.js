@@ -22,13 +22,23 @@ class FaqPage {
    * Setup accordion expand/collapse
    */
   setupAccordion() {
-    this.faqItems.forEach(item => {
+    this.faqItems.forEach((item, index) => {
       const question = item.querySelector('[data-faq-question]');
-      
+      const title = item.querySelector('[data-faq-title]');
+
       question.addEventListener('click', () => {
         // Toggle current item
         const isOpen = item.classList.contains('open');
         
+        // Umami tracking: Track FAQ question clicks
+        if (window.umami) {
+          const questionText = title?.textContent.trim() || `FAQ ${index + 1}`;
+          window.umami.track('faq-question', {
+            question: questionText,
+            action: isOpen ? 'close' : 'open'
+          });
+        }
+
         // Optional: Close other items (accordion mode)
         // Uncomment below for single-open behavior
         // this.faqItems.forEach(otherItem => {
@@ -57,7 +67,15 @@ class FaqPage {
       // Debounce search
       clearTimeout(this.searchTimeout);
       this.searchTimeout = setTimeout(() => {
-        this.performSearch(e.target.value);
+        const query = e.target.value;
+        this.performSearch(query);
+
+        // Umami tracking: Track FAQ searches (only non-empty queries)
+        if (query.trim() && window.umami) {
+          window.umami.track('faq-search', {
+            query: query.trim()
+          });
+        }
       }, 300);
     });
   }
