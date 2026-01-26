@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 
 import utc from "dayjs/plugin/utc.js"
 import timezone from "dayjs/plugin/timezone.js"
-import turl from "turl";
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -77,19 +76,8 @@ export const getUtcTimestampWithDelta = (deltaDays) => {
 
 export const generateErrorId = () => "ERR_" + dayjs().format("YYYYMMDDHHmmss");
 
-export const buildShortUrlWithText = (logger, imageUrl, text) => {
-    return new Promise(resolve => {
-        if (imageUrl === null) {
-            return resolve(false);
-        }
-        turl.shorten(imageUrl)
-            .then(shortenUrl => resolve(`${text}${shortenUrl}`))
-            .catch(err => {
-                logger.warn(`Unable to use turl for this url : ${imageUrl} - details: ${err?.message}`);
-                resolve(`${text}\n${imageUrl}`);
-            });
-    });
-}
+// URL shortener - delegated to dedicated module
+export { buildShortUrlWithText } from './UrlShortener.js';
 export const maxStringLength = (variable, max) => {
     if (variable && variable.length > max) {
         return variable.substring(0, max - 3) + "...";
