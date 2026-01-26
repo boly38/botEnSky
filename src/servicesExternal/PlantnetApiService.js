@@ -142,7 +142,15 @@ export default class PlantnetApiService {
                         let errError = err?.message || err;
                         let errDetails = (res?.text) ? " - details:" + res?.text : "";
                         let errResult = "Pl@ntnet identify error (" + errStatus + ") " + errError;
-                        service.logger.error(errResult + errDetails);
+
+                        // Log as info for service unavailability (408 timeout, 503 unavailable)
+                        if (errStatus === 408 || errStatus === 503) {
+                            const unavailabilityReason = errStatus === 408 ? "timeout" : "service unavailable";
+                            service.logger.info(errResult + errDetails + " (" + unavailabilityReason + ")");
+                        } else {
+                            service.logger.error(errResult + errDetails);
+                        }
+
                         reject({message: errResult, status: errStatus});
                         return;
                     }

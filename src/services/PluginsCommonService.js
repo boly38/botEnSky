@@ -119,9 +119,11 @@ export default class PluginsCommonService {
 
     rejectWithIdentifyError(pluginName, step, candidate, err, context) {
         let {status, message, mustBeReported} = err;
-        mustBeReported = isSet(mustBeReported) ? mustBeReported : (!isSet(status) || status !== 503);
+        mustBeReported = isSet(mustBeReported) ? mustBeReported : (!isSet(status) || (status !== 503 && status !== 408));
         let identifyError = `Impossible d'identifier l'image avec ${pluginName}`
-        if (status === 503) {
+        if (status === 408) {
+            identifyError += " le service est indisponible (timeout).";
+        } else if (status === 503) {
             identifyError += " le service est indisponible.";
         }
         let pluginTxtError = `[${step}] ${identifyError}`;
