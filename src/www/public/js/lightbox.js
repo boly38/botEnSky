@@ -85,6 +85,13 @@ class LightboxManager {
   }
 
   open(imageUrl, caption = '') {
+    // Umami tracking: Track lightbox image views
+    if (window.umami) {
+      window.umami.track('lightbox-open', {
+        imageUrl: imageUrl.substring(imageUrl.lastIndexOf('/') + 1) // Just filename for privacy
+      });
+    }
+
     // Reset état
     this.image.style.display = 'none';
     this.caption.style.display = 'none';
