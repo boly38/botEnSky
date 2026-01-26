@@ -16,6 +16,7 @@ class FaqPage {
   init() {
     this.setupAccordion();
     this.setupSearch();
+    this.handleDeepLink();
   }
 
   /**
@@ -195,6 +196,24 @@ class FaqPage {
       parent.replaceChild(document.createTextNode(mark.textContent), mark);
       parent.normalize(); // Merge adjacent text nodes
     });
+  }
+
+  /**
+   * Handle deep linking (URL hash)
+   * Example: https://botensky.verymad.net/#faq-identification
+   */
+  handleDeepLink() {
+    const hash = window.location.hash;
+    if (hash) {
+      const targetItem = document.querySelector(hash);
+      if (targetItem && targetItem.hasAttribute('data-faq-item')) {
+        // Scroll to item and open it
+        setTimeout(() => {
+          targetItem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          targetItem.classList.add('open');
+        }, 300);
+      }
+    }
   }
 
   /**

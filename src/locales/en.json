@@ -35,6 +35,7 @@
 	"project.line6": "You want to talk about the bot and its features somewhere other than BlueSky, open a discussion.",
 	"project.line6link": "See the project's discussions",
 	"faq.title": "Frequently Asked Questions",
+	"faq.example.title": "Result example",
 	"faq.head1": "Identifications are sometimes incorrect, why?",
 	"faq.tag1": "🤖",
 	"faq.body1": "BotEnSky uses two artificial intelligence systems to identify plants and birds:",
@@ -64,5 +65,8 @@
 	"server.pleaseReportIssue": "please look for or report it on ",
 	"server.issueLinkLabel": "issues",
 	"project.title": "Project",
-	"project.info": "Information"
+	"project.info": "Information",
+	"faq.body1f": "The <b>displayed percentage</b> (e.g., \"94.44%\") represents the <b>confidence level</b> in the identification. The higher the percentage, the more reliable the result is considered. A low score may indicate a rare species, an ambiguous photo, or similarity with other species.",
+	"faq.body1g": "<b>For PlantNet</b>: You can help improve the database by reporting errors on <a href='https://identify.plantnet.org/' target='_blank'>identify.plantnet.org</a> or by contributing photos on <a href='https://my.plantnet.org/' target='_blank'>my.plantnet.org</a>.",
+	"faq.body1h": "<b>For BioClip</b>: The system is based on the scientific study <a href='https://arxiv.org/abs/2311.18803' target='_blank'>BioCLIP (arXiv:2311.18803)</a>. If you know a better model for bird identification, you can suggest it to the bot owner on <a href='https://bsky.app/profile/botensky.bsky.social' target='_blank'>Bluesky</a> or via <a href='https://github.com/boly38/botEnSky/issues' target='_blank'>GitHub issues</a>."
 }

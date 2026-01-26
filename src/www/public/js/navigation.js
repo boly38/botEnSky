@@ -22,6 +22,25 @@ class Navigation {
     this.setupSmoothScroll();
     this.setupActiveLink();
     this.handleResize();
+    this.handleInitialHash();
+  }
+
+  /**
+   * Handle hash on page load
+   * Example: http://localhost:5000/#faq or #faq-identification
+   */
+  handleInitialHash() {
+    const hash = window.location.hash;
+    if (!hash) return;
+
+    // Check if hash is a main section (logs, principes, faq)
+    const section = hash.substring(1).split('-')[0]; // Get 'faq' from '#faq-identification'
+    if (window.BesContent && window.BesContent.contentIds.includes(section)) {
+      // Navigate to the section
+      setTimeout(() => {
+        window.BesContent.toggleContent(section);
+      }, 100);
+    }
   }
 
   /**
