@@ -76,6 +76,12 @@ export default class AskPlantnet {
 
             step = "plantnetIdentify";
             const tags = this.getPluginTags();
+
+            // Log diagnostic info before identification
+            logger.info(`[DIAGNOSTIC] Candidate (mention post): ${postLinkOf(candidate)}`, context);
+            logger.info(`[DIAGNOSTIC] Parent post (image source): ${postLinkOf(parentPost)}`, context);
+            logger.info(`[DIAGNOSTIC] Image to analyze: ${parentPhoto?.fullsize}`, context);
+
             const identifyOptions = {
                 "imageUrl": parentPhoto?.fullsize,
                 doSimulate,
@@ -93,6 +99,12 @@ export default class AskPlantnet {
             step = "handle plantnetIdentification response";
             if (result === IDENTIFY_RESULT.OK) {
                 const {scoredResult, firstImageOriginalUrl, firstImageText} = plantnetResult;
+
+                // Log diagnostic info before replying
+                logger.info(`[DIAGNOSTIC] Identification successful: ${scoredResult}`, context);
+                logger.info(`[DIAGNOSTIC] Will reply to: ${postLinkOf(candidate)} (mention post from user who asked)`, context);
+                logger.info(`[DIAGNOSTIC] Image was from: ${postLinkOf(parentPost)} (parent post with image)`, context);
+
                 return await plantnetCommonService.replyToWithIdentificationResult(candidate,
                     {tags, doSimulate, context},
                     {scoredResult, firstImageOriginalUrl, firstImageText}

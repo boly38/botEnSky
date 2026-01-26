@@ -75,6 +75,12 @@ export default class AskBioclip {
             step = "birdIdentify";
             const tags = this.getPluginTags();
             const imageUrl = parentPhoto?.fullsize;
+
+            // Log diagnostic info before identification
+            logger.info(`[DIAGNOSTIC] Candidate (mention post): ${postLinkOf(candidate)}`, context);
+            logger.info(`[DIAGNOSTIC] Parent post (image source): ${postLinkOf(parentPost)}`, context);
+            logger.info(`[DIAGNOSTIC] Image to analyze: ${imageUrl}`, context);
+
             const {
                 result,
                 bioResult = null
@@ -91,6 +97,12 @@ export default class AskBioclip {
             if (result === IDENTIFY_RESULT.OK) {
                 const {scoredResult} = bioResult;
                 const imageAlt = scoredResult;
+
+                // Log diagnostic info before replying
+                logger.info(`[DIAGNOSTIC] Identification successful: ${scoredResult}`, context);
+                logger.info(`[DIAGNOSTIC] Will reply to: ${postLinkOf(candidate)} (mention post from user who asked)`, context);
+                logger.info(`[DIAGNOSTIC] Image was from: ${postLinkOf(parentPost)} (parent post with image)`, context);
+
                 return await bioclipCommonService.replyToWithIdentificationResult(candidate,
                     {tags, doSimulate, context, imageUrl, imageAlt},
                     {scoredResult}
