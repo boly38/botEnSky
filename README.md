@@ -9,11 +9,11 @@ His ambition is to **bring 😊 happiness to 🦋 Bluesky 👤 users**.
 ## References
 
 - **BlueSky 🤖 Bot account : [@botensky.bsky.social](https://bsky.app/profile/botensky.bsky.social)** 
-- Bot engine 🌐 WebPage : [botensky.onrender.com](https://botensky.onrender.com/)
+- Bot engine 🌐 WebPage : [https://botensky.onrender.com/](https://botensky.verymad.net/)
 
 ## Bot features (plugins)
 
-- French help - cf. [botensky.onrender.com](https://botEnSky.onrender.com)
+- French help - cf. [https://botensky.onrender.com/](https://botensky.verymad.net/)
 - English : cf. below.
 
 ### Plugins
@@ -74,7 +74,6 @@ Application and code structure:
 
 Services ( having free plan 🚀 🌷 )
 - [GitHub Actions](https://github.com/features/actions)
-- [Render](https://render.com/) free app hosting and automated deployments
 - [PlantNet.org](https://plantnet.org) ([API](https://my.plantnet.org/)) - plant identification service (max 200 req/days)
 - [BioCLIP](https://github.com/Imageomics/bioclip) ([GrBird API](https://huggingface.co/spaces/3oly/grBird)) - classification from BioCLIP : a CLIP model trained on a new 10M-image dataset of biological organisms with fine-grained taxonomic labels. (cf. [paper](https://arxiv.org/abs/2311.18803) for more details) - credits : Samuel Stevens, Jiaman Wu, Matthew J Thompson, Elizabeth G Campolongo, Chan Hee Song, David Edward Carlyn, Li Dong, Wasila M Dahdul, Charles Stewart, Tanya Berger-Wolf, Wei-Lun Chao, Yu Su.
 - [betterstack](https://logs.betterstack.com/) - logs management
