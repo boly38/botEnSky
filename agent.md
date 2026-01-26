@@ -52,6 +52,8 @@ src/
 
 ## Commandes
 
+**⚠️ TOUJOURS utiliser `pnpm` (JAMAIS `npm` ou `yarn`)**
+
 ```bash
 pnpm install             # Setup
 pnpm start               # Lance bot + web UI

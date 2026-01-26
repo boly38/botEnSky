@@ -16,6 +16,10 @@ Lire selon contexte:
 5. **Suivre workflow `.github/agent.md` pour gestion tâches/issues**
 6. Documenter changements importants dans `.github/issue_*.md`
 
+## ⚠️ Package Manager
+
+**TOUJOURS utiliser `pnpm`** (JAMAIS `npm` ou `yarn`). Exemples: `pnpm install`, `pnpm add`, `pnpm run lint`, `pnpm exec eslint`
+
 ## ⚠️ MCP IntelliJ Auto-save
 
 MCP edits: fichier modifié dans IDE mais sauvegarde différée. Préférer `intellij_get_file_text_by_path` vs `cat`. Attendre 5-10s avant `git diff`.
