@@ -9,11 +9,11 @@ His ambition is to **bring 😊 happiness to 🦋 Bluesky 👤 users**.
 ## References
 
 - **BlueSky 🤖 Bot account : [@botensky.bsky.social](https://bsky.app/profile/botensky.bsky.social)** 
-- Bot engine 🌐 WebPage : [https://botensky.onrender.com/](https://botensky.verymad.net/)
+- Bot engine 🌐 WebPage : https://botensky.verymad.net
 
 ## Bot features (plugins)
 
-- French help - cf. [https://botensky.onrender.com/](https://botensky.verymad.net/)
+- French help - cf. https://botensky.verymad.net
 - English : cf. below.
 
 ### Plugins
