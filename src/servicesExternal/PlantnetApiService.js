@@ -88,6 +88,9 @@ export default class PlantnetApiService {
         try {
             plantResult = await this.plantnetIdentifyApi({imageUrl, doSimulateIdentify, simulateIdentifyCase});
         } catch (err) {
+            // L'erreur 404 "Species not found" est un cas normal quand PlantNet
+            // ne peut pas identifier une plante dans l'image. On la transforme
+            // en IDENTIFY_RESULT.NONE au lieu de propager l'exception.
             if (err?.status === 404) {
                 return {"result": IDENTIFY_RESULT.NONE, err}
             }
@@ -115,6 +118,10 @@ export default class PlantnetApiService {
 
         return new Promise((resolve, reject) => {
             if (doSimulateIdentify) {
+                // Simulate 404 error for "NotFound" case
+                if (simulateIdentifyCase === "NotFound") {
+                    return reject({message: "Species not found", status: 404});
+                }
                 const fileSuffix =
                     simulateIdentifyCase === "BadScore" ? 'BadScore' :
                         simulateIdentifyCase === "GoodScoreNoImage" ? 'GoodScoreNoImage' : 'GoodScoreImages';

@@ -100,15 +100,36 @@ export default class PluginsCommonService {
     }
 
     rejectWithParentIdentifyError(step, candidate, pluginName, err, context) {
+        let {status, message, mustBeReported} = err;
+        mustBeReported = isSet(mustBeReported) ? mustBeReported : (!isSet(status) || (status !== 404 && status !== 503 && status !== 408));
+        
         let askTxtError = `[${step}] Impossible d'identifier l'image avec ${pluginName}`;
         let askHtmlError = askTxtError;
+        
+        if (status === 404) {
+            askTxtError += " : aucune espèce trouvée";
+            askHtmlError += " : aucune espèce trouvée";
+        } else if (status === 408) {
+            askTxtError += " : le service est indisponible (timeout)";
+            askHtmlError += " : le service est indisponible (timeout)";
+        } else if (status === 503) {
+            askTxtError += " : le service est indisponible";
+            askHtmlError += " : le service est indisponible";
+        }
+        
         if (isSet(candidate)) {
             askTxtError = `[${step}] Impossible d'identifier l'image du parent de ${postLinkOf(candidate)} avec ${pluginName}`;
             askHtmlError = `<b>Post</b>: <div class="bg-warning">parent de ${postHtmlOf(candidate)}</div>` +
                 `<b>Erreur [${step}]</b>: impossible d'identifier l'image avec ${pluginName}`;
         }
-        this.logger.error(`${askTxtError} : ${askTxtError} // message was: ${err.message}`, context);
-        return Promise.reject(pluginReject(askTxtError, askHtmlError, 500, "unable to identify", true));
+        
+        if (status === 404 || status === 408 || status === 503) {
+            this.logger.info(`${askTxtError} : ${message}`, context);
+        } else {
+            this.logger.error(`${askTxtError} : ${message}`, context);
+        }
+        
+        return Promise.reject(pluginReject(askTxtError, askHtmlError, isSet(status) ? status : 500, "unable to identify", mustBeReported));
     }
 
     logCandidate(pluginName, candidate, candidatePhoto, context) {
@@ -119,9 +140,11 @@ export default class PluginsCommonService {
 
     rejectWithIdentifyError(pluginName, step, candidate, err, context) {
         let {status, message, mustBeReported} = err;
-        mustBeReported = isSet(mustBeReported) ? mustBeReported : (!isSet(status) || (status !== 503 && status !== 408));
+        mustBeReported = isSet(mustBeReported) ? mustBeReported : (!isSet(status) || (status !== 404 && status !== 503 && status !== 408));
         let identifyError = `Impossible d'identifier l'image avec ${pluginName}`
-        if (status === 408) {
+        if (status === 404) {
+            identifyError += " : aucune espèce trouvée.";
+        } else if (status === 408) {
             identifyError += " le service est indisponible (timeout).";
         } else if (status === 503) {
             identifyError += " le service est indisponible.";
@@ -133,7 +156,11 @@ export default class PluginsCommonService {
             pluginHtmlError = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div>` +
                 `<b>Erreur [${step}]</b>: ${identifyError}`;
         }
-        this.logger.error(`${pluginTxtError} : ${message}`, context);
+        if (status === 404 || status === 408 || status === 503) {
+            this.logger.info(`${pluginTxtError} : ${message}`, context);
+        } else {
+            this.logger.error(`${pluginTxtError} : ${message}`, context);
+        }
         return Promise.reject(pluginReject(pluginTxtError, pluginHtmlError,
             isSet(status) ? status : 500,
             pluginTxtError, mustBeReported));

@@ -44,6 +44,11 @@ describe("🧪🧩 30 - Pl@ntNet Plugin\n", () => {
             ["L'identification par Plantnet n'a pas donné de résultat assez concluant 😩 (score<20%)"]);
     }).timeout(60 * 1000);
 
+    it("Pl@ntNet plugin - id. NOT_FOUND (404)", async () => {
+        await verifyPluginProcessResult(plantnetPlugin, {...pluginConfigDoSimulate, simulateIdentifyCase: "NotFound"},
+            ["L'identification par Plantnet ne donne aucun résultat"]);
+    }).timeout(60 * 1000);
+
 });
 
 describe("🧪🧩 31 - Ask-Pl@ntNet Plugin\n", () => {
@@ -71,6 +76,14 @@ describe("🧪🧩 31 - Ask-Pl@ntNet Plugin\n", () => {
                 simulateIdentifyCase: "BadScore"
             },
             ["L'identification par AskPlantnet n'a pas donné de résultat assez concluant 😩 (score<20%)"]);
+    }).timeout(60 * 1000);
+
+    it("Ask-Pl@ntNet plugin - id. NOT_FOUND (404)", async () => {
+        await verifyPluginProcessResult(askPlantnetPlugin, {
+                ...pluginConfigDoSimulateAsk,
+                simulateIdentifyCase: "NotFound"
+            },
+            ["L'identification par AskPlantnet ne donne aucun résultat"]);
     }).timeout(60 * 1000);
 
     //NB: AskPlugin DONT mute initial post author 
