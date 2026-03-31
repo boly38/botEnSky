@@ -2,6 +2,7 @@ import fs from 'fs';
 import superagent from 'superagent';
 import {isSet, maxStringLength} from "../lib/Common.js";
 import {dataSimulationDirectory} from "../services/BotService.js";
+import ImageConverterService from "./ImageConverterService.js";
 
 export const PLANTNET_MINIMAL_PERCENT = 20;
 const PLANTNET_MINIMAL_RATIO = PLANTNET_MINIMAL_PERCENT / 100;
@@ -27,9 +28,10 @@ const DEBUG = process.env.DEBUG_PLANTNET_API_SERVICE === 'true';
  */
 export default class PlantnetApiService {
 
-    constructor(config, loggerService) {
+    constructor(config, loggerService, imageConverterService = null) {
         this.isAvailable = false;
         this.logger = loggerService.getLogger().child({label: 'PlantnetApiService'});
+        this.imageConverterService = imageConverterService || new ImageConverterService(loggerService);
         this.apiKey = config.plantnet.apiKey;
         if (!isSet(this.apiKey)) {
             this.logger.error("PlantnetApiService, please setup your environment");
@@ -108,7 +110,7 @@ export default class PlantnetApiService {
         return {"result": IDENTIFY_RESULT.OK, "plantnetResult": {scoredResult, firstImageOriginalUrl, firstImageText}};
     }
 
-    // may be private
+    /** Calls PlantNet identify API in simulate mode or with real multipart upload. */
     plantnetIdentifyApi(options) {
         const service = this;
         let {imageUrl, doSimulateIdentify, simulateIdentifyCase} = options;
@@ -129,39 +131,73 @@ export default class PlantnetApiService {
                 return resolve(simulatedAnswer);
             }
 
-            this.plantnetClient.get(service.plantnetIDApi)
-                .query({
-                    "images": [imageUrl, imageUrl],
-                    "organs": ["flower", "leaf"],
-                    "include-related-images": true,
-                    "lang": "fr",
-                    "api-key": service.apiKey,
-                })
-                .on('request', (request) => {
-                    if (DEBUG) {
-                        const redactedUrl = request.url.replace(/api-key=[^&]+/, 'api-key=REDACTED');
-                        console.log("👉 GET URL used :", redactedUrl);
-                    }
-                })
-                .end((err, res) => {
-                    if (err) {
-                        let errStatus = err?.status || 503;
-                        let errError = err?.message || err;
-                        let errDetails = (res?.text) ? " - details:" + res?.text : "";
-                        let errResult = "Pl@ntnet identify error (" + errStatus + ") " + errError;
+            service.imageConverterService.downloadAndConvert(imageUrl)
+                .then((preparedImage) => {
+                    const {
+                        buffer,
+                        fileName,
+                        finalContentType,
+                        finalFormat,
+                        converted,
+                        detectedFormat,
+                        sourceFormat,
+                        httpContentType
+                    } = preparedImage;
 
-                        // Log as info for service unavailability (408 timeout, 503 unavailable)
-                        if (errStatus === 408 || errStatus === 503) {
-                            const unavailabilityReason = errStatus === 408 ? "timeout" : "service unavailable";
-                            service.logger.info(errResult + errDetails + " (" + unavailabilityReason + ")");
-                        } else {
-                            service.logger.error(errResult + errDetails);
-                        }
+                    service.logger.info('[plantnet:prepare] ' + JSON.stringify({
+                        imageUrl,
+                        httpContentType,
+                        detectedFormat,
+                        sourceFormat,
+                        finalFormat,
+                        converted,
+                        fileName,
+                        sizeBytes: buffer.length
+                    }));
+                    service.logger.info(`[plantnet:upload:start] endpoint=${service.plantnetIDApi} file=${fileName} mime=${finalContentType}`);
 
-                        reject({message: errResult, status: errStatus});
-                        return;
-                    }
-                    resolve(res.body);
+                    const request = service.plantnetClient.post(service.plantnetIDApi)
+                        .query({
+                            "include-related-images": true,
+                            "lang": "fr",
+                            "api-key": service.apiKey,
+                        })
+                        .field('organs', 'flower')
+                        .field('organs', 'leaf')
+                        .attach('images', buffer, {filename: fileName, contentType: finalContentType})
+                        .attach('images', buffer, {filename: fileName, contentType: finalContentType});
+
+                    request
+                        .on('request', (requestData) => {
+                            if (DEBUG) {
+                                const redactedUrl = requestData.url.replace(/api-key=[^&]+/, 'api-key=REDACTED');
+                                console.log("👉 POST URL used :", redactedUrl);
+                            }
+                        })
+                        .end((err, res) => {
+                            if (err) {
+                                let errStatus = err?.status || 503;
+                                let errError = err?.message || err;
+                                let errDetails = (res?.text) ? " - details:" + res?.text : "";
+                                let errResult = "Pl@ntnet identify error (" + errStatus + ") " + errError;
+
+                                // Log as info for service unavailability (408 timeout, 503 unavailable)
+                                if (errStatus === 408 || errStatus === 503) {
+                                    const unavailabilityReason = errStatus === 408 ? "timeout" : "service unavailable";
+                                    service.logger.info(errResult + errDetails + " (" + unavailabilityReason + ")");
+                                } else {
+                                    service.logger.error(errResult + errDetails);
+                                }
+
+                                reject({message: errResult, status: errStatus});
+                                return;
+                            }
+                            service.logger.info(`[plantnet:upload:done] status=${res.status}`);
+                            resolve(res.body);
+                        });
+                })
+                .catch((err) => {
+                    reject(err);
                 });
         })
     }

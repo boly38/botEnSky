@@ -1,6 +1,7 @@
 import {clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
 import {IDENTIFY_RESULT, PLANTNET_MINIMAL_PERCENT} from "../servicesExternal/PlantnetApiService.js";
+import {dataSimulationDirectory} from "../services/BotService.js";
 
 export default class AskPlantnet {
     constructor(config, loggerService, blueskyService, pluginsCommonService, plantnetCommonService, plantnetApiService) {
@@ -53,13 +54,21 @@ export default class AskPlantnet {
             const hasNoReplyFromBot = true;
             const threadGetLimited = true;
             // keep hasImages=false as this is mention post's parent which include flower image
-            const candidate = await pluginsCommonService.searchNextCandidate({...config, questions, maxHoursOld,
+            candidate = await pluginsCommonService.searchNextCandidate({...config, questions, maxHoursOld,
                 hasNoReply, hasNoReplyFromBot, threadGetLimited});
             if (candidate === null) {
                 return pluginsCommonService.resultNoCandidate(pluginName, context);
             }
             step = "getParentPostOf";
-            const parentPost = await blueskyService.getParentPostOf(candidate.uri);
+            let parentPost;
+            const {doSimulateSearch, searchSimulationFile} = config;
+            if (doSimulateSearch && searchSimulationFile) {
+                const parentFile = `${searchSimulationFile}Parent`;
+                logger.info(`simulate getParentPostOf using ${parentFile}`);
+                parentPost = loadJsonResource(`${dataSimulationDirectory}/${parentFile}.json`);
+            } else {
+                parentPost = await blueskyService.getParentPostOf(candidate.uri);
+            }
             if (parentPost === null) {
                 return await pluginsCommonService.resultNoCandidateParent(candidate, pluginName, context);
             }

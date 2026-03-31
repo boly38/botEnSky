@@ -38,6 +38,8 @@ export const testLogger = buildTestLogger();
 export const initEnv = () => {
     //~ project init of environment
     dotEnvFlow.config({path: 'env/'});
+
+    console.log(`libTest NODE_ENV:${process.env.NODE_ENV} - BOT_PLANTNET_SIMULATE:${process.env.BOT_PLANTNET_SIMULATE}`);
 }
 export const _expectNoError = (err) => {
     const {status, message, success, error} = err;

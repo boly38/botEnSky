@@ -1,6 +1,7 @@
 import {clone, isSet, loadJsonResource} from "../lib/Common.js";
 import {firstImageOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
 import {GR_BIRD_MINIMAL_PERCENT, IDENTIFY_RESULT} from "../servicesExternal/GrBirdApiService.js";
+import {dataSimulationDirectory} from "../services/BotService.js";
 
 export default class AskBioclip {
     constructor(config, loggerService, blueskyService, pluginsCommonService, bioclipCommonService, grBirdApiService) {
@@ -50,7 +51,7 @@ export default class AskBioclip {
             const hasNoReplyFromBot = true;
             const threadGetLimited = true;
             // keep hasImages=false as this is mention post's parent which include flower image
-            const candidate = await pluginsCommonService.searchNextCandidate({
+            candidate = await pluginsCommonService.searchNextCandidate({
                 ...config, questions, maxHoursOld,
                 hasNoReply, hasNoReplyFromBot, threadGetLimited
             });
@@ -58,7 +59,15 @@ export default class AskBioclip {
                 return pluginsCommonService.resultNoCandidate(pluginName, context);
             }
             step = "getParentPostOf";
-            const parentPost = await blueskyService.getParentPostOf(candidate.uri);
+            let parentPost;
+            const {doSimulateSearch, searchSimulationFile} = config;
+            if (doSimulateSearch && searchSimulationFile) {
+                const parentFile = `${searchSimulationFile}Parent`;
+                logger.info(`simulate getParentPostOf using ${parentFile}`);
+                parentPost = loadJsonResource(`${dataSimulationDirectory}/${parentFile}.json`);
+            } else {
+                parentPost = await blueskyService.getParentPostOf(candidate.uri);
+            }
             if (parentPost === null) {
                 return await pluginsCommonService.resultNoCandidateParent(candidate, pluginName, context);
             }

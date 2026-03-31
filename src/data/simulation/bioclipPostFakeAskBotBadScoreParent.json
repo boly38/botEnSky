@@ -1,0 +1,33 @@
+{
+  "uri": "at://did:plc:4vcqn56njmlf3n6mu5rzugbc/app.bsky.feed.post/3l3lgomd5qm2f",
+  "cid": "bafyreidmhbxgyzevc7uvzt3llajbcd6mrb76fqezaaweprcg6yznp5hgxq",
+  "author": {
+    "did": "did:plc:4vcqn56njmlf3n6mu5rzugbc",
+    "handle": "gwendoline.bzh",
+    "displayName": "Gween",
+    "avatar": "https://cdn.bsky.app/img/avatar/plain/did:plc:4vcqn56njmlf3n6mu5rzugbc/bafkreieirxxi63dcxijjubn4kshdb4qdimvu4oqytfhv36udkknj2x6vqm@jpeg",
+    "viewer": { "muted": false }
+  },
+  "record": {
+    "$type": "app.bsky.feed.post",
+    "createdAt": "2024-09-07T17:50:34.579Z",
+    "langs": ["fr"],
+    "text": "Elle tente une entree discrete au #Moukrenesclub"
+  },
+  "embed": {
+    "$type": "app.bsky.embed.images#view",
+    "images": [
+      {
+        "thumb": "https://cdn.bsky.app/img/feed_thumbnail/plain/did:plc:4vcqn56njmlf3n6mu5rzugbc/bafkreifpzckh5lcru7lauwj2vnt2wx5mb7t533wuq2tmtanlgza6ywdq3e",
+        "fullsize": "https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:4vcqn56njmlf3n6mu5rzugbc/bafkreifpzckh5lcru7lauwj2vnt2wx5mb7t533wuq2tmtanlgza6ywdq3e",
+        "alt": "hot-dog"
+      }
+    ]
+  },
+  "replyCount": 5,
+  "repostCount": 0,
+  "likeCount": 25,
+  "indexedAt": "2024-09-07T17:50:34.579Z",
+  "viewer": { "threadMuted": false },
+  "labels": []
+}
