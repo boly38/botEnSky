@@ -29,6 +29,7 @@ import UnsplashService from "../services/UnsplashService.js";
 import OneDayOneBioclip from "../plugins/OneDayOneBioclip.js";
 import ResizeService from "../services/ResizeService.js";
 import HealthCheck from "../plugins/HealthCheck.js";
+import ImageConverterService from "../servicesExternal/ImageConverterService.js";
 
 export default class ApplicationConfig {
     constructor() {
@@ -98,9 +99,13 @@ export default class ApplicationConfig {
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('aviBaseService'));
 
+        container.register('imageConverterService', ImageConverterService)
+            .addArgument(container.get('loggerService'));
+
         container.register('plantnetApiService', PlantnetApiService)
             .addArgument(container.get('config'))
-            .addArgument(container.get('loggerService'));
+            .addArgument(container.get('loggerService'))
+            .addArgument(container.get('imageConverterService'));
 
         container.register('summaryService', SummaryService)
             .addArgument(container.get('config'))

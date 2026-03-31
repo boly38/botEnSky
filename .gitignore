@@ -141,3 +141,6 @@ draft/
 dist/
 dist-prod/
 dist-prod-compose/
+
+# mcp
+.playwright-mcp/

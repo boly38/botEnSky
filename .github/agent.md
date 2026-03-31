@@ -114,3 +114,8 @@ Objectif concis
 ## Références
 
 `/agent.md`
+
+## Amélioration continue
+En fin de session de développement d'une tâche :
+- identifier une améliorations possible dans ce workflow, ou l'usage des tools/MCP 
+- si trouvée, alors propose-les à l'humain pour suggestion.

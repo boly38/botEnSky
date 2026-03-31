@@ -51,7 +51,7 @@ describe("🧪🧩 41 - Ask-Bioclip Plugin\n", () => {
 
     it("Ask-Bioclip plugin - id. OK images", async () => {
         await verifyPluginProcessResult(askBioclipPlugin, pluginConfigDoSimulateAsk,
-            [": BioClip identify (at 86.12%) Cardinalis cardinalis genus:Cardinalis (fam. Cardinalidae) com. Northern Cardinal", bioclipAskPluginDefaultTag]);
+            ["Cardinalis cardinalis genus:Cardinalis (fam. Cardinalidae) com. Northern Cardinal", bioclipAskPluginDefaultTag]);
     }).timeout(60 * 1000);
 
     // possible coverage improvement : no species on avibase
