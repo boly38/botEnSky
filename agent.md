@@ -93,6 +93,7 @@ PORT=3000                    # Web UI
 
 Code: **Français** (logs, messages) | JSDoc **anglais**  
 Commits: **Anglais** (messages, descriptions)  
+Commit messages should include issue closure when applicable: `Fix #<id>`.
 ESM: `import/export` (pas CommonJS)
 
 ## Services clés
