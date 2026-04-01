@@ -43,3 +43,17 @@ jobs:
           pnpm version patch
           git branch -f deploy-prod
           git push -f origin main deploy-prod --tags
+
+      - name: Create draft release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_TOKEN }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "🔖 Creating draft release for version v$VERSION"
+          if gh release view "v$VERSION" > /dev/null 2>&1; then
+            echo "::warning title=ℹ️ Release v$VERSION already exists, skipping."
+          else
+            gh release create "v$VERSION" --draft --generate-notes
+            echo "::notice title=✅ Draft release v$VERSION created."
+          fi
+
