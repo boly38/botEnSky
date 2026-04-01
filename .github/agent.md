@@ -6,6 +6,10 @@
 .github/issue_*.md      # Feature/Tâche en cours (1 fichier par feature)
 ```
 
+Convention de nommage recommandée (issues liées à un ticket):
+
+`issue_<topic>_<id>.md` (avec `<topic>` en `snake_case` et `<id>` numérique, ex: `issue_faq_image_train_ai_172.md`)
+
 ## Principe STRICT
 
 **1 issue = 1 fichier `.github/issue_*.md`**
