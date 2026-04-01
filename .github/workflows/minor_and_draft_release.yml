@@ -1,8 +1,8 @@
-# create major from 'prod' branch
+# create minor from 'prod' branch
 # Note: This workflow uses GH_ACTIONS_TOKEN (PAT) instead of GITHUB_TOKEN
 # because GITHUB_TOKEN cannot trigger other workflows (security limitation).
 # We need to trigger deploy-bes.yml when pushing to deploy-prod branch.
-name: major
+name: minor
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -36,10 +36,24 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
-      - name: Major
+      - name: Minor
         run: |
           git config --global user.email  'github-actions[bot]@users.noreply.github.com'
           git config --global user.name 'github-actions[bot]'
-          pnpm version major
+          pnpm version minor
           git branch -f deploy-prod
           git push -f origin main deploy-prod --tags
+
+      - name: Create draft release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_TOKEN }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "🔖 Creating draft release for version v$VERSION"
+          if gh release view "v$VERSION" > /dev/null 2>&1; then
+            echo "::warning title=ℹ️ Release v$VERSION already exists, skipping."
+          else
+            gh release create "v$VERSION" --draft --generate-notes
+            echo "::notice title=✅ Draft release v$VERSION created."
+          fi
+
