@@ -62,16 +62,19 @@ jobs:
           else
             echo "::warning title=ℹ️ 🕸 Outdated Dependencies::Some dependencies are outdated. Please consider updating them."
           fi
+          pnpm audit --prod || echo "::warning title=ℹ️ 'pnpm audit --prod' is not enforced but contains some results : please check it on your own - cf. .github/workflows/main.yml"
 
-      - name: CHECK - pnpm audit and comment on PR
-        if: ${{ github.event.pull_request }}
-        uses: JamesRobertWiseman/pnpm-audit@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          level: moderate   # 'low'|'moderate'|'high'|'critical'
-          fails: true # true to fail the build if vulnerabilities are found
-          single_comment: true # true to only post one comment
-          inline: true # true to emit audit findings directly in the workflow logs using GitHub annotation syntax
+### COMMENTED WHILE WAITING FOR # pnpm audit --prod :
+### https://github.com/JamesRobertWiseman/pnpm-audit/issues/10
+##      - name: CHECK - pnpm audit and comment on PR
+##        if: ${{ github.event.pull_request }}
+##        uses: JamesRobertWiseman/pnpm-audit@v3
+##        with:
+##          github_token: ${{ secrets.GITHUB_TOKEN }}
+##          # level: moderate   # 'low'|'moderate'|'high'|'critical'
+##          fails: true # true to fail the build if vulnerabilities are found
+##          single_comment: true # true to only post one comment
+##          inline: true # true to emit audit findings directly in the workflow logs using GitHub annotation syntax
 
       - name: Run tests
         env:
