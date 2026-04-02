@@ -16,7 +16,7 @@ SOLID, KISS, DRY | MCP IntelliJ prioritaire | pnpm only
 
 ## Workflow
 
-1. Lire `agent.md` + `.github/agent.md` + issue active
+1. Lire `agent.md` + `.github/agent.md` + `.github/agent_pr.md` + issue active
 2. Analyser code existant (patterns, conventions)
 3. Appliquer SOLID/KISS
 4. Tests manuels (bot simulation, web UI)
