@@ -49,7 +49,7 @@ Objectif concis
 ## Workflow LLM
 
 ### Pendant développement
-1. Lire `agent.md` + `.github/issue_*.md` actif
+1. Lire `agent.md` + `.github/agent_pr.md` + `.github/issue_*.md` actif
 2. Travailler sur tâches
 3. **Cocher `- [x]` items complétés DANS le fichier issue**
 4. **Ajouter notes importantes en section "Notes de Dev"** (succinct)
