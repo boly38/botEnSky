@@ -112,7 +112,9 @@ export default class ExpressServer {
     }
 
     handleActivityTic(req, res, next) {
-        this.inactivityDetector.activityTic();
+        if (req.path !== HEALTH_ENDPOINT) {
+            this.inactivityDetector.activityTic();
+        }
         next();
     }
 

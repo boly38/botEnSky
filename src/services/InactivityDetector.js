@@ -17,7 +17,7 @@ export default class InactivityDetector {
     }
 
     async onInactivity() {
-        this.clearTimerIfAny();
+        await this.clearTimerIfAny();
         for (const handler of InactivityDetector.onInactivityListeners) {
             try {
                 await handler();
