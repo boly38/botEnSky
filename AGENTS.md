@@ -41,6 +41,7 @@ botEnSky/          # PROJECT ROOT (Git)
 Skills / Compétences situées sous `.github/skills` :
 - **issue-workflow** : Flux de travail pour traiter les tickets Github (suivi, tâches, finalisation)
 - **pull-request-workflow** : Workflow standardisé pour créer/mettre à jour les PR
+- **github-cli** : Outils bas-niveau `gh` pour interaction issues/PRs (requires GH_TOKEN)
 
 ## Workflow
 
