@@ -30,6 +30,7 @@ import OneDayOneBioclip from "../plugins/OneDayOneBioclip.js";
 import ResizeService from "../services/ResizeService.js";
 import HealthCheck from "../plugins/HealthCheck.js";
 import ImageConverterService from "../servicesExternal/ImageConverterService.js";
+import CreditsService from "../services/CreditsService.js";
 
 export default class ApplicationConfig {
     constructor() {
@@ -117,6 +118,8 @@ export default class ApplicationConfig {
             .addArgument(container.get('loggerService'))
             .addArgument(container.get('pluginsCommonService'));
 
+        container.register('creditsService', CreditsService)
+            .addArgument(container.get('loggerService'));
     }
 
     constructPlugins() {
@@ -221,6 +224,7 @@ export default class ApplicationConfig {
                 newsService: container.get('newsService'),
                 auditLogsService: container.get('auditLogsService'),
                 summaryService: container.get('summaryService'),
+                creditsService: container.get('creditsService'),
                 inactivityDetector: inactivityDetector
             });
         const expressServer = container.get('expressServer');

@@ -27,7 +27,7 @@ export default class ExpressServer {
         const {
             config, loggerService, blueskyService,
             botService, newsService,
-            auditLogsService, summaryService, inactivityDetector
+            auditLogsService, summaryService, inactivityDetector, creditsService
         } = services;
         this.config = config;
         this.blueskyService = blueskyService;
@@ -36,6 +36,7 @@ export default class ExpressServer {
         this.auditLogsService = auditLogsService;
         this.summaryService = summaryService;
         this.inactivityDetector = inactivityDetector;
+        this.creditsService = creditsService;
 
         this.logger = loggerService.getLogger().child({label: 'ExpressServer'});
 
@@ -191,13 +192,14 @@ export default class ExpressServer {
     }
 
     async webPagesResponse(req, res) {
-        const {version, newsService, config, summaryService} = this;
+        const {version, newsService, config, summaryService, creditsService} = this;
         const projectHomepage = cacheGetProjectHomepage();
         const projectIssues = cacheGetProjectBugsUrl();
         const projectDiscussions = cacheGetProjectMetadata("projectDiscussions");
         const blueskyAccount = cacheGetProjectMetadata("blueskyAccount");
         const blueskyDisplayName = cacheGetProjectMetadata("blueskyDisplayName");
         const summary = await summaryService.cacheGetWeekSummary({});
+        const credits = creditsService.getFormattedCredits();
         newsService.getNews()
             .then(news => {
                 DEBUG_NEWS && console.log(`NEWS:${JSON.stringify(news)}`)
@@ -208,7 +210,7 @@ export default class ExpressServer {
                     news, "tz": config.tz,
                     version, projectHomepage, projectIssues, projectDiscussions,
                     blueskyAccount, blueskyDisplayName,
-                    summary
+                    summary, credits
                 });
             });
     }

@@ -76,5 +76,13 @@
 	"server.pleaseReportIssue": "merci de la rechercher ou de la signaler sur ",
 	"server.issueLinkLabel": "les tickets",
 	"project.title": "Projet",
-	"project.info": "Informations"
+	"project.info": "Informations",
+	"credits.title": "Remerciements",
+	"credits.subtitle": "Merci aux projets, services et librairies avec un plan gratuit qui rendent botEnSky possible",
+	"credits.services": "Services Externes",
+	"credits.libraries": "Librairies",
+	"credits.tools": "Outils",
+	"credits.runtime": "Runtime",
+	"credits.freePlan": "Plan Gratuit 🚀",
+	"credits.creditsTo": "Crédits"
 }

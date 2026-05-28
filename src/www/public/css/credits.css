@@ -1,0 +1,263 @@
+/* Credits Page Styles */
+
+.page-header {
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+}
+
+.page-header h1 {
+    background: linear-gradient(135deg, #2D6A4F, #40916C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.credits-section {
+    margin-bottom: 4rem;
+}
+
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1b4332;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(45, 106, 79, 0.2);
+}
+
+.section-title i {
+    width: 28px;
+    height: 28px;
+    color: #40916C;
+}
+
+/* Credit Card Grid */
+.credits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.credit-card {
+    padding: 1.5rem;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.credit-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(45, 106, 79, 0.4);
+    background: linear-gradient(135deg, rgba(45, 106, 79, 0.1), rgba(64, 145, 108, 0.05));
+    box-shadow: 0 20px 40px rgba(45, 106, 79, 0.1);
+}
+
+.credit-header {
+    margin-bottom: 1rem;
+}
+
+.credit-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #1b4332;
+    word-break: break-word;
+}
+
+.credit-name a {
+    text-decoration: none;
+    color: #2D6A4F;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+}
+
+.credit-name a:hover {
+    color: #40916C;
+}
+
+.link-icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.credit-name a:hover .link-icon {
+    opacity: 1;
+}
+
+.credit-description {
+    font-size: 0.95rem;
+    color: #52796f;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+    line-height: 1.5;
+}
+
+.credit-author {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+    font-style: italic;
+}
+
+.credit-card .badge {
+    align-self: flex-start;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Credits List (for libraries) */
+.credits-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.credit-list-item {
+    padding: 1.25rem;
+    border-radius: 8px;
+    border-left: 4px solid #40916C;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.credit-list-item:hover {
+    border-left-color: #2D6A4F;
+    transform: translateX(4px);
+    background: linear-gradient(135deg, rgba(45, 106, 79, 0.1), rgba(64, 145, 108, 0.05));
+}
+
+.credit-list-name {
+    margin-bottom: 0.5rem;
+}
+
+.credit-list-name a {
+    text-decoration: none;
+    color: #1b4332;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+}
+
+.credit-list-name a:hover {
+    color: #2D6A4F;
+}
+
+.credit-list-desc {
+    color: #52796f;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .credits-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .credits-list {
+        gap: 0.75rem;
+    }
+
+    .credit-list-item {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+    }
+
+    .credit-card {
+        padding: 1.25rem;
+    }
+
+    .credit-name {
+        font-size: 1rem;
+    }
+
+    .credit-description {
+        font-size: 0.9rem;
+    }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .page-header h1 {
+        background: linear-gradient(135deg, #52b788, #74c69d);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .section-title {
+        color: #a8e6c9;
+        border-bottom-color: rgba(82, 184, 136, 0.2);
+    }
+
+    .section-title i {
+        color: #52b788;
+    }
+
+    .credit-name {
+        color: #a8e6c9;
+    }
+
+    .credit-name a {
+        color: #52b788;
+    }
+
+    .credit-name a:hover {
+        color: #74c69d;
+    }
+
+    .credit-description {
+        color: #81a89f;
+    }
+
+    .credit-author {
+        color: #a0a0a0;
+    }
+
+    .credit-list-name a {
+        color: #a8e6c9;
+    }
+
+    .credit-list-name a:hover {
+        color: #74c69d;
+    }
+
+    .credit-list-desc {
+        color: #81a89f;
+    }
+}
+

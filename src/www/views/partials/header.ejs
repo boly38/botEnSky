@@ -53,7 +53,17 @@
             <span><%= __('index.menu.faq') %></span>
           </a>
         </li>
-      </ul>
+        <li class="bes-nav-item">
+          <a id="credits-menu"
+             href="#credits"
+             data-nav-link
+             onclick="window.BesContent.toggleContent('credits'); return false;"
+             data-umami-event="nav-credits"
+             class="bes-nav-link">
+            <i data-lucide="heart" class="bes-nav-icon"></i>
+            <span><%= __('credits.title') %></span>
+          </a>
+        </li>
 
       <!-- Actions (Language + Dark Mode) -->
       <div class="bes-nav-actions">

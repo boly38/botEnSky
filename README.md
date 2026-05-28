@@ -72,11 +72,9 @@ Application and code structure:
 - [NodeJs](https://nodejs.org/) and Node dependencies (cf. [graph](https://github.com/boly38/botEnSky/network/dependencies))
 - [BlueSky API](https://docs.bsky.app/)
 
-Services ( having free plan 🚀 🌷 )
-- [GitHub Actions](https://github.com/features/actions)
-- [PlantNet.org](https://plantnet.org) ([API](https://my.plantnet.org/)) - plant identification service (max 200 req/days)
-- [BioCLIP](https://github.com/Imageomics/bioclip) ([GrBird API](https://huggingface.co/spaces/3oly/grBird)) - classification from BioCLIP : a CLIP model trained on a new 10M-image dataset of biological organisms with fine-grained taxonomic labels. (cf. [paper](https://arxiv.org/abs/2311.18803) for more details) - credits : Samuel Stevens, Jiaman Wu, Matthew J Thompson, Elizabeth G Campolongo, Chan Hee Song, David Edward Carlyn, Li Dong, Wasila M Dahdul, Charles Stewart, Tanya Berger-Wolf, Wei-Lun Chao, Yu Su.
-- [betterstack](https://logs.betterstack.com/) - logs management
+**Services and projects with free plans 🚀 🌷**
+
+For a comprehensive and always up-to-date list of all services, libraries, and tools that make botEnSky possible, please visit the **[Credits page](https://botensky.verymad.net/credits)** on the botEnSky website.
 
 ### Contributions
 

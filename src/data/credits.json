@@ -1,0 +1,237 @@
+{
+  "credits": [
+    {
+      "name": "@atproto/api",
+      "type": "library",
+      "description": "AT Protocol TypeScript SDK for building ATmosphere clients",
+      "url": "https://github.com/bluesky-social/atproto",
+      "freeplan": true
+    },
+    {
+      "name": "@gradio/client",
+      "type": "library",
+      "description": "JavaScript client for Gradio applications",
+      "url": "https://github.com/gradio-app/gradio",
+      "freeplan": true
+    },
+    {
+      "name": "@logtail/node",
+      "type": "library",
+      "description": "Logtail logging SDK for Node.js",
+      "url": "https://logtail.com",
+      "freeplan": true
+    },
+    {
+      "name": "@logtail/winston",
+      "type": "library",
+      "description": "Winston transport for Logtail",
+      "url": "https://logtail.com",
+      "freeplan": true
+    },
+    {
+      "name": "Avibase",
+      "type": "service",
+      "description": "Avibase is an extensive database of bird species of the world",
+      "url": "https://avibase.bsc-eoc.org/",
+      "freeplan": true
+    },
+    {
+      "name": "axios",
+      "type": "library",
+      "description": "Promise based HTTP client for the browser and node.js",
+      "url": "https://github.com/axios/axios",
+      "freeplan": true
+    },
+    {
+      "name": "betterstack",
+      "type": "service",
+      "description": "Logs management and monitoring platform",
+      "url": "https://logs.betterstack.com/",
+      "freeplan": true
+    },
+    {
+      "name": "BioCLIP",
+      "type": "service",
+      "description": "A CLIP model trained on 10M-image dataset of biological organisms (via GrBird API)",
+      "url": "https://huggingface.co/spaces/3oly/grBird",
+      "freeplan": true,
+      "credits": "Samuel Stevens, Jiaman Wu, Matthew J Thompson, Elizabeth G Campolongo, Chan Hee Song, David Edward Carlyn, Li Dong, Wasila M Dahdul, Charles Stewart, Tanya Berger-Wolf, Wei-Lun Chao, Yu Su"
+    },
+    {
+      "name": "BlueSky API",
+      "type": "service",
+      "description": "The open social network",
+      "url": "https://docs.bsky.app/",
+      "freeplan": true
+    },
+    {
+      "name": "c8",
+      "type": "library",
+      "description": "Code coverage tool",
+      "url": "https://github.com/bcoe/c8",
+      "freeplan": true
+    },
+    {
+      "name": "chai",
+      "type": "library",
+      "description": "BDD/TDD assertion library for JavaScript",
+      "url": "https://www.chaijs.com/",
+      "freeplan": true
+    },
+    {
+      "name": "chai-http",
+      "type": "library",
+      "description": "HTTP assertions for Chai",
+      "url": "https://github.com/chaijs/chai-http",
+      "freeplan": true
+    },
+    {
+      "name": "dayjs",
+      "type": "library",
+      "description": "Lightweight date library",
+      "url": "https://dayjs.js.org/",
+      "freeplan": true
+    },
+    {
+      "name": "discord.js",
+      "type": "library",
+      "description": "A powerful JavaScript library for interacting with the Discord API",
+      "url": "https://discord.js.org/",
+      "freeplan": true
+    },
+    {
+      "name": "dotenv-flow",
+      "type": "library",
+      "description": "Load environment variables from .env files",
+      "url": "https://github.com/konfigthis/dotenv-flow",
+      "freeplan": true
+    },
+    {
+      "name": "ejs",
+      "type": "library",
+      "description": "Embedded JavaScript templating",
+      "url": "https://ejs.co/",
+      "freeplan": true
+    },
+    {
+      "name": "ESLint",
+      "type": "library",
+      "description": "Find and fix problems in JavaScript code",
+      "url": "https://eslint.org/",
+      "freeplan": true
+    },
+    {
+      "name": "Express.js",
+      "type": "library",
+      "description": "Fast, unopinionated web framework for Node.js",
+      "url": "https://expressjs.com/",
+      "freeplan": true
+    },
+    {
+      "name": "GitHub Actions",
+      "type": "service",
+      "description": "Continuous integration and continuous deployment (CI/CD) service",
+      "url": "https://github.com/features/actions",
+      "freeplan": true
+    },
+    {
+      "name": "GitHub CLI",
+      "type": "tool",
+      "description": "GitHub's official command line tool",
+      "url": "https://cli.github.com/",
+      "freeplan": true
+    },
+    {
+      "name": "http-errors",
+      "type": "library",
+      "description": "Create HTTP error objects",
+      "url": "https://github.com/jshttp/http-errors",
+      "freeplan": true
+    },
+    {
+      "name": "http-status-codes",
+      "type": "library",
+      "description": "HTTP status code enumeration for JavaScript",
+      "url": "https://github.com/prettymuchbryce/http-status-codes",
+      "freeplan": true
+    },
+     {
+       "name": "i18n",
+       "type": "library",
+       "description": "Lightweight and simple translation module",
+       "url": "https://github.com/mashpie/i18n-node",
+       "freeplan": true
+     },
+     {
+       "name": "is.gd",
+       "type": "service",
+       "description": "Free URL shortener with direct 301 redirect, no tracking (since 2006)",
+       "url": "https://is.gd/",
+       "freeplan": true
+     },
+     {
+       "name": "Mocha",
+       "type": "library",
+       "description": "Test framework for JavaScript",
+       "url": "https://mochajs.org/",
+       "freeplan": true
+     },
+     {
+       "name": "node-dependency-injection",
+       "type": "library",
+       "description": "Node.js dependency injection container library",
+       "url": "https://github.com/konfigthis/node-dependency-injection",
+       "freeplan": true
+     },
+     {
+       "name": "Node.js",
+       "type": "runtime",
+       "description": "JavaScript runtime built on Chrome's V8 JavaScript engine",
+       "url": "https://nodejs.org/",
+       "freeplan": true
+     },
+     {
+       "name": "PlantNet.org",
+       "type": "service",
+       "description": "Plant identification service using AI (max 200 req/day on free plan)",
+       "url": "https://plantnet.org",
+       "freeplan": true
+     },
+    {
+      "name": "sharp",
+      "type": "library",
+      "description": "High-performance Node.js image processing library",
+      "url": "https://sharp.pixelplumbing.com/",
+      "freeplan": true
+    },
+    {
+      "name": "superagent",
+      "type": "library",
+      "description": "Lightweight HTTP request library for JavaScript",
+      "url": "https://visionmedia.github.io/superagent/",
+      "freeplan": true
+    },
+     {
+       "name": "Unsplash",
+       "type": "service",
+       "description": "Free stock photos service",
+       "url": "https://unsplash.com/",
+       "freeplan": true
+     },
+     {
+       "name": "v.gd",
+       "type": "service",
+       "description": "URL shortener service with free API, backup provider for is.gd",
+       "url": "https://v.gd/",
+       "freeplan": true
+     },
+    {
+      "name": "winston",
+      "type": "library",
+      "description": "Versatile logging library for Node.js",
+      "url": "https://github.com/winstonjs/winston",
+      "freeplan": true
+    }
+  ]
+}
+
