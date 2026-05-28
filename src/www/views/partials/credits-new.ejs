@@ -1,0 +1,140 @@
+<!-- Credits Section -->
+<div id="credits" class="bes-section-container" data-section="credits">
+    <!-- Page Header -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8">
+            <div class="page-header text-center">
+                <h1 class="display-4 fw-bold mb-3"><%= __('credits.title') %></h1>
+                <p class="lead text-muted">
+                    <%= __('credits.subtitle') %>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credits Content -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Services Section -->
+            <% if (credits.services && credits.services.length > 0) { %>
+            <div class="credits-section mb-5">
+                <h2 class="section-title mb-4">
+                    <i data-lucide="cloud"></i>
+                    <%= __('credits.services') %>
+                </h2>
+                <div class="credits-grid">
+                    <% credits.services.forEach(credit => { %>
+                    <div class="credit-card glass-effect">
+                        <div class="credit-header">
+                            <h3 class="credit-name">
+                                <a href="<%= credit.url %>" target="_blank" rel="noopener noreferrer">
+                                    <%= credit.name %>
+                                    <i data-lucide="external-link" class="link-icon"></i>
+                                </a>
+                            </h3>
+                        </div>
+                        <p class="credit-description">
+                            <%= credit.description %>
+                        </p>
+                        <% if (credit.credits) { %>
+                        <p class="credit-author">
+                            <strong><%= __('credits.creditsTo') %>:</strong> <%= credit.credits %>
+                        </p>
+                        <% } %>
+                        <span class="badge bg-success-subtle text-success">
+                            <%= __('credits.freePlan') %>
+                        </span>
+                    </div>
+                    <% }); %>
+                </div>
+            </div>
+            <% } %>
+
+            <!-- Runtime Section -->
+            <% if (credits.runtimes && credits.runtimes.length > 0) { %>
+            <div class="credits-section mb-5">
+                <h2 class="section-title mb-4">
+                    <i data-lucide="cpu"></i>
+                    <%= __('credits.runtime') %>
+                </h2>
+                <div class="credits-grid">
+                    <% credits.runtimes.forEach(credit => { %>
+                    <div class="credit-card glass-effect">
+                        <div class="credit-header">
+                            <h3 class="credit-name">
+                                <a href="<%= credit.url %>" target="_blank" rel="noopener noreferrer">
+                                    <%= credit.name %>
+                                    <i data-lucide="external-link" class="link-icon"></i>
+                                </a>
+                            </h3>
+                        </div>
+                        <p class="credit-description">
+                            <%= credit.description %>
+                        </p>
+                        <span class="badge bg-success-subtle text-success">
+                            <%= __('credits.freePlan') %>
+                        </span>
+                    </div>
+                    <% }); %>
+                </div>
+            </div>
+            <% } %>
+
+            <!-- Libraries Section -->
+            <% if (credits.libraries && credits.libraries.length > 0) { %>
+            <div class="credits-section mb-5">
+                <h2 class="section-title mb-4">
+                    <i data-lucide="package"></i>
+                    <%= __('credits.libraries') %>
+                </h2>
+                <div class="credits-list">
+                    <% credits.libraries.forEach(credit => { %>
+                    <div class="credit-list-item glass-effect">
+                        <div class="credit-list-name">
+                            <a href="<%= credit.url %>" target="_blank" rel="noopener noreferrer">
+                                <strong><%= credit.name %></strong>
+                                <i data-lucide="external-link" class="link-icon"></i>
+                            </a>
+                        </div>
+                        <div class="credit-list-desc">
+                            <%= credit.description %>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
+            </div>
+            <% } %>
+
+            <!-- Tools Section -->
+            <% if (credits.tools && credits.tools.length > 0) { %>
+            <div class="credits-section mb-5">
+                <h2 class="section-title mb-4">
+                    <i data-lucide="wrench"></i>
+                    <%= __('credits.tools') %>
+                </h2>
+                <div class="credits-grid">
+                    <% credits.tools.forEach(credit => { %>
+                    <div class="credit-card glass-effect">
+                        <div class="credit-header">
+                            <h3 class="credit-name">
+                                <a href="<%= credit.url %>" target="_blank" rel="noopener noreferrer">
+                                    <%= credit.name %>
+                                    <i data-lucide="external-link" class="link-icon"></i>
+                                </a>
+                            </h3>
+                        </div>
+                        <p class="credit-description">
+                            <%= credit.description %>
+                        </p>
+                        <span class="badge bg-success-subtle text-success">
+                            <%= __('credits.freePlan') %>
+                        </span>
+                    </div>
+                    <% }); %>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
