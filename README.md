@@ -67,14 +67,9 @@ His ambition is to **bring 😊 happiness to 🦋 Bluesky 👤 users**.
 - [releases notes](https://github.com/boly38/botEnSky/releases)  - generated via [GitHub client](https://cli.github.com/)
 - [tests - code-coverage](https://boly38.github.io/botEnSky/)
 
-### Credits
-Application and code structure:
-- [NodeJs](https://nodejs.org/) and Node dependencies (cf. [graph](https://github.com/boly38/botEnSky/network/dependencies))
-- [BlueSky API](https://docs.bsky.app/)
+### Credits : Services and projects with free plans 🚀 🌷
 
-**Services and projects with free plans 🚀 🌷**
-
-For a comprehensive and always up-to-date list of all services, libraries, and tools that make botEnSky possible, please visit the **[Credits page](https://botensky.verymad.net/credits)** on the botEnSky website.
+For a comprehensive and always up-to-date list of all services, libraries, and tools that make botEnSky possible, please visit the **[Credits page](https://botensky.verymad.net#credits)** on the botEnSky website.
 
 ### Contributions
 
