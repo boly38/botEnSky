@@ -229,53 +229,110 @@ export default class PluginsCommonService {
         return authorAction;
     }
 
-    replyResult(replyTo, options, replyMessage, embed = null) {
-        const plugin = this;
-        const {
-            doSimulate, context,
-            imageUrl = null,
-            imageAlt = "post-image"
-        } = options;
-        plugin.logger.debug("reply result",
-            JSON.stringify({doSimulate, replyMessage, replyTo}, null, 2)
-        );
-        return new Promise((resolve, reject) => {
-            this.blueskyService.replyTo(replyTo, replyMessage, doSimulate, embed)
-                .then(() => {
-                    const candidateHtmlOf = postHtmlOf(replyTo);
-                    const candidateTextOf = postTextOf(replyTo);
-                    const imageHtml = plugin.imageHtmlOf(imageUrl, imageAlt);
-                    const replySent = doSimulate ? "SIMULATION - Réponse prévue" : "Réponse émise";
-                    resolve(pluginResolve(
-                        `Post:\n\t${candidateTextOf}\n\t${replySent} : ${replyMessage}`,
-                        `${imageHtml}<div class="bg-info">${candidateHtmlOf}</div><b>${replySent}</b>: ${replyMessage}`,
-                        200,
-                        doSimulate ? 0 : 1
-                    ));
-                })
-                .catch(err => {
-                    const isServiceUnavailable = err.status === 503 || err.code === 'Service Unavailable';
+     replyResult(replyTo, options, replyMessage, embed = null) {
+         const plugin = this;
+         const {
+             doSimulate, context,
+             imageUrl = null,
+             imageAlt = "post-image"
+         } = options;
 
-                    if (isServiceUnavailable) {
-                        plugin.logger.info(`Service Bluesky temporairement indisponible pour répondre`, context);
-                        reject(pluginReject(
-                            `Service Bluesky indisponible`,
-                            `Service Bluesky indisponible`,
-                            503,
-                            "bluesky unavailable",
-                            false // mustBeReported = false
-                        ));
-                        return;
-                    }
+         // Check and optimize message length for Bluesky 300 char limit
+         const MAX_POST_LENGTH = 300;
+         let optimizedMessage = replyMessage;
+         if (replyMessage.length > MAX_POST_LENGTH) {
+             plugin.logger.warn(`Reply message length (${replyMessage.length}) exceeds limit (${MAX_POST_LENGTH}), optimizing...`);
+             try {
+                 optimizedMessage = plugin.optimizeMessageLength(replyMessage, MAX_POST_LENGTH);
+                 plugin.logger.info(`Optimized message length: ${optimizedMessage.length}`);
+             } catch (err) {
+                 plugin.logger.info(`Cannot optimize reply message to ${MAX_POST_LENGTH} chars`);
+                 return Promise.reject(err);
+             }
+         }
 
-                    // Log with logger instead of console
-                    plugin.logger.error(`replyTo error: ${err.message}`, context);
-                    plugin.logger.debug(`Error stack: ${err?.stack}`, context);
-                    plugin.logError("replyTo", err, {...context, doSimulate, replyTo, replyMessage});
-                    reject(new Error("impossible de répondre au post"));
-                });
-        });
-    }
+         plugin.logger.debug("reply result",
+             JSON.stringify({doSimulate, replyMessage: optimizedMessage, replyTo}, null, 2)
+         );
+         return new Promise((resolve, reject) => {
+             this.blueskyService.replyTo(replyTo, optimizedMessage, doSimulate, embed)
+                 .then(() => {
+                     const candidateHtmlOf = postHtmlOf(replyTo);
+                     const candidateTextOf = postTextOf(replyTo);
+                     const imageHtml = plugin.imageHtmlOf(imageUrl, imageAlt);
+                     const replySent = doSimulate ? "SIMULATION - Réponse prévue" : "Réponse émise";
+                     resolve(pluginResolve(
+                         `Post:\n\t${candidateTextOf}\n\t${replySent} : ${optimizedMessage}`,
+                         `${imageHtml}<div class="bg-info">${candidateHtmlOf}</div><b>${replySent}</b>: ${optimizedMessage}`,
+                         200,
+                         doSimulate ? 0 : 1
+                     ));
+                 })
+                 .catch(err => {
+                     const isServiceUnavailable = err.status === 503 || err.code === 'Service Unavailable';
+
+                     if (isServiceUnavailable) {
+                         plugin.logger.info(`Service Bluesky temporairement indisponible pour répondre`, context);
+                         reject(pluginReject(
+                             `Service Bluesky indisponible`,
+                             `Service Bluesky indisponible`,
+                             503,
+                             "bluesky unavailable",
+                             false // mustBeReported = false
+                         ));
+                         return;
+                     }
+
+                     // Log with logger instead of console
+                     plugin.logger.error(`replyTo error: ${err.message}`, context);
+                     plugin.logger.debug(`Error stack: ${err?.stack}`, context);
+                     plugin.logError("replyTo", err, {...context, doSimulate, replyTo, replyMessage: optimizedMessage});
+                     reject(new Error("impossible de répondre au post"));
+                 });
+         });
+     }
+
+     /**
+      * Optimize reply message to respect Bluesky 300 character limit
+      * Priority: preserve identification result (BioClip/Plantnet result)
+      *
+      * Strategy:
+      * 1. Trim whitespace
+      * 2. Remove tags line if present
+      * 3. Reject with exception if still too long
+      *
+      * @private
+      * @throws Error if message cannot be optimized to fit limit
+      */
+     optimizeMessageLength(message, maxLength) {
+
+         // Strategy 1: Remove trailing newlines and empty lines
+         let optimized = message.trim();
+         if (optimized.length <= maxLength) {
+             this.logger.info(`Strategy 1: Trimmed message (${optimized.length} <= ${maxLength})`);
+             return optimized;
+         }
+
+         // Strategy 2: Remove tags line at the end (preserve identification result)
+         const lastNewlineIndex = optimized.lastIndexOf('\n');
+         if (lastNewlineIndex > 0) {
+             const beforeTags = optimized.substring(0, lastNewlineIndex).trim();
+             const tagsLine = optimized.substring(lastNewlineIndex).trim();
+
+             // Check if last line is tags (starts with #)
+             if (tagsLine.startsWith('#')) {
+                 if (beforeTags.length <= maxLength) {
+                     this.logger.info(`Strategy 2: Removed tags line (${beforeTags.length} <= ${maxLength})`);
+                     return beforeTags;
+                 }
+             }
+         }
+
+         // Strategy 3: Cannot optimize - reject
+         this.logger.info(`Cannot optimize message to ${maxLength} chars. Original length: ${message.length}`);
+         this.logger.info(`Full content:\n${message}`);
+         throw new Error(`Message too long (${message.length} chars) and cannot be optimized to fit Bluesky 300 character limit while preserving identification result`);
+     }
 
     logError(action, err, context) {
         this.logger.error(`${action} ${err.message}`, {...context, action});

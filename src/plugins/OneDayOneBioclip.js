@@ -1,5 +1,6 @@
 import {pluginResolve} from "../services/BotService.js";
 import {BOT_HANDLE, buildShortUrlWithText, isSet, loadJsonResource} from "../lib/Common.js";
+import {limitString} from "../lib/StringUtil.js";
 import console from "node:console";
 import {IDENTIFY_RESULT} from "../servicesExternal/GrBirdApiService.js";
 import {postBodyOf, postHtmlOf, postTextOf} from "../domain/post.js";
@@ -105,43 +106,105 @@ export default class OneDayOneBioclip {
     }
 
     async postOneDay(options) {
-        const {logger, pluginsCommonService, blueskyService} = this;
-        const {photo, tags, doSimulate, context, imageUrl, imageAlt, extendedDetails} = options;
-        const photo_description = shortDescriptionOfPhoto(photo);
-        const unsplashUrl = await buildShortUrlWithText(this.logger, photo.origin, "Unsplash ")
-        const newPostContent = `
+         const {logger, pluginsCommonService, blueskyService} = this;
+         const {photo, tags, doSimulate, context, imageUrl, imageAlt, extendedDetails} = options;
+         const photo_description = shortDescriptionOfPhoto(photo);
+         const unsplashUrl = await buildShortUrlWithText(this.logger, photo.origin, "Unsplash ")
+         let newPostContent = `
 ${photo_description} by ${usernameOfPhoto(photo)} (${unsplashUrl})\n
 ${imageAlt}\n
 ${tags}`.trim();
-        // 4- produce post : text, html
-        return new Promise((resolve, reject) => {
-            blueskyService.newPost(newPostContent, doSimulate, imageUrl, imageAlt + extendedDetails)
-                .then(newPost => {
-                    const htmlOf = postHtmlOf(newPost);
-                    const textOf = postTextOf(newPost);
-                    const imageHtml = pluginsCommonService.imageHtmlOf(imageUrl, imageAlt);
-                    const postSent = doSimulate ? "SIMULATION - Réponse prévue" : "Réponse émise";
-                      resolve(pluginResolve(
-      `Post:\n\t${textOf}\n\t${postSent} : ${textOf}`,
-      `${imageHtml}<div class="bg-info">${htmlOf}</div><b>${postSent}</b>`,
-      200,
-      doSimulate ? 0 : 1
-                    ));
-                })
-                .catch(err => {
-                    logger.warn(err);// print err
-                    logger.info(err?.stack);// print stack
-                    console.trace();// print stack
-                    pluginsCommonService.logError("post", err, {
-                        ...context,
-                        doSimulate,
-                        message: newPostContent,
-                        imageUrl,
-                        imageAlt
-                    });
-                    reject(new Error("impossible de répondre au post"));
-                });
-        });
-    }
+
+         // Bluesky has a 300 character limit - optimize content if needed
+         const MAX_POST_LENGTH = 300;
+         if (newPostContent.length > MAX_POST_LENGTH) {
+             logger.warn(`Original post length (${newPostContent.length}) exceeds limit (${MAX_POST_LENGTH}), optimizing...`);
+             try {
+                 newPostContent = this.optimizePostContent(newPostContent, imageAlt, photo_description, usernameOfPhoto(photo), unsplashUrl, tags, logger, MAX_POST_LENGTH);
+                 logger.info(`Optimized post length: ${newPostContent.length}`);
+             } catch (err) {
+                 logger.info(`Post content too long to optimize: ${newPostContent.length} chars`);
+                 throw err;
+             }
+         }
+
+         // 4- produce post : text, html
+         return new Promise((resolve, reject) => {
+             blueskyService.newPost(newPostContent, doSimulate, imageUrl, imageAlt + extendedDetails)
+                 .then(newPost => {
+                     const htmlOf = postHtmlOf(newPost);
+                     const textOf = postTextOf(newPost);
+                     const imageHtml = pluginsCommonService.imageHtmlOf(imageUrl, imageAlt);
+                     const postSent = doSimulate ? "SIMULATION - Réponse prévue" : "Réponse émise";
+                       resolve(pluginResolve(
+       `Post:\n\t${textOf}\n\t${postSent} : ${textOf}`,
+       `${imageHtml}<div class="bg-info">${htmlOf}</div><b>${postSent}</b>`,
+       200,
+       doSimulate ? 0 : 1
+                     ));
+                 })
+                 .catch(err => {
+                     logger.warn(err);// print err
+                     logger.info(err?.stack);// print stack
+                     console.trace();// print stack
+                     pluginsCommonService.logError("post", err, {
+                         ...context,
+                         doSimulate,
+                         message: newPostContent,
+                         imageUrl,
+                         imageAlt
+                     });
+                     reject(new Error("impossible de répondre au post"));
+                 });
+         });
+     }
+
+     /**
+      * Optimize post content to respect Bluesky 300 character limit
+      * Priority: preserve Unsplash URL (credit), BioClip alt text (identification), and #1Day1Bioclip tag
+      *
+      * Strategy:
+      * 1. Try original full content
+      * 2. Try limiting photo description only
+      * 3. Try removing Unsplash URL (keep alt + tag)
+      * 4. Reject with exception if still too long
+      *
+      * @private
+      * @throws Error if content cannot be optimized to fit limit
+      */
+     optimizePostContent(fullContent, imageAlt, photoDesc, username, unsplashUrl, tags, logger, maxLength) {
+         // Strategy 1: Try original
+         if (fullContent.length <= maxLength) {
+             return fullContent;
+         }
+
+         // Strategy 2: Limit photo description (preserve URL + alt + tags)
+         let shortened_desc = limitString(photoDesc, 30);
+         let optimized = `
+${shortened_desc} by ${username} (${unsplashUrl})\n
+${imageAlt}\n
+${tags}`.trim();
+
+         if (optimized.length <= maxLength) {
+             logger.info(`Strategy 2: Limited photo description (${optimized.length} chars)`);
+             return optimized;
+         }
+
+         // Strategy 3: Remove Unsplash URL to save space (preserve alt + tag - they're essential)
+         optimized = `
+${shortened_desc} by ${username}\n
+${imageAlt}\n
+${tags}`.trim();
+
+         if (optimized.length <= maxLength) {
+             logger.info(`Strategy 3: Removed Unsplash URL (${optimized.length} chars)`);
+             return optimized;
+         }
+
+         // Strategy 4: Cannot optimize - reject
+         logger.info(`Cannot optimize post to ${maxLength} chars. Original length: ${fullContent.length}`);
+         logger.info(`Full content:\n${fullContent}`);
+         throw new Error(`Post content too long (${fullContent.length} chars) and cannot be optimized to fit Bluesky 300 character limit while preserving essential information`);
+     }
 }
 

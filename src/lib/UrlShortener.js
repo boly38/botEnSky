@@ -34,7 +34,7 @@ let botVersion = '1.0.0'; // fallback
 try {
     const packageJson = JSON.parse(readFileSync(join(projectRoot, 'package.json'), 'utf8'));
     botVersion = packageJson.version || botVersion;
-} catch (e) {
+} catch {
     // Silently fail, use fallback version
 }
 
@@ -99,10 +99,10 @@ const SHORTENER_PROVIDERS = [
  * @param {Function} resolve - Promise resolve callback
  */
 const _shortenWithFallback = (logger, imageUrl, providerIndex, text, resolve) => {
-    if (providerIndex >= SHORTENER_PROVIDERS.length) {
-        // All providers exhausted, fallback to full URL
-        logger.info(`URL shortener unavailable for: ${imageUrl} - using full URL instead`);
-        return resolve(`${text}\n${imageUrl}`);
+     if (providerIndex >= SHORTENER_PROVIDERS.length) {
+         // All providers exhausted, fallback to full URL
+         logger.info(`URL shortener unavailable for: ${imageUrl} - using full URL instead`);
+         return resolve(`${text}${imageUrl}`);
     }
 
     const provider = SHORTENER_PROVIDERS[providerIndex];
