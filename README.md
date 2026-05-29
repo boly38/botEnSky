@@ -76,5 +76,12 @@ For a comprehensive and always up-to-date list of all services, libraries, and t
 - Team: cf. [contributors](https://github.com/boly38/botEnSky/graphs/contributors)
 ![Repobeats](https://repobeats.axiom.co/api/embed/7e769fd1b4307573766d3ea965277996d11a0b3f.svg "Repobeats analytics image")
 
-<small>provided by [Repobeats](https://repobeats.axiom.co/)</small> 
+<small>provided by [Repobeats](https://repobeats.axiom.co/)</small>
 
+## For LLM Developers (Copilot guidance)
+
+To contribute to this project with AI assistance, please consult:
+- **[.github/copilot-instructions.md](.github/copilot-instructions.md)** — Project context, stack, and principles
+- **[.github/skills/](/.github/skills/)** — Reusable competencies: `llm-good-practice`, `issue-workflow`, `pull-request-workflow`, `github-cli`
+
+These documents provide complete guidance for onboarding, development workflow, and LLM best practices.
