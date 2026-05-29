@@ -34,7 +34,7 @@ describe("🧪🧩 40 - bioClip Plugin\n", () => {
     it("BioClip plugin - id. OK images", async () => {
         await verifyPluginProcessResult(bioclipPlugin, pluginConfigDoSimulate,
             [
-                "BioClip identify (at ",
+                "BioClip identifies (at ",
                 "%) Haliaeetus leucocephalus genus:Haliaeetus (fam. Accipitridae) com. Bald Eagle",
                 bioclipPluginDefaultTag]);
     }).timeout(60 * 1000);

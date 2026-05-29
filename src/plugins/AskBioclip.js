@@ -90,6 +90,7 @@ export default class AskBioclip {
             logger.info(`[DIAGNOSTIC] Parent post (image source): ${postLinkOf(parentPost)}`, context);
             logger.info(`[DIAGNOSTIC] Image to analyze: ${imageUrl}`, context);
 
+            const postLanguage = bioclipCommonService.getPostLanguage(candidate);
             const {
                 result,
                 bioResult = null
@@ -97,7 +98,8 @@ export default class AskBioclip {
                 imageUrl,
                 tags,
                 context,
-                post: parentPost
+                post: parentPost,
+                lang: postLanguage
             });
 
             step = "birdIdentify handle response";

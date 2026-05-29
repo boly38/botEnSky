@@ -7,14 +7,56 @@ export default class PlantnetCommonService {
         this.pluginsCommonService = pluginsCommonService;
     }
 
+    /**
+     * Get the primary language of a post
+     * Defaults to 'fr' if not available
+     * @param {object} post - The post object containing record.langs
+     * @returns {string} Language code ('en', 'fr', etc.)
+     */
+    getPostLanguage(post) {
+        const langs = post?.record?.langs;
+        if (isSet(langs) && langs.length > 0) {
+            return langs[0]; // Take first language
+        }
+        return 'fr'; // Default to French
+    }
+
+    /**
+     * Get localized image alt text based on post language
+     * @param {string} lang - Language code
+     * @param {string} firstImageText - Original image text
+     * @param {string} scoredResult - Identification result
+     * @returns {string} Localized alt text
+     */
+    getLocalizedImageAltText(lang, firstImageText, scoredResult) {
+        if (lang === 'en') {
+            return `${firstImageText} as example image for the following result: ${scoredResult}`;
+        }
+        // Default to French
+        return `${firstImageText} comme image exemple pour le résultat suivant: ${scoredResult}`;
+    }
+
+    /**
+     * Format reply message with tags based on post language
+     * @param {string} lang - Language code
+     * @param {string} scoredResult - Identification result
+     * @param {string} tags - Plugin tags
+     * @returns {string} Formatted reply message
+     */
+    formatReplyMessage(lang, scoredResult, tags) {
+        return `${scoredResult}\n\n${tags}`;
+    }
+
     async replyToWithIdentificationResult(replyTo, options, pnResult) {
         const {logger, pluginsCommonService} = this;
         const {tags, doSimulate, context} = options;
         const {scoredResult, firstImageOriginalUrl, firstImageText} = pnResult
 
-        let replyMessage = `${scoredResult}\n\n${tags}`;
+        const postLanguage = this.getPostLanguage(replyTo);
+        let replyMessage = this.formatReplyMessage(postLanguage, scoredResult, tags);
+
         if (isSet(firstImageOriginalUrl)) {// score result with image
-            const firstImageAltText = `${firstImageText} comme image exemple pour le résultat suivant: ${scoredResult}`;
+            const firstImageAltText = this.getLocalizedImageAltText(postLanguage, firstImageText, scoredResult);
             const imageUrl = firstImageOriginalUrl;
             const imageAlt = firstImageAltText;
             let embed;

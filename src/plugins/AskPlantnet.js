@@ -91,6 +91,7 @@ export default class AskPlantnet {
             logger.info(`[DIAGNOSTIC] Parent post (image source): ${postLinkOf(parentPost)}`, context);
             logger.info(`[DIAGNOSTIC] Image to analyze: ${parentPhoto?.fullsize}`, context);
 
+            const postLanguage = plantnetCommonService.getPostLanguage(candidate);
             const identifyOptions = {
                 "imageUrl": parentPhoto?.fullsize,
                 doSimulate,
@@ -98,7 +99,8 @@ export default class AskPlantnet {
                 simulateIdentifyCase,
                 candidate,
                 tags,
-                context
+                context,
+                lang: postLanguage
             };
             const {
                 result,

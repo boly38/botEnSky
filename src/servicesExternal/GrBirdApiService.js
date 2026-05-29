@@ -37,10 +37,10 @@ export default class GrBirdApiService {
     }
 
     async birdIdentify(options) {
-        const {imageUrl, context, post} = options;
+        const {imageUrl, context, post, lang = 'fr'} = options;
         const postUrl = isSet(post) ? postLinkOf(post) : null;
         const logContext = isSet(postUrl) ? `post: ${postUrl}` : '';
-        this.logger.debug(`birdIdentify options : ${JSON.stringify({imageUrl, postUrl})}`, context);
+        this.logger.debug(`birdIdentify options : ${JSON.stringify({imageUrl, postUrl, lang})}`, context);
         let birdResults = await this.api_classification(imageUrl, postUrl);
         this.logger.debug(`birdResults : ${JSON.stringify(birdResults)} ${logContext}`, context);
         const firstScoredResult = this.hasScoredResult(birdResults, GR_BIRD_MINIMAL_RATIO);
@@ -48,7 +48,7 @@ export default class GrBirdApiService {
             return {"result": IDENTIFY_RESULT.BAD_SCORE};
         }
         const {species} = firstScoredResult;
-        let scoredResult = 'BioClip identify ' + this.resultInfoOf(firstScoredResult)
+        let scoredResult = this.getLocalizedIdentificationPrefix(lang) + ' ' + this.resultInfoOf(firstScoredResult)
         if (isSet(species)) {
             const speciesLink = await this.aviBaseService.getSpeciesLink(species);
             if (isSet(speciesLink)) {
@@ -56,6 +56,18 @@ export default class GrBirdApiService {
             }
         }
         return {"result": IDENTIFY_RESULT.OK, "bioResult": {species, scoredResult}};
+    }
+
+    /**
+     * Get localized prefix for BioClip identification result
+     * @param {string} lang - Language code ('en', 'fr', etc.)
+     * @returns {string} Localized prefix
+     */
+    getLocalizedIdentificationPrefix(lang) {
+        if (lang === 'en') {
+            return 'BioClip identifies';
+        }
+        return 'BioClip identify'; // Default to French (keeping existing pattern)
     }
 
     async api_classification(image_url = null, postUrl = null) {

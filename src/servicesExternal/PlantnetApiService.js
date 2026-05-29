@@ -80,11 +80,12 @@ export default class PlantnetApiService {
     }
 
     async plantnetIdentify(options) {
-        const {imageUrl, doSimulateIdentify, simulateIdentifyCase, context} = options;
+        const {imageUrl, doSimulateIdentify, simulateIdentifyCase, context, lang = 'fr'} = options;
         this.logger.debug(`identifyOptions : ${JSON.stringify({
             imageUrl,
             doSimulateIdentify,
-            simulateIdentifyCase
+            simulateIdentifyCase,
+            lang
         })}`, context);
         let plantResult;
         try {
@@ -103,11 +104,23 @@ export default class PlantnetApiService {
         if (!firstScoredResult) {
             return {"result": IDENTIFY_RESULT.BAD_SCORE};
         }
-        const scoredResult = 'Pl@ntNet identifie ' + this.resultInfoOf(firstScoredResult);
+        const scoredResult = this.getLocalizedIdentificationPrefix(lang) + ' ' + this.resultInfoOf(firstScoredResult);
         const firstImage = this.resultFirstImage(firstScoredResult);
         const firstImageOriginalUrl = this.resultImageOriginalUrl(firstImage);
         const firstImageText = this.resultImageToText(firstImage);
         return {"result": IDENTIFY_RESULT.OK, "plantnetResult": {scoredResult, firstImageOriginalUrl, firstImageText}};
+    }
+
+    /**
+     * Get localized prefix for Pl@ntNet identification result
+     * @param {string} lang - Language code ('en', 'fr', etc.)
+     * @returns {string} Localized prefix
+     */
+    getLocalizedIdentificationPrefix(lang) {
+        if (lang === 'en') {
+            return 'Pl@ntNet identifies';
+        }
+        return 'Pl@ntNet identifie'; // Default to French
     }
 
     /** Calls PlantNet identify API in simulate mode or with real multipart upload. */

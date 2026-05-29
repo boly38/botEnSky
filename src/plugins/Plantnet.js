@@ -67,6 +67,7 @@ export default class Plantnet {
 
             step = "plantnetIdentify";
             const tags = this.getPluginTags();
+            const postLanguage = this.plantnetCommonService.getPostLanguage(candidate);
             const {
                 result,
                 plantnetResult = null
@@ -75,7 +76,8 @@ export default class Plantnet {
                 doSimulate,
                 doSimulateIdentify,
                 simulateIdentifyCase,
-                context
+                context,
+                lang: postLanguage
             });
             step = "handle plantnet identification";
             if (result === IDENTIFY_RESULT.OK) {
