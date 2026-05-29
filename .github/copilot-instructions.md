@@ -4,7 +4,10 @@
 
 ```
 botEnSky/          # PROJECT ROOT (Git)
-├── .github/        # Copilot instructions, skills
+├── .github/        # Copilot instructions, skills, prompts
+│   ├── skills/     # Compétences réutilisables (llm-good-practice, github-cli, issue-workflow, pull-request-workflow)
+│   ├── prompts/    # Prompts réutilisables (dev-github-issue)
+│   └── copilot-instructions.md  # Ce fichier
 ├── bin/            # Scripts (start.sh, startDev.sh, www.js)
 ├── src/
 │   ├── config/     # Injection dépendances
@@ -32,8 +35,9 @@ botEnSky/          # PROJECT ROOT (Git)
 ### Doc DRY/SRP (1 info = 1 endroit)
 
 - `README.md`: Installation, plugins, config
-- `.github/copilot-instructions.md`: Contexte projet & références skills (ce fichier)
+- `.github/copilot-instructions.md`: Contexte projet & références skills/prompts (ce fichier)
 - `.github/skills/`: Compétences réutilisables (voir section Skills)
+- `.github/prompts/`: Prompts réutilisables Copilot (voir section Prompts Réutilisables)
 - `src/locales/`: i18n FR/EN (messages)
 
 ## Skills / Compétences
@@ -43,6 +47,11 @@ Skills / Compétences situées sous `.github/skills` :
 - **issue-workflow** : Flux de travail pour traiter les tickets Github (suivi, tâches, finalisation)
 - **pull-request-workflow** : Workflow standardisé pour créer/mettre à jour les PR
 - **github-cli** : Outils bas-niveau `gh` pour interaction issues/PRs (requires GH_TOKEN)
+
+## Prompts Réutilisables
+
+Prompts Copilot situés sous `.github/prompts` :
+- **dev-github-issue** : Workflow complet DEV senior (8 phases) pour traiter une issue GitHub du diagnostic à la PR
 
 ## Workflow
 
