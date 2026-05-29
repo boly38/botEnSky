@@ -14,6 +14,10 @@ Tu vas traiter l'issue GitHub numéro **{{ issueNumber }}** en tant que **DEV se
 
 Ce workflow comprend 8 phases structurées : initialisation des skills → diagnostic → analyse → branche → implémentation → validation → push → PR.
 
+> ⚠️ **RÈGLE ABSOLUE** : Ce workflow contient des **GATES DE VALIDATION HUMAINE** obligatoires.  
+> Un gate = **terminer ton tour**, afficher le bloc demandé, **attendre la réponse de l'humain**.  
+> Il est **INTERDIT** de franchir un gate et de continuer dans le même tour de réponse.
+
 ---
 
 ## Phase 1️⃣ : Initialisation & Apprentissage
@@ -72,18 +76,42 @@ gh issue view {{ issueNumber }} --json title,body,labels,state
 
 ### Poser les questions DEV Senior
 
-En tant que senior dev, **INTERROGER l'humain** si :
+En tant que senior dev, **analyser SYSTÉMATIQUEMENT** chaque point :
 
-| Point | Questions |
+| Point | Analyse obligatoire |
 |---|---|
 | **Sécurité** | Y a-t-il des implications en sécurité (authentification, secrets, validation) ? |
 | **Métier** | Cette implémentation respecte-t-elle les règles métier (workflows, processus) ? |
-| **Portail** | Cette issue impacte-t-elle le portail du bot (src/www) ? Modifications UI/UX nécessaires ? |
+| **Portail** | **OBLIGATOIRE** : Vérifier `src/www/` ET le portail live `https://botensky.verymad.net` — noter l'état actuel visible |
 | **Scope** | Le périmètre est-il bien délimité ou faut-il découper ? |
 | **Impact** | Quels autres modules/fichiers pourraient être impactés ? |
 | **Tests** | Comment tester cette implémentation ? |
 
-**🛑 Si doutes → ARRÊTER et INTERROGER l'humain** (demander clarifications GitHub ou par message)
+> 🔍 **Le check Portail n'est PAS optionnel** : toujours inspecter `src/www/` pour identifier les fichiers impactés (vues EJS, CSS, routes Express). Si le portail est impacté, le noter explicitement dans l'analyse.
+
+**🚦 GATE 3A — Validation Analyse**
+
+Avant de créer la branche, afficher ce bloc et **terminer le tour** :
+
+```
+🚦 GATE 3A - Validation Analyse #{{ issueNumber }}
+
+📋 Résumé :
+- Titre : [titre de l'issue]
+- Problème : [1 phrase]
+- Solution proposée : [1 phrase]
+
+✅ Checks :
+- [ ] Sécurité : [OK / risques identifiés]
+- [ ] Portail src/www impacté : [OUI fichiers: X,Y / NON]
+- [ ] Portail live vérifié : [URL ou état actuel]
+- [ ] Scope délimité : [OUI / découpé en : X]
+- [ ] Fichiers à modifier : [liste]
+
+❓ Questions bloquantes : [AUCUNE / liste]
+
+👉 Tape "ok" pour continuer, ou donne tes corrections.
+```
 
 ### Décider du fichier de suivi (optionnel)
 
@@ -205,22 +233,48 @@ git log --oneline -5
 pnpm test
 ```
 
-**Demander validation** :  
-> "ℹ️ Prêt à pousser sur `dev/issue-{{ issueNumber }}-...`. Approuves-tu ?"
+**🚦 GATE 7 — Validation avant Push**
+
+Afficher ce bloc et **terminer le tour** — ne pas pusher dans ce même tour :
+
+```
+🚦 GATE 7 - Validation Push #{{ issueNumber }}
+
+🌿 Branche : dev/issue-{{ issueNumber }}-<titre>
+📦 Commit(s) :
+  [git log --oneline -3]
+
+📝 Résumé des changements :
+  - [fichier 1] : [ce qui a changé]
+  - [fichier 2] : [ce qui a changé]
+
+✅ Tests : [pnpm test → X passing / état]
+🌐 Portail vérifié : [OUI/NON + observations]
+
+👉 Tape "push" pour que je pousse, ou donne tes corrections.
+```
 
 ---
 
 ## Phase 8️⃣ : Push & Pull Request
 
-### Pousser le commit
+### Pousher le commit
+
+Seulement après validation GATE 7 :
 
 ```bash
 git push origin dev/issue-{{ issueNumber }}-<titre>
 ```
 
-**🛑 Demander TOUJOURS validation avant de pusher**
-
 ### Créer la Pull Request
+
+**Déterminer la branche base** :
+
+```bash
+# Branche par défaut du repo (généralement main)
+gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'
+# Si une branche de travail a été précisée par l'humain → l'utiliser
+```
 
 **Préparer le body** (`/tmp/gh_pr_body.md`) :
 
@@ -245,17 +299,34 @@ Closes #{{ issueNumber }}
 - [x] Documentation à jour
 ```
 
-**Créer la PR** :
+**🚦 GATE 8 — Validation avant création PR**
+
+Afficher ce bloc et **terminer le tour** — ne pas créer la PR dans ce même tour :
+
+```
+🚦 GATE 8 - Validation PR #{{ issueNumber }}
+
+📋 PR à créer :
+  - Titre : "Fix #{{ issueNumber }}: <titre court>"
+  - Base : <branche-base>
+  - Head : dev/issue-{{ issueNumber }}-<titre>
+
+📝 Body PR :
+<contenu complet du body>
+
+👉 Tape "pr" pour créer la PR, ou donne tes corrections.
+```
+
+**Créer la PR** (seulement après validation GATE 8) :
 
 ```bash
 gh pr create \
   --title "Fix #{{ issueNumber }}: Titre court" \
   --body-file /tmp/gh_pr_body.md \
-  --base develop \
+  --base <branche-base> \
   --head dev/issue-{{ issueNumber }}-<titre>
 ```
 
-**🛑 Demander TOUJOURS validation avant de créer la PR**
 
 ---
 
@@ -269,15 +340,20 @@ gh pr create \
 
 ---
 
-## 📋 Aide-mémoire : Décisions Critiques
+## 📋 Aide-mémoire : Gates de Validation Obligatoires
 
-| Situation | Action requise |
+> **PRINCIPE** : Un gate = terminer le tour + attendre la réponse. **Jamais** de gate et d'action dans le même tour.
+
+| Gate | Moment | Format attendu | Déclencheur humain |
+|---|---|---|---|
+| **GATE 3A** | Après analyse, avant branche | Bloc résumé + checks | "ok" ou corrections |
+| **GATE 7** | Après commit/tests, avant push | Bloc commit + résumé changements | "push" |
+| **GATE 8** | Après push, avant PR | Bloc titre + body PR complet | "pr" |
+
+| Autre situation | Action |
 |---|---|
-| Questions/doutes pendant analyse | **INTERROGER l'humain** |
+| Questions/doutes pendant analyse | **Intégrer dans GATE 3A** |
 | Doute sur implémentation en cours | **Demander validation** avant commit |
-| Implémentation claire, aucun doute | **Peux commiter** (log clair) |
-| Avant tout push | **Demander TOUJOURS validation** |
-| Avant créer PR | **Demander TOUJOURS validation** |
 | Suppression fichier suivi | **Demander TOUJOURS validation** |
 
 ---
