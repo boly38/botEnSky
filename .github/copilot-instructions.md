@@ -5,7 +5,7 @@
 ```
 botEnSky/          # PROJECT ROOT (Git)
 ├── .github/        # Copilot instructions, skills, prompts
-│   ├── skills/     # Compétences réutilisables (llm-good-practice, github-cli, issue-workflow, pull-request-workflow)
+│   ├── skills/     # Compétences réutilisables (llm-good-practice, github-cli, issue-workflow, pull-request-workflow, test-runner)
 │   ├── prompts/    # Prompts réutilisables (dev-github-issue)
 │   └── copilot-instructions.md  # Ce fichier
 ├── bin/            # Scripts (start.sh, startDev.sh, www.js)
@@ -47,6 +47,7 @@ Skills / Compétences situées sous `.github/skills` :
 - **issue-workflow** : Flux de travail pour traiter les tickets Github (suivi, tâches, finalisation)
 - **pull-request-workflow** : Workflow standardisé pour créer/mettre à jour les PR
 - **github-cli** : Outils bas-niveau `gh` pour interaction issues/PRs (requires GH_TOKEN)
+- **test-runner** : Lancer les tests Mocha et analyser les résultats via fichiers temporaires
 
 ## Prompts Réutilisables
 
