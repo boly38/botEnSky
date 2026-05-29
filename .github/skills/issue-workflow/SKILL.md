@@ -14,8 +14,8 @@ Les Tickets Github du projet sont appelées "issues"
 ```
 .github/
 ├── work/          # issues suivies et actives (travail et/ou PR en cours), vidé avant merge
-\── skills/        # skills partagées équipe
-AGENTS.md          # info repo
+├── skills/        # skills partagées équipe
+└── copilot-instructions.md  # Contexte projet
 ```
 
 ## Nommage de fichier issue
@@ -104,6 +104,6 @@ Attention, si le fichier de travail est en français, le contenu sur github doit
 - ❌ Ne pas créer `PHASE*.md`, `UPDATE*.md`, `REFACTOR*.md`
 - ❌ Ne pas écrire des blocs de code complets dans le fichier d'issue (seuls des extraits)
 - ❌ Éviter les longues explications — garder les notes concises
-- ❌ Ne pas dupliquer le contenu de `AGENTS.md`
+- ❌ Ne pas dupliquer le contenu de `.github/copilot-instructions.md` (contexte projet)
 
 SKILL:issue-workflow
