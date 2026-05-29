@@ -57,6 +57,7 @@ export default class BioClip {
             step = "birdIdentify";
             const tags = this.getPluginTags();
             const imageUrl = candidatePhoto?.fullsize;
+            const postLanguage = bioclipCommonService.getPostLanguage(candidate);
             const {
                 result,
                 bioResult = null
@@ -64,7 +65,8 @@ export default class BioClip {
                 imageUrl,
                 tags,
                 context,
-                post: candidate
+                post: candidate,
+                lang: postLanguage
             });
 
             step = "birdIdentify handle response";
