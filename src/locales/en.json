@@ -18,7 +18,7 @@
 	"principles.besplantnet.head": "the robot answers to some posts that embeds a flower image !",
 	"principles.besplantnet.body": "At certain times of the day, the robot searches for images of flowers/plants.\n\n Then it tries to identify the plant, and if successful, it answers the author of the post with an example image.",
 	"principles.besaskplantnet.head": "the robot answers to certain mentions to identify plant/flower!",
-	"principles.besaskplantnet.body": "It is possible to ask the robot to identify a flower/plant.\n\n To do this, answer a post containing an image of a flower/plant with the mention <code>@botensky.bsky.social</code>.<br/>\n Then you must wait for the robot to wake up for the <b>AskPlantnet</b> plugin (see FAQ)",
+	"principles.besaskplantnet.body": "It is possible to ask the robot to identify a flower/plant.\n\n To do this, reply to a post containing a flower/plant image with one of these keywords: <code>PlantNet</code>, <code>askPlantnet</code>, or <code>identifyFlower</code>.<br/>\n Then you must wait for the robot to wake up for the <b>AskPlantnet</b> plugin (see FAQ)",
 	"principles.besbioclip.head": "the robot answers to some posts that embeds a bird image !",
 	"principles.besbioclip.body": "At certain times of the day, the robot searches for bird images.\n Then it tries to classify the species, and if successful, answers the author of the post with a link to a photo gallery (Avibase).",
 	"principles.besaskbioclip.head": "the robot responds to certain mentions to identify birds!",

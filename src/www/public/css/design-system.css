@@ -44,12 +44,12 @@
   --bes-border-medium: rgba(27, 38, 59, 0.2);
   --bes-border-strong: rgba(27, 38, 59, 0.3);
   
-  /* Status Colors */
-  --bes-success: #52B788;
-  --bes-warning: #F4A261;
-  --bes-error: #E76F51;
-  --bes-info: #74C0FC;
-  
+/* Status Colors */
+   --bes-success: #52B788;
+   --bes-warning: #DC2626;
+   --bes-error: #E76F51;
+   --bes-info: #74C0FC;
+
   /* ========================================
      📏 SPACING SYSTEM (4pt base)
      ======================================== */
@@ -238,6 +238,7 @@
 .bg-secondary { background-color: var(--bes-secondary); }
 .bg-accent { background-color: var(--bes-accent); }
 .bg-surface { background-color: var(--bes-surface); }
+.bg-warning { background-color: var(--bes-warning); }
 
 /* Transitions */
 .transition-fast { transition: var(--bes-transition-fast); }
