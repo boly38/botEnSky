@@ -106,6 +106,76 @@ export const postHtmlOf = post => postFormatterOf(post, "html");
 export const postTextOf = post => postFormatterOf(post, "text");
 
 export const htmlLink = (label, href) => `<a href="${href}">${label}</a>`;
+
+/**
+ * Generate HTML card for a single post (for display in web UI)
+ */
+export const postCardHtmlOf = post => {
+    const {author: {handle, displayName}, record: {text, createdAt}, embed, likeCount = 0, repostCount = 0, replyCount = 0} = post;
+    if (!post || !handle || !createdAt) {
+        return "";
+    }
+    const textToShow = isSet(text) ? text : "(no text)"
+    const username = isSet(displayName) ? displayName : handle;
+    const postDate = createdAt ? toLocaleDate(createdAt) : "";
+    const postLink = postLinkOf(post);
+    const handleLink = bskyAppHandleUriBuilder(handle);
+    
+    // Check for images
+    const hasImages = isSet(embed?.images) && embed.images.length > 0;
+    let imagesHtml = '';
+    if (hasImages) {
+        imagesHtml = `
+            <div class="bes-post-images">
+                ${embed.images.map(img => `
+                    <img src="${img.fullsize}" alt="${img.alt || 'Post image'}" 
+                         class="bes-post-image" 
+                         title="${img.alt || 'Post image'}">
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    return `
+        <div class="bes-post-item" onclick="window.open('${postLink}', '_blank', 'noopener,noreferrer')">
+            <div class="bes-post-header">
+                <a href="${handleLink}" class="bes-post-author" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                    <strong>${username}</strong>
+                    <span class="bes-post-handle">@${handle}</span>
+                </a>
+                <a href="${postLink}" class="bes-post-date" target="_blank" rel="noopener noreferrer" title="View on Bluesky" onclick="event.stopPropagation(); window.open('${postLink}', '_blank', 'noopener,noreferrer'); return false;">
+                    ${postDate}
+                </a>
+            </div>
+            ${imagesHtml}
+            <div class="bes-post-body">
+                ${textToShow}
+            </div>
+            <div class="bes-post-footer">
+                <div class="bes-post-stats">
+                    <div class="bes-post-stat">
+                        <i data-lucide="heart" style="width: 16px; height: 16px;"></i>
+                        <span>${likeCount}</span>
+                    </div>
+                    <div class="bes-post-stat">
+                        <i data-lucide="repeat" style="width: 16px; height: 16px;"></i>
+                        <span>${repostCount}</span>
+                    </div>
+                    <div class="bes-post-stat">
+                        <i data-lucide="corner-up-left" style="width: 16px; height: 16px;"></i>
+                        <span>${replyCount}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+};
+
+/**
+ * Generate HTML cards for multiple posts
+ */
+export const htmlCardsOfPosts = (posts, max = 5) => posts.slice(0,max).map(postCardHtmlOf).join("")
+
 export const postFormatterOf = (post, format = "text") => {
     const {author: {handle, displayName}, record: {text, createdAt}} = post;
     if (!post || !handle || !createdAt) {

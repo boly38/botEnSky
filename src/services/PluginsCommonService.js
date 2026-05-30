@@ -78,7 +78,7 @@ export default class PluginsCommonService {
 
     rejectNoCandidateImage(pluginName, candidate, context) {
         const reasonText = `aucune image pour ${pluginName} dans ${postTextOf(candidate)}`;
-        const reasonHtml = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div><b>Info</b>: aucune image pour ${pluginName}`;
+        const reasonHtml = `<b>Post:</b><div class="bes-bg-warning">${postHtmlOf(candidate)}</div><b>Info</b>: aucune image pour ${pluginName}`;
         this.logger.info(reasonText, context);
         return Promise.reject(pluginReject(reasonText, reasonHtml, 202, "no candidate image"));
     }
@@ -94,7 +94,7 @@ export default class PluginsCommonService {
     async rejectNoCandidateParentImage(candidate, parentPost, pluginName, context) {
         const authorAction = await this.safeMuteAuthor(true, candidate, `${pluginName} aucune image dans le parent`, context);
         const reasonText = `${pluginName} aucune image du parent de ${postTextOf(candidate)}${authorAction}`;
-        const reasonHtml = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div><b>Info</b>: ${pluginName} aucune image du parent ${authorAction}`;
+        const reasonHtml = `<div class="bes-bg-warning">${postHtmlOf(candidate)}</div><b>Info:</b>${pluginName} aucune image du parent ${authorAction}`;
         this.logger.info(reasonText, context);
         return Promise.resolve(pluginReject(reasonText, reasonHtml, 202, "no candidate parent image"));
     }
@@ -119,7 +119,7 @@ export default class PluginsCommonService {
         
         if (isSet(candidate)) {
             askTxtError = `[${step}] Impossible d'identifier l'image du parent de ${postLinkOf(candidate)} avec ${pluginName}`;
-            askHtmlError = `<b>Post</b>: <div class="bg-warning">parent de ${postHtmlOf(candidate)}</div>` +
+            askHtmlError = `<b>Post:</b><div class="bes-bg-warning">parent de ${postHtmlOf(candidate)}</div>` +
                 `<b>Erreur [${step}]</b>: impossible d'identifier l'image avec ${pluginName}`;
         }
         
@@ -153,7 +153,7 @@ export default class PluginsCommonService {
         let pluginHtmlError = pluginTxtError;
         if (isSet(candidate)) {
             pluginTxtError = `${pluginTxtError} de ${postLinkOf(candidate)}`;
-            pluginHtmlError = `<b>Post</b>: <div class="bg-warning">${postHtmlOf(candidate)}</div>` +
+            pluginHtmlError = `<b>Post:</b><div class="bes-bg-warning">${postHtmlOf(candidate)}</div>` +
                 `<b>Erreur [${step}]</b>: ${identifyError}`;
         }
         if (status === 404 || status === 408 || status === 503) {

@@ -211,53 +211,58 @@
 }
 
 /* Dark mode adjustments */
-@media (prefers-color-scheme: dark) {
-    .page-header h1 {
-        background: linear-gradient(135deg, #52b788, #74c69d);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
+[data-theme="dark"] .page-header h1 {
+    background: linear-gradient(135deg, #7FE5B8, #A8F5D5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: brightness(1.2);
+}
 
-    .section-title {
-        color: #a8e6c9;
-        border-bottom-color: rgba(82, 184, 136, 0.2);
-    }
+[data-theme="dark"] .page-header p,
+[data-theme="dark"] .page-header .text-muted {
+    color: #D4F8E0 !important;
+    opacity: 1 !important;
+}
 
-    .section-title i {
-        color: #52b788;
-    }
+[data-theme="dark"] .section-title {
+    color: #C8F5D8;
+    border-bottom-color: rgba(127, 229, 184, 0.3);
+}
 
-    .credit-name {
-        color: #a8e6c9;
-    }
+[data-theme="dark"] .section-title i {
+    color: #7FE5B8;
+}
 
-    .credit-name a {
-        color: #52b788;
-    }
+[data-theme="dark"] .credit-name {
+    color: #D4F8E0;
+}
 
-    .credit-name a:hover {
-        color: #74c69d;
-    }
+[data-theme="dark"] .credit-name a {
+    color: #7FE5B8;
+}
 
-    .credit-description {
-        color: #81a89f;
-    }
+[data-theme="dark"] .credit-name a:hover {
+    color: #A8F5D5;
+}
 
-    .credit-author {
-        color: #a0a0a0;
-    }
+[data-theme="dark"] .credit-description {
+    color: #9FCDB0;
+}
 
-    .credit-list-name a {
-        color: #a8e6c9;
-    }
+[data-theme="dark"] .credit-author {
+    color: #B0B0B0;
+}
 
-    .credit-list-name a:hover {
-        color: #74c69d;
-    }
+[data-theme="dark"] .credit-list-name a {
+    color: #D4F8E0;
+}
 
-    .credit-list-desc {
-        color: #81a89f;
-    }
+[data-theme="dark"] .credit-list-name a:hover {
+    color: #A8F5D5;
+}
+
+[data-theme="dark"] .credit-list-desc {
+    color: #9FCDB0;
 }
 

@@ -1,5 +1,5 @@
 import {cacheEvictKey, cacheGetTtlObject} from "../lib/MemoryCache.js";
-import {htmlOfPosts, txtOfPosts} from "../domain/post.js";
+import {htmlOfPosts, htmlCardsOfPosts, txtOfPosts} from "../domain/post.js";
 
 export const SUMMARY_CACHE_KEY = "cache:summary";
 export const ONE_DAY_SECOND = 60 * 60 * 24;
@@ -53,8 +53,8 @@ export default class SummaryService {
                 analytics.bestLikes = p.likeCount;
             }
         });
-        analytics.bestScorePostsHtml = htmlOfPosts(analytics.bestScorePosts, 2);
-        analytics.bestLikesPostsHtml = htmlOfPosts(analytics.bestLikesPosts, 2);
+        analytics.bestScorePostsHtml = htmlCardsOfPosts(analytics.bestScorePosts, 2);
+        analytics.bestLikesPostsHtml = htmlCardsOfPosts(analytics.bestLikesPosts, 2);
         analytics.bestScorePostsTxt = txtOfPosts(analytics.bestScorePosts, 2);
         analytics.bestLikesPostsTxt = txtOfPosts(analytics.bestLikesPosts, 2);
         return analytics;

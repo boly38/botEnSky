@@ -221,8 +221,8 @@ class Navigation {
 
 // Content toggle functions (from original code - refactored)
 window.BesContent = {
-  contentIds: ["logs", "principes", "faq"],
-  
+  contentIds: ["logs", "principes", "faq", "credits"],
+
   toggleContent: function(content) {
     this.contentIds.forEach(id => {
       const element = document.getElementById(id);
