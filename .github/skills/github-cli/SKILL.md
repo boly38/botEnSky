@@ -45,12 +45,26 @@ gh issue create --title "Mon titre" --body "contenu avec accents et \`backticks\
 
 ## Runbook
 
+### ⚠️ Prérequis critique : désactiver la pagination
+
+Toutes les commandes `gh` doivent utiliser `GH_PAGER=cat` pour éviter le blocage par pagination interactive :
+
+```bash
+# ✅ Correct
+GH_PAGER=cat gh issue view 198 --json title,body,labels,state
+
+# ❌ À éviter (bloque l'agent)
+gh issue view 198 --json title,body,labels,state
+```
+
+---
+
 ### Vérification initiale
 
 Avant toute opération GitHub, toujours vérifier :
 
 ```bash
-gh auth status
+GH_PAGER=cat gh auth status
 ```
 
 Si non authentifié → demander à l'humain d'exécuter `export GH_TOKEN=<token>` dans le terminal.
@@ -60,7 +74,7 @@ Si non authentifié → demander à l'humain d'exécuter `export GH_TOKEN=<token
 ### Lister les issues ouvertes
 
 ```bash
-gh issue list --state open --limit 20
+GH_PAGER=cat gh issue list --state open --limit 20
 ```
 
 ### Créer une issue
@@ -68,7 +82,7 @@ gh issue list --state open --limit 20
 ```bash
 # 1. Créer le fichier body (via outil de création de fichier)
 # 2. Lancer :
-gh issue create \
+GH_PAGER=cat gh issue create \
   --title "Titre de l'issue" \
   --body-file /tmp/gh_body.md \
   --label "enhancement"
@@ -79,7 +93,7 @@ gh issue create \
 ### Éditer une issue existante
 
 ```bash
-gh issue edit <NUMERO> \
+GH_PAGER=cat gh issue edit <NUMERO> \
   --title "Nouveau titre" \
   --body-file /tmp/gh_body.md
 ```
@@ -87,15 +101,15 @@ gh issue edit <NUMERO> \
 ### Commenter une issue
 
 ```bash
-gh issue comment <NUMERO> --body "Commentaire court sans accents"
+GH_PAGER=cat gh issue comment <NUMERO> --body "Commentaire court sans accents"
 # Si accents ou markdown complexe :
-gh issue comment <NUMERO> --body-file /tmp/gh_comment.md
+GH_PAGER=cat gh issue comment <NUMERO> --body-file /tmp/gh_comment.md
 ```
 
 ### Fermer une issue
 
 ```bash
-gh issue close <NUMERO> --comment "Raison de la fermeture"
+GH_PAGER=cat gh issue close <NUMERO> --comment "Raison de la fermeture"
 ```
 
 ---
@@ -103,7 +117,7 @@ gh issue close <NUMERO> --comment "Raison de la fermeture"
 ### Lister les PRs ouvertes
 
 ```bash
-gh pr list --state open
+GH_PAGER=cat gh pr list --state open
 ```
 
 ### Créer une PR
@@ -111,7 +125,7 @@ gh pr list --state open
 ```bash
 # 1. Créer le fichier body (via outil de création de fichier)
 # 2. Lancer :
-gh pr create \
+GH_PAGER=cat gh pr create \
   --title "Titre de la PR" \
   --body-file /tmp/gh_pr_body.md \
   --base main \
@@ -123,7 +137,7 @@ gh pr create \
 ### Consulter une PR
 
 ```bash
-gh pr view <NUMERO>
+GH_PAGER=cat gh pr view <NUMERO>
 ```
 
 ---
