@@ -4,9 +4,10 @@
 -->
 
 <header class="bes-header glass-header-sticky" data-header>
+
   <div class="container">
     <nav class="bes-nav">
-      
+
       <!-- Logo / Brand -->
       <div class="bes-brand">
         <a href="/" class="bes-brand-link" data-umami-event="logo-click">
@@ -53,17 +54,29 @@
             <span><%= __('index.menu.faq') %></span>
           </a>
         </li>
-        <li class="bes-nav-item">
-          <a id="credits-menu"
-             href="#credits"
-             data-nav-link
-             onclick="window.BesContent.toggleContent('credits'); return false;"
-             data-umami-event="nav-credits"
-             class="bes-nav-link">
-            <i data-lucide="heart" class="bes-nav-icon"></i>
-            <span><%= __('credits.title') %></span>
-          </a>
-        </li>
+         <li class="bes-nav-item">
+           <a id="credits-menu"
+              href="#credits"
+              data-nav-link
+              onclick="window.BesContent.toggleContent('credits'); return false;"
+              data-umami-event="nav-credits"
+              class="bes-nav-link">
+             <i data-lucide="heart" class="bes-nav-icon"></i>
+             <span><%= __('credits.title') %></span>
+           </a>
+         </li>
+         <li class="bes-nav-item">
+           <a href="<%- projectHomepage %>"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-umami-event="nav-github"
+              class="bes-nav-link"
+              title="<%= __('index.menu.github') %>"
+               aria-label="View source on GitHub">
+              <span class="bes-nav-icon">🐙</span>
+              <span>GitHub</span>
+           </a>
+         </li>
 
       <!-- Actions (Language + Dark Mode) -->
       <div class="bes-nav-actions">
@@ -105,9 +118,9 @@
         </button>
 
       </div>
-
     </nav>
   </div>
+
 </header>
 
 <!-- Mobile Menu Overlay -->
@@ -143,17 +156,37 @@
         <span><%= __('index.menu.principles') %></span>
       </a>
     </li>
-    <li>
-      <a href="#faq" 
-         data-nav-link
-         onclick="window.BesContent.toggleContent('faq'); return false;"
-         data-umami-event="mobile-nav-faq"
-         class="bes-mobile-menu-link">
-        <i data-lucide="help-circle"></i>
-        <span><%= __('index.menu.faq') %></span>
-      </a>
-    </li>
-  </ul>
+     <li>
+       <a href="#faq"
+          data-nav-link
+          onclick="window.BesContent.toggleContent('faq'); return false;"
+          data-umami-event="mobile-nav-faq"
+          class="bes-mobile-menu-link">
+         <i data-lucide="help-circle"></i>
+         <span><%= __('index.menu.faq') %></span>
+       </a>
+     </li>
+     <li>
+       <a href="#credits"
+          data-nav-link
+          onclick="window.BesContent.toggleContent('credits'); return false;"
+          data-umami-event="mobile-nav-credits"
+          class="bes-mobile-menu-link">
+         <i data-lucide="heart"></i>
+         <span><%= __('credits.title') %></span>
+       </a>
+     </li>
+     <li>
+       <a href="<%- projectHomepage %>"
+          target="_blank"
+          rel="noopener noreferrer"
+           data-umami-event="mobile-nav-github"
+           class="bes-mobile-menu-link">
+          <span>🐙</span>
+          <span>GitHub</span>
+       </a>
+     </li>
+   </ul>
 
   <div class="bes-mobile-menu-footer">
     <div class="bes-mobile-menu-actions">

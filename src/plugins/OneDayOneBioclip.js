@@ -135,9 +135,9 @@ ${tags}`.trim();
                      const htmlOf = postHtmlOf(newPost);
                      const textOf = postTextOf(newPost);
                      const imageHtml = pluginsCommonService.imageHtmlOf(imageUrl, imageAlt);
-                     const postSent = doSimulate ? "SIMULATION - Réponse prévue" : "Réponse émise";
+                     const postSent = doSimulate ? "SIMULATION - Réponse prévue:" : "";
                        resolve(pluginResolve(
-       `Post:\n\t${textOf}\n\t${postSent} : ${textOf}`,
+       `Post:\n\t${textOf}\n\t${postSent}${textOf}`,
        `${imageHtml}<div class="bg-info">${htmlOf}</div><b>${postSent}</b>`,
        200,
        doSimulate ? 0 : 1

@@ -46,7 +46,7 @@
   
 /* Status Colors */
    --bes-success: #52B788;
-   --bes-warning: #DC2626;
+   --bes-warning: #df8b8b;
    --bes-error: #E76F51;
    --bes-info: #74C0FC;
 
@@ -238,7 +238,7 @@
 .bg-secondary { background-color: var(--bes-secondary); }
 .bg-accent { background-color: var(--bes-accent); }
 .bg-surface { background-color: var(--bes-surface); }
-.bg-warning { background-color: var(--bes-warning); }
+.bes-bg-warning { background-color: var(--bes-warning) !important; }
 
 /* Transitions */
 .transition-fast { transition: var(--bes-transition-fast); }
