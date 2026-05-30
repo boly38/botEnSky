@@ -28,6 +28,16 @@ export default class DiscordSendService {
         return this.isEnabled;
     }
 
+    async shutdown() {
+        if (this.isEnabled && this.hook) {
+            try {
+                await this.hook.destroy();
+            } catch (error) {
+                console.error('Error destroying Discord webhook client:', error.message);
+            }
+        }
+    }
+
     async sendMessage(content) {
         if (!this.isDiscordEnabled()) {
             console.log("* DISCORD DISABLED * | " + content);

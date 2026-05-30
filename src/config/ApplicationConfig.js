@@ -239,6 +239,18 @@ export default class ApplicationConfig {
         if (ApplicationConfig.listeningServer !== undefined) {
             await ApplicationConfig.listeningServer.close();
         }
+        try {
+            const discordService = ApplicationConfig.getInstance().get('discordService');
+            if (discordService) {
+                await discordService.shutdown();
+            }
+        } catch {
+            // ignore if discordService is not available
+        }
+        // Allow pending async operations to complete
+        await new Promise(resolve => setTimeout(resolve, 100));
+        // Force process exit if still running
+        process.exit(0);
     }
 }
 
