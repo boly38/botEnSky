@@ -24,6 +24,11 @@ description: >
 ## Bonnes pratiques - Terminal & Interaction
 
 - Terminal command: **toujours éviter le mode interactif** (ex. `git --no-pager diff`, `ls | cat`). Les pagers et confirmations bloquent l'exécution.
+- **GitHub CLI** : utiliser `GH_PAGER=cat` pour désactiver la pagination interactive :
+  ```bash
+  GH_PAGER=cat gh issue view 198 --json title,body,labels,state
+  ```
+  ⚠️ Sans `GH_PAGER=cat`, les commandes `gh view` bloquent l'agent via pagination interactive.
 - Questions à l'humain : utiliser MCP `ask_questions`.
 - Éviter les confirmations interactives, préférer les flags explicites.
 
