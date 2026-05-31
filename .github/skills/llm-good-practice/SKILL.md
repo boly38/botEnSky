@@ -14,6 +14,28 @@ description: >
 - Interdit sans validation humaine: execution de tests, commande git en écriture (commit, push).
 - Des améliorations possibles dans les instructions ? proposer à l'humain pour validation.
 
+## 🚀 Startup Checklist - On Every New Issue
+
+**Before you start analyzing**, systematically explore the project structure:
+
+```bash
+# 1. Explore .github directory (skills/prompts/work)
+ls -la .github/skills/
+ls -la .github/prompts/
+ls -la .github/work/
+
+# 2. Read copilot-instructions.md for context
+cat .github/copilot-instructions.md | head -50
+
+# 3. If issue mentions src/www/ (UI/CSS), load the ui-css-debugging skill
+# ... and run the UI Startup Checklist
+
+# 4. Check for existing related issues
+ls -la .github/work/ | grep -i "issue_" || echo "No tracking files"
+```
+
+**Why**: This prevents the "I don't know where to look" problem and ensures you're aware of all relevant context before diving into analysis.
+
 ## Pièges techniques ⚠️
 
 - si le MCP IntelliJ ou MCP Playwrights de recherche web est désactivé, le signaler à l'humain
@@ -36,6 +58,31 @@ description: >
   ```
 - Questions à l'humain : utiliser MCP `ask_questions`.
 - Éviter les confirmations interactives, préférer les flags explicites.
+
+## 📢 Pattern: Capture Warnings & Propose Actions
+
+When running commands like `pnpm install`, `npm check`, etc:
+
+1. **Capture the output**:
+   ```bash
+   OUTPUT=$(pnpm install 2>&1)
+   echo "$OUTPUT"
+   ```
+
+2. **Extract warnings/updates**:
+   - `pnpm install` may output: "Update available! X.X.X → Y.Y.Y"
+   - `npm outdated` lists upgradeable packages
+   - `pnpm audit` shows security vulnerabilities
+
+3. **If warnings/updates exist, propose to human**:
+   ```
+   ⚠️ pnpm upgrade disponible: X.X.X → Y.Y.Y
+   Approuves-tu que j'exécute "corepack use pnpm@Y.Y.Y" ?
+   ```
+
+4. **Only proceed if human confirms**. Don't auto-upgrade.
+
+**Why**: Upgrades can introduce breaking changes. Always ask first.
 
 ## Accusé-réception de contexte à l'arrivée sur le projet
 

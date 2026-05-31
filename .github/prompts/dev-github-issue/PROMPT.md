@@ -163,13 +163,40 @@ grep -r "{{ issueNumber }}" tests/ || echo "Pas de tests spécifiques existants"
 - Utiliser services existants (`post.js`, `PluginsCommonService`, etc.)
 - Tester manuels : `pnpm test`, `DO_SIMULATE=true pnpm start`, etc.
 
+### ⚠️ Mandatory: UI/CSS Issues Testing
+
+**If labels include `ui` OR issue path includes `src/www/`:**
+
+```bash
+# 1. Load UI debugging skill
+# Read: .github/skills/ui-css-debugging/SKILL.md
+
+# 2. Start the web server locally
+pnpm install
+pnpm start   # Launches http://localhost:3000
+
+# 3. Open browser & test on mobile
+# - Press F12 for DevTools
+# - Toggle device mode (Ctrl+Shift+M)
+# - Test at 768px breakpoint (mobile) and full width (desktop)
+# - Verify header, navigation, responsive behavior
+# - Screenshot or note what works/what doesn't
+
+# 4. Inspect element if needed
+# Right-click problematic element → Inspect
+# Check computed styles in DevTools Elements panel
+```
+
+**Do NOT assume UI works without browser testing!**
+
 ### Mettre à jour le fichier suivi (si créé)
 
 ```markdown
 ## Tâches
 - [x] Analyse de l'existant
 - [x] Code : fichiers A, B, C
-- [ ] Tests : ...
+- [x] Tests : Web UI tested at mobile breakpoint
+- [ ] Documentation
 ```
 
 Ajouter ligne datée dans "Notes Dev"

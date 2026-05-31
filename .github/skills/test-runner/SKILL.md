@@ -7,6 +7,51 @@ description: Lancer et analyser les tests Mocha du projet
 
 Permettre à l'agent de lancer les tests Mocha du projet botEnSky de manière fiable, capturer les résultats dans un fichier temporaire et les analyser sans limitation de sortie.
 
+**Important**: Tests cover **backend code only** (bot plugins, services, APIs).  
+**UI/CSS testing requires manual testing in browser** - ask the human to validate.
+
+---
+
+## Scope du Test Automation
+
+✅ **Covered by `pnpm test` (Mocha)**:
+- BlueskyService authentication, search, post operations
+- API services (GrBird, Plantnet, etc.)
+- Plugin business logic
+- Utility functions & helpers
+- Data transformations
+
+❌ **NOT covered** (require human testing):
+- UI/CSS rendering & responsive behavior
+- Navigation flows & interactions
+- Browser DevTools functionality
+- Mobile viewport testing
+- Visual styling validation
+
+### When to use pnpm test
+
+```bash
+# ✅ Use automated tests for backend changes
+pnpm test  # Run all Mocha tests
+
+# ❌ Do NOT rely on pnpm test for UI issues
+# Instead, ask human to test in browser
+```
+
+### When to ask human for manual testing
+
+If the issue affects `src/www/` (Web UI):
+```
+⚠️ This is a UI issue - automated tests cannot validate visual rendering.
+Please test the fix manually in your browser:
+1. pnpm start (opens http://localhost:3000)
+2. Test at mobile breakpoint (<768px) using DevTools (Ctrl+Shift+M)
+3. Verify the fix works as expected
+4. Let me know if it's resolved
+```
+
+---
+
 ## Prérequis
 
 - `pnpm` installé et à jour

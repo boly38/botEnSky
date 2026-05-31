@@ -40,18 +40,42 @@ botEnSky/          # PROJECT ROOT (Git)
 - `.github/prompts/`: Prompts réutilisables Copilot (voir section Prompts Réutilisables)
 - `src/locales/`: i18n FR/EN (messages)
 
+## 📁 Structure `.github/` - Patterns Dossier/FILE
+
+```
+.github/
+├── skills/
+│   ├── llm-good-practice/SKILL.md        (Bonnes pratiques LLM)
+│   ├── ui-css-debugging/SKILL.md         (Debug UI/CSS)
+│   ├── github-cli/SKILL.md               (GitHub CLI tools)
+│   ├── issue-workflow/SKILL.md           (Issue tracking)
+│   ├── pull-request-workflow/SKILL.md    (PR workflow)
+│   └── test-runner/SKILL.md              (Test execution)
+├── prompts/
+│   ├── README.md
+│   └── dev-github-issue/PROMPT.md        (Issue development workflow)
+├── work/
+│   └── issue_*/FILENAME.md               (Local issue tracking - not versioned)
+└── copilot-instructions.md               (Ce fichier)
+```
+
+**Pattern**: Tous les skills et prompts utilisent `dossier/FILE.md` :
+- Skills: `SKILL.md`
+- Prompts: `PROMPT.md`
+
 ## Skills / Compétences
 
-Skills / Compétences situées sous `.github/skills` :
-- **llm-good-practice** : Bonnes pratiques LLM, pièges techniques, customization prompts
+Skills / Compétences situées sous `.github/skills/` (pattern: `dossier/SKILL.md`):
+- **llm-good-practice** : Bonnes pratiques LLM, pièges techniques, patterns diagnostiques
+- **ui-css-debugging** : Debug UI/CSS, checklist HTML/flexbox, diagnostic hiérarchique
+- **github-cli** : Outils bas-niveau `gh` pour interaction issues/PRs (requires GH_TOKEN)
 - **issue-workflow** : Flux de travail pour traiter les tickets Github (suivi, tâches, finalisation)
 - **pull-request-workflow** : Workflow standardisé pour créer/mettre à jour les PR
-- **github-cli** : Outils bas-niveau `gh` pour interaction issues/PRs (requires GH_TOKEN)
 - **test-runner** : Lancer les tests Mocha et analyser les résultats via fichiers temporaires
 
 ## Prompts Réutilisables
 
-Prompts Copilot situés sous `.github/prompts` :
+Prompts Copilot situés sous `.github/prompts/` (pattern: `dossier/PROMPT.md`):
 - **dev-github-issue** : Workflow complet DEV senior (8 phases) pour traiter une issue GitHub du diagnostic à la PR
 
 ## Workflow
