@@ -145,3 +145,4 @@ dist-prod-compose/
 # mcp
 .playwright-mcp/
 tmp/
+.github/archives/*
