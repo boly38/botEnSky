@@ -83,17 +83,5 @@
   "notes": {
     "chai-http": "with last version 5.0.0 : 20 tst issue 'chai.request is not a function'"
   },
-  "packageManager": "pnpm@11.5.0+sha512.dbfcc4f81cf48597afd4bc391ffdf12c11f1a9fb83a395bfa6b0a2d9cc2fd8ffebafdb1ccbd529632153f793904c2615b7f09fe1a345473fd1c35845172a8eb1",
-  "pnpm": {
-    "overrides": {
-      "undici@<6.24.1": ">=6.24.1",
-      "path-to-regexp": "8.4.1",
-      "qs": "6.15.0",
-      "picomatch": "2.3.2",
-      "minimatch@^5.0.0": "5.1.8",
-      "minimatch@^9.0.0": "9.0.7",
-      "brace-expansion@^2.0.0": "2.0.3",
-      "brace-expansion@^5.0.0": "5.0.5"
-    }
-  }
+  "packageManager": "pnpm@11.5.0+sha512.dbfcc4f81cf48597afd4bc391ffdf12c11f1a9fb83a395bfa6b0a2d9cc2fd8ffebafdb1ccbd529632153f793904c2615b7f09fe1a345473fd1c35845172a8eb1"
 }
