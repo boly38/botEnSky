@@ -24,7 +24,10 @@ Ce workflow comprend 8 phases structurées : initialisation des skills → diagn
 
 ### Charger les skills métier
 
-Avant toute action, consulte les skills pertinentes depuis `.github/skills`
+Avant toute action, consulte les skills pertinentes depuis `.github/skills` :
+- **llm-good-practice** : Patterns LLM, pièges techniques (notamment Terminal & pagers)
+- **github-cli** : Outils bas-niveau `gh` et flags essentiels (`GH_PAGER=cat`)
+- **issue-workflow** : Optionnel (workflow de suivi local d'issue)
 
 ### Valider l'environnement
 
@@ -34,6 +37,9 @@ gh auth status
 
 # Si non authentifié → demander à l'humain
 export GH_TOKEN=ghp_xxxxxxxxxxxx
+
+# ⚠️ IMPORTANT : Toujours utiliser GH_PAGER=cat avec gh CLI pour éviter les blocages interactifs
+export GH_PAGER=cat
 ```
 
 ---
@@ -65,7 +71,7 @@ ls -la .github/work/ | grep -E 'issue_[0-9]+'
 ### Récupérer l'issue GitHub
 
 ```bash
-gh issue view {{ issueNumber }} --json title,body,labels,state
+GH_PAGER=cat gh issue view {{ issueNumber }} --json title,body,labels,state
 ```
 
 **Capturer** :
