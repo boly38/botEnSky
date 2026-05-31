@@ -144,3 +144,4 @@ dist-prod-compose/
 
 # mcp
 .playwright-mcp/
+tmp/
