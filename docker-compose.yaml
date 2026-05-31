@@ -1,0 +1,28 @@
+services:
+  app:
+    container_name: bes_app
+    # private image access
+    # https://coolify.io/docs/knowledge-base/docker/registry#docker-credentials
+    ## need a GH classic token with package:read permission
+    ## need to ssh on host to do `docker login ghcr.io` with that token
+    image: ghcr.io/boly38/botensky:latest-prod
+    environment:
+      - NODE_ENV=production
+      - PORT=80
+    expose:
+      - "80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    networks:
+      - coolify
+    labels:
+      - "traefik.docker.network=coolify"
+
+networks:
+  coolify:
+    external: true
