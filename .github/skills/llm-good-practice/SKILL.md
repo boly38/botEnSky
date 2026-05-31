@@ -29,6 +29,11 @@ description: >
   GH_PAGER=cat gh issue view 198 --json title,body,labels,state
   ```
   ⚠️ Sans `GH_PAGER=cat`, les commandes `gh view` bloquent l'agent via pagination interactive.
+- **Git diff/log** : utiliser `git --no-pager` pour éviter le pager :
+  ```bash
+  git --no-pager diff HEAD~1 src/file.js
+  git --no-pager log --oneline -5
+  ```
 - Questions à l'humain : utiliser MCP `ask_questions`.
 - Éviter les confirmations interactives, préférer les flags explicites.
 
