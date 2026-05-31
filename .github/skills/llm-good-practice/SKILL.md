@@ -47,15 +47,19 @@ ls -la .github/work/ | grep -i "issue_" || echo "No tracking files"
 
 - Terminal command: **toujours éviter le mode interactif** (ex. `git --no-pager diff`, `ls | cat`). Les pagers et confirmations bloquent l'exécution.
 - **GitHub CLI** : utiliser `GH_PAGER=cat` pour désactiver la pagination interactive :
-  ```bash
-  GH_PAGER=cat gh issue view 198 --json title,body,labels,state
-  ```
-  ⚠️ Sans `GH_PAGER=cat`, les commandes `gh view` bloquent l'agent via pagination interactive.
-- **Git diff/log** : utiliser `git --no-pager` pour éviter le pager :
-  ```bash
-  git --no-pager diff HEAD~1 src/file.js
-  git --no-pager log --oneline -5
-  ```
+   ```bash
+   GH_PAGER=cat gh issue view 198 --json title,body,labels,state
+   ```
+   ⚠️ Sans `GH_PAGER=cat`, les commandes `gh view` bloquent l'agent via pagination interactive.
+- **Git diff/log/show** : utiliser `GIT_PAGER=cat` AVANT la commande pour éviter tout pager :
+   ```bash
+   GIT_PAGER=cat git diff --staged src/file.js
+   GIT_PAGER=cat git diff HEAD~1 src/file.js
+   GIT_PAGER=cat git log --oneline -5
+   GIT_PAGER=cat git show commit-hash
+   ```
+   ⚠️ **CRUCIAL** : `git diff --staged` est particulièrement problématique sans `GIT_PAGER=cat` car il lance less/more en interactif et bloque l'agent.
+   **Alternative** : `git --no-pager diff --staged ...` (utiliser le flag directement sur git)
 - Questions à l'humain : utiliser MCP `ask_questions`.
 - Éviter les confirmations interactives, préférer les flags explicites.
 
