@@ -7,6 +7,7 @@ description: Lancer et analyser les tests Mocha du projet
 
 Permettre à l'agent de lancer les tests Mocha du projet botEnSky de manière fiable, capturer les résultats dans un fichier temporaire et les analyser sans limitation de sortie.
 
+
 **Important**: Tests cover **backend code only** (bot plugins, services, APIs).  
 **UI/CSS testing requires manual testing in browser** - ask the human to validate.
 
@@ -75,11 +76,29 @@ Cela redirige :
 
 ### Analyser les résultats
 
-Travailler ou revenir au dernier fichier résultat complet :
+Après l'exécution, analyser le fichier résultat complet :
 
 ```bash
 /tmp/tests_output.log
 ```
+
+**Extraire le résumé de passage/échec** :
+
+```bash
+# Compter les tests réussis (✔ ou ✓)
+grep -E "✔|✓" /tmp/tests_output.log | wc -l
+
+# Chercher les échecs (❌ ou ✗)
+grep -E "❌|✗|failing|Error" /tmp/tests_output.log | head -10
+
+# Voir la couverture finale (% Stmts, % Branch, % Funcs, % Lines)
+tail -40 /tmp/tests_output.log | grep "File\|%"
+
+# Alternative : chercher pattern "X passing"
+grep -oE "[0-9]+ passing" /tmp/tests_output.log
+```
+
+**⚠️ Attention au pager** : Si vous utilisez `less` ou des outils interactifs, parsez plutôt le fichier avec `grep/sed/awk` pour éviter les blocages.
 
 ### Exemple : Tests avec logs détaillés
 

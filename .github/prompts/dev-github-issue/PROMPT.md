@@ -22,12 +22,16 @@ Ce workflow comprend 8 phases structurées : initialisation des skills → diagn
 
 ## Phase 1️⃣ : Initialisation & Apprentissage
 
-### Charger les skills métier
+### ⚠️ PRÉ-REQUIS OBLIGATOIRE : Lire les skills EN ENTIER
 
-Avant toute action, consulte les skills pertinentes depuis `.github/skills` :
-- **llm-good-practice** : Patterns LLM, pièges techniques (notamment Terminal & pagers)
-- **github-cli** : Outils bas-niveau `gh` et flags essentiels (`GH_PAGER=cat`)
-- **issue-workflow** : Optionnel (workflow de suivi local d'issue)
+**AVANT de continuer vers Phase 2, tu DOIS avoir consulté intégralement** :
+- **llm-good-practice** : Patterns LLM, Terminal & interaction, pagers (GIT_PAGER=cat, GH_PAGER=cat)
+- **github-cli** : Outils bas-niveau `gh` et flags essentiels
+- **test-runner** : Comment lancer/analyser les tests Mocha CORRECTEMENT
+- **issue-workflow** : Optionnel (workflow de suivi local)
+
+⚠️ **NE PAS SAUTER CETTE ÉTAPE**. Les erreurs les plus courantes viennent de skills non lues.
+
 
 ### Valider l'environnement
 
@@ -37,10 +41,10 @@ gh auth status
 
 # Si non authentifié → demander à l'humain
 export GH_TOKEN=ghp_xxxxxxxxxxxx
-
-# ⚠️ IMPORTANT : Toujours utiliser GH_PAGER=cat avec gh CLI pour éviter les blocages interactifs
 export GH_PAGER=cat
 ```
+
+(Pour pagers & flags git, voir skill llm-good-practice)
 
 ---
 
@@ -162,6 +166,28 @@ grep -r "{{ issueNumber }}" tests/ || echo "Pas de tests spécifiques existants"
 - JSDoc anglais, logs français
 - Utiliser services existants (`post.js`, `PluginsCommonService`, etc.)
 - Tester manuels : `pnpm test`, `DO_SIMULATE=true pnpm start`, etc.
+
+### ⚠️ MANDATORY: Lancer et analyser les tests
+
+**AVANT le commit**, tu DOIS utiliser la skill **test-runner** pour valider les tests :
+
+1. **Lire la skill test-runner** : `.github/skills/test-runner/SKILL.md`
+2. **Lancer les tests** avec capture de sortie :
+   ```bash
+   export NODE_ENV=development
+   pnpm test > /tmp/tests_output.log 2>&1
+   ```
+3. **Analyser les résultats** :
+   ```bash
+   # Compter les tests réussis
+   grep -E "✔|✓" /tmp/tests_output.log | wc -l
+   
+   # Chercher les échecs
+   grep -E "❌|✗|failing" /tmp/tests_output.log | head -5
+   ```
+4. **Reporter le résultat** dans GATE 7 (format: "X passing, Y failing")
+
+**Do NOT skip tests or assume green without verification!**
 
 ### ⚠️ Mandatory: UI/CSS Issues Testing
 
