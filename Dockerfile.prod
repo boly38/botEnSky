@@ -16,7 +16,10 @@ WORKDIR /app
 RUN chown --recursive app:app /app
 USER app
 
-RUN pnpm install --prod --frozen-lockfile
+# Use --no-frozen-lockfile to allow pnpm to recalculate checksums during build
+# This prevents "ERR_PNPM_LOCKFILE_CONFIG_MISMATCH" errors with different pnpm versions
+# Set CI=true to avoid TTY-related module purge issues in Docker
+RUN CI=true pnpm install --prod --no-frozen-lockfile
 
 EXPOSE 80
 

@@ -249,8 +249,8 @@ export default class ApplicationConfig {
         }
         // Allow pending async operations to complete
         await new Promise(resolve => setTimeout(resolve, 100));
-        // Force process exit if still running
-        process.exit(0);
+        // Note: process.exit() should be called by the caller if needed (e.g., server)
+        // Not here, as this breaks test runners like mocha which need to produce output
     }
 }
 
@@ -284,4 +284,5 @@ ApplicationConfig.startServerMode = async () => {
 ApplicationConfig.stopServerMode = async (origin = "unknown") => {
     console.log(`${nowHuman()} stopServerMode (origin:${origin})`);
     await ApplicationConfig.shutdown();
+    process.exit(0);
 };
