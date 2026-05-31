@@ -76,50 +76,51 @@
               <span class="bes-nav-icon">🐙</span>
               <span>GitHub</span>
            </a>
-         </li>
+       </li>
+       </ul>
 
-      <!-- Actions (Language + Dark Mode) -->
-      <div class="bes-nav-actions">
-        
-        <!-- Language Switcher -->
-        <div class="bes-lang-switcher">
-          <button class="bes-lang-btn" 
-                  onclick="toggleLang('en')" 
-                  data-umami-event="lang-en"
-                  aria-label="Switch to English">
-            <img src="/flags/gb.svg" alt="English" class="bes-flag-icon" />
-          </button>
-          <button class="bes-lang-btn" 
-                  onclick="toggleLang('fr')" 
-                  data-umami-event="lang-fr"
-                  aria-label="Passer en Français">
-            <img src="/flags/fr.svg" alt="Français" class="bes-flag-icon" />
-          </button>
-        </div>
+       <!-- Actions (Language + Dark Mode) - Outside of nav-links -->
+       <div class="bes-nav-actions">
 
-        <!-- Dark Mode Toggle -->
-        <button class="bes-theme-toggle glass-button" 
-                data-theme-toggle
-                data-umami-event="theme-toggle"
-                aria-label="Toggle dark mode">
-          <i data-lucide="moon" data-theme-icon class="bes-theme-icon"></i>
-        </button>
+         <!-- Language Switcher -->
+         <div class="bes-lang-switcher">
+           <button class="bes-lang-btn"
+                   onclick="toggleLang('en')"
+                   data-umami-event="lang-en"
+                   aria-label="Switch to English">
+             <img src="/flags/gb.svg" alt="English" class="bes-flag-icon" />
+           </button>
+           <button class="bes-lang-btn"
+                   onclick="toggleLang('fr')"
+                   data-umami-event="lang-fr"
+                   aria-label="Passer en Français">
+             <img src="/flags/fr.svg" alt="Français" class="bes-flag-icon" />
+           </button>
+         </div>
 
-        <!-- Mobile Menu Toggle -->
-        <button class="bes-mobile-menu-toggle" 
-                data-mobile-menu-toggle
-                aria-label="Toggle menu"
-                aria-expanded="false">
-          <span class="hamburger">
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-          </span>
-        </button>
+         <!-- Dark Mode Toggle -->
+         <button class="bes-theme-toggle glass-button"
+                 data-theme-toggle
+                 data-umami-event="theme-toggle"
+                 aria-label="Toggle dark mode">
+           <i data-lucide="moon" data-theme-icon class="bes-theme-icon"></i>
+         </button>
 
-      </div>
-    </nav>
-  </div>
+         <!-- Mobile Menu Toggle -->
+         <button class="bes-mobile-menu-toggle"
+                 data-mobile-menu-toggle
+                 aria-label="Toggle menu"
+                 aria-expanded="false">
+           <span class="hamburger">
+             <span class="hamburger-line"></span>
+             <span class="hamburger-line"></span>
+             <span class="hamburger-line"></span>
+           </span>
+         </button>
+
+       </div>
+     </nav>
+   </div>
 
 </header>
 
