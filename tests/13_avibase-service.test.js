@@ -32,7 +32,7 @@ describe("🧪🧪 13 - aviBaseService\n", () => {
             const result = await service.getSpeciesLink(species).catch(_expectNoError);
             testLogger.info(`species "${species}" result : ${JSON.stringify(result)}`);
             if (result !== null) {
-                expect(result).to.be.a('string').and.satisfy(rez => rez.startsWith('Avibase flickr\nhttps://is.gd/'));
+                expect(result).to.be.a('string').and.satisfy(rez => rez.startsWith('Avibase flickr\nhttps://tinyurl.com/'));
             }
         }
     }).timeout(30 * 1000);
