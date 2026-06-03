@@ -1,5 +1,5 @@
 ---
-name: test-runner
+name: bes-run-pnpm-test
 description: Lancer et analyser les tests Mocha du projet
 ---
 
@@ -66,7 +66,6 @@ Please test the fix manually in your browser:
 ### Lancer les tests avec capture de sortie
 
 ```bash
-export NODE_ENV=development
 pnpm test > /tmp/tests_output.log 2>&1
 ```
 
@@ -103,7 +102,6 @@ grep -oE "[0-9]+ passing" /tmp/tests_output.log
 ### Exemple : Tests avec logs détaillés
 
 ```bash
-export NODE_ENV=development
 export LOG_LEVEL=debug
 pnpm test > /tmp/tests_output.log 2>&1
 ```
