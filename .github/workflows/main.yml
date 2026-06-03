@@ -87,6 +87,7 @@ jobs:
           PLANTNET_API_PRIVATE_KEY: ${{ secrets.PLANTNET_API_PRIVATE_KEY }}
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
           BOT_INACTIVITY_DELAY_MIN: 1
+          DEBUG_RESPONSE_TIME: 'true'
         run: pnpm ci-test
 
       - name: COVERAGE - Report coverage on pull request

@@ -8,10 +8,13 @@ export default class ResizeService {
     constructor(config, loggerService) {
         this.cpuIsShared = config.cpuIsShared;
         this.logger = loggerService.getLogger().child({label: 'ResizeService'});
+        this.debugResponseTime = process.env.DEBUG_RESPONSE_TIME === 'true';
+        // In test mode, use 5s timeout; in production, use 30s
+        this.httpTimeout = process.env.NODE_ENV === 'test' ? 5000 : 30000;
     }
 
     async resizeImageUrl(imageUrl, bufferMaxLength = 1000000) {
-        const response = await axios.get(imageUrl, {responseType: 'arraybuffer'});
+        const response = await this._fetchImageWithTiming(imageUrl);
         const responseData = response.data;
         const inputBuffer = Buffer.from(responseData);
         const isBufferLessThan1M = buffer => buffer.length < bufferMaxLength;
@@ -48,7 +51,7 @@ export default class ResizeService {
 
     async getEncodingBufferAndBase64FromUri(imageUrl, options) {
         const {bufferMaxSize} = options;
-        const response = await axios.get(imageUrl, {responseType: 'arraybuffer'});
+        const response = await this._fetchImageWithTiming(imageUrl);
         const encoding = response.headers["content-type"];
         if (encoding === undefined) {
             throw new Error("encoding is undefined");
@@ -79,5 +82,24 @@ export default class ResizeService {
         logger.info(`preservedSharedCPU ${nbSec} sec`);
         await timeout(nbSec * 1000);
         return true;
+    }
+
+    async _fetchImageWithTiming(imageUrl) {
+        const startTime = Date.now();
+        try {
+            const response = await axios.get(imageUrl, {
+                responseType: 'arraybuffer',
+                timeout: this.httpTimeout
+            });
+            const duration = Date.now() - startTime;
+            if (this.debugResponseTime) {
+                this.logger.info(`_fetchImageWithTiming[${imageUrl.substring(0, 80)}]: ${duration}ms (timeout: ${this.httpTimeout}ms)`);
+            }
+            return response;
+        } catch (err) {
+            const duration = Date.now() - startTime;
+            this.logger.warn(`_fetchImageWithTiming failed after ${duration}ms (timeout: ${this.httpTimeout}ms): ${err.message}`);
+            throw err;
+        }
     }
 }
