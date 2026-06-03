@@ -54,12 +54,17 @@ try {
  * 
  * @example
  * buildShortUrlWithText(logger, 'https://example.com/very/long/url', 'Example: ')
- * // Returns: "Example: https://spoo.me/abc123"
+ * // Returns: "Example: https://spoo.me/abc123" or simulated URL in test mode
  */
 export const buildShortUrlWithText = (logger, imageUrl, text) => {
     return new Promise(resolve => {
         if (imageUrl === null) {
             return resolve(false);
+        }
+        
+        // In test mode, simulate shortened URL (avoid external API calls)
+        if (process.env.NODE_ENV === 'test') {
+            return resolve(`${text}https://tinyurl.com/SIMULATED-${_hashUrl(imageUrl)}`);
         }
         
         // Shorten with multiple providers in fallback order
@@ -166,8 +171,12 @@ const _shortenWithFallback = (logger, imageUrl, providerIndex, text, resolve) =>
          return resolve(`${text}${imageUrl}`);
     }
 
+    // Use shorter timeout for spoo.me (prone to CloudFlare blocks), longer for fallback providers
+    const isSpooMe = provider.name === 'spoo.me';
+    const timeoutMs = isSpooMe ? 2000 : 5000; // 2s for spoo.me (fail fast), 5s for fallback
+    
     const axiosConfig = {
-        timeout: 5000,
+        timeout: timeoutMs,
         headers: provider.getHeaders ? provider.getHeaders() : { 'User-Agent': _buildUserAgent() },
     };
 
@@ -228,3 +237,21 @@ const _shortenWithFallback = (logger, imageUrl, providerIndex, text, resolve) =>
 const _buildUserAgent = () => {
     return `botEnSky/${botVersion} (Bluesky bot; +https://github.com/boly38/botEnSky)`;
 };
+
+/**
+ * Generate short hash from URL for test simulation
+ *
+ * @private
+ * @param {string} url - URL to hash
+ * @returns {string} Short hash string
+ */
+const _hashUrl = (url) => {
+    let hash = 0;
+    for (let i = 0; i < url.length; i++) {
+        const char = url.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash).toString(16).substring(0, 8);
+};
+
