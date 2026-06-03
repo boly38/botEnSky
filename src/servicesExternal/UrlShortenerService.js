@@ -92,17 +92,17 @@ const SHORTENER_PROVIDERS = [
     {
         name: 'spoo.me',
         enabled: true,
-        buildUrl: () => `https://spoo.me/api/v1/short`,
-        getParams: (url) => ({
-            url: url,
-            format: 'json'
+        buildUrl: () => `https://spoo.me/api/v1/shorten`,
+        getBody: (url) => ({
+            long_url: url
         }),
         getHeaders: () => {
             const headers = {
                 'User-Agent': _buildUserAgent(),
+                'Content-Type': 'application/json'
             };
             // Add optional API key authentication if available
-            // Docs: https://docs.spoo.me/rate-limits#api-key-authentication-recommended
+            // Docs: https://docs.spoo.me/quickstart
             if (process.env.SPOO_ME_API_KEY) {
                 headers['Authorization'] = `Bearer ${process.env.SPOO_ME_API_KEY}`;
             }
@@ -180,13 +180,24 @@ const _shortenWithFallback = (logger, imageUrl, providerIndex, text, resolve) =>
         headers: provider.getHeaders ? provider.getHeaders() : { 'User-Agent': _buildUserAgent() },
     };
 
-    // Build request: use params for spoo.me (query string), direct URL for others
+    // Build request: use getBody for POST (spoo.me), getParams for GET (others)
     let apiUrl = provider.buildUrl(imageUrl);
-    if (provider.getParams) {
+    let axiosPromise;
+    
+    if (provider.getBody) {
+        // POST request with JSON body
+        const body = provider.getBody(imageUrl);
+        axiosPromise = axios.post(apiUrl, body, axiosConfig);
+    } else if (provider.getParams) {
+        // GET request with query parameters
         axiosConfig.params = provider.getParams(imageUrl);
+        axiosPromise = axios.get(apiUrl, axiosConfig);
+    } else {
+        // GET request without parameters
+        axiosPromise = axios.get(apiUrl, axiosConfig);
     }
 
-    axios.get(apiUrl, axiosConfig)
+    axiosPromise
         .then(response => {
             const shortenUrl = provider.parseResponse(response.data);
 
