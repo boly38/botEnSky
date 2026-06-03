@@ -36,13 +36,14 @@ botEnSky/          # PROJECT ROOT (Git)
 ```bash
 pnpm install             # Setup
 pnpm start               # Lance bot + web UI
-pnpm test                # Tests Mocha
 node src/index.js        # Bot seul
 
 # Dev
 LOG_LEVEL=debug pnpm start           # Mode debug
 DO_SIMULATE=true pnpm start          # Simulation (pas de posts réels)
 ```
+
+**Tests Mocha** → Voir skill "bes-run-pnpm-test"
 
 ## Plugins Bot
 
