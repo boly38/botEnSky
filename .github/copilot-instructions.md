@@ -4,9 +4,8 @@
 
 ```
 botEnSky/          # PROJECT ROOT (Git)
-├── .github/        # Copilot instructions, skills, prompts
-│   ├── skills/     # Compétences réutilisables (llm-good-practice, github-cli, issue-workflow, pull-request-workflow, test-runner)
-│   ├── prompts/    # Prompts réutilisables (dev-github-issue)
+├── .github/        # Copilot instructions, skills
+│   ├── skills/     # Compétences réutilisables
 │   └── copilot-instructions.md  # Ce fichier
 ├── bin/            # Scripts (start.sh, startDev.sh, www.js)
 ├── src/
@@ -31,60 +30,6 @@ botEnSky/          # PROJECT ROOT (Git)
 - SOLID, KISS, DRY
 - MCP IntelliJ prioritaire
 - **pnpm only** (JAMAIS npm ou yarn)
-
-### Doc DRY/SRP (1 info = 1 endroit)
-
-- `README.md`: Installation, plugins, config
-- `.github/copilot-instructions.md`: Contexte projet & références skills/prompts (ce fichier)
-- `.github/skills/`: Compétences réutilisables (voir section Skills)
-- `.github/prompts/`: Prompts réutilisables Copilot (voir section Prompts Réutilisables)
-- `src/locales/`: i18n FR/EN (messages)
-
-## 📁 Structure `.github/` - Patterns Dossier/FILE
-
-```
-.github/
-├── skills/
-│   ├── llm-good-practice/SKILL.md        (Bonnes pratiques LLM)
-│   ├── ui-css-debugging/SKILL.md         (Debug UI/CSS)
-│   ├── github-cli/SKILL.md               (GitHub CLI tools)
-│   ├── issue-workflow/SKILL.md           (Issue tracking)
-│   ├── pull-request-workflow/SKILL.md    (PR workflow)
-│   └── test-runner/SKILL.md              (Test execution)
-├── prompts/
-│   ├── README.md
-│   └── dev-github-issue/PROMPT.md        (Issue development workflow)
-├── work/
-│   └── issue_*/FILENAME.md               (Local issue tracking - not versioned)
-└── copilot-instructions.md               (Ce fichier)
-```
-
-**Pattern**: Tous les skills et prompts utilisent `dossier/FILE.md` :
-- Skills: `SKILL.md`
-- Prompts: `PROMPT.md`
-
-## Skills / Compétences
-
-Skills / Compétences situées sous `.github/skills/` (pattern: `dossier/SKILL.md`):
-- **llm-good-practice** : Bonnes pratiques LLM, pièges techniques, patterns diagnostiques
-- **ui-css-debugging** : Debug UI/CSS, checklist HTML/flexbox, diagnostic hiérarchique
-- **github-cli** : Outils bas-niveau `gh` pour interaction issues/PRs (requires GH_TOKEN)
-- **issue-workflow** : Flux de travail pour traiter les tickets Github (suivi, tâches, finalisation)
-- **pull-request-workflow** : Workflow standardisé pour créer/mettre à jour les PR
-- **test-runner** : Lancer les tests Mocha et analyser les résultats via fichiers temporaires
-
-## Prompts Réutilisables
-
-Prompts Copilot situés sous `.github/prompts/` (pattern: `dossier/PROMPT.md`):
-- **dev-github-issue** : Workflow complet DEV senior (8 phases) pour traiter une issue GitHub du diagnostic à la PR
-
-## Workflow
-
-1. À l'arrivée sur le projet → Lire cette doc + skill `llm-good-practice` → Accusé-réception FLAGS/SKILLS
-2. Analyser code existant (patterns, conventions)
-3. Appliquer SOLID/KISS
-4. Tests manuels (bot simulation, web UI)
-5. Valider avant commit/push
 
 ## Commandes essentielles
 
@@ -138,7 +83,7 @@ PORT=3000                    # Web UI
 
 ## Conventions
 
-- **Code**: Français (logs, messages) | JSDoc **anglais**
+- **Code**: Anglais (logs, messages) | JSDoc **anglais**
 - **Commits**: Anglais + issue closure (`Fix #<id>`)
 - **Modules**: ESM (`import/export`, pas CommonJS)
 
