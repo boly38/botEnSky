@@ -8,8 +8,8 @@ describe('🧪🧪 00 - Before All', () => {
             console.error('❌ ERROR: NODE_ENV environment variable is not set!');
             console.error('');
             console.error('🔧 SOLUTION:');
-            console.error('   Use the test-runner skill to run tests properly.');
-            console.error('   See: .github/skills/test-runner/SKILL.md');
+            console.error('   Use the skill to run tests properly.');
+            console.error('   See: .github/skills/*');
             console.error('');
             console.error('   Quick command:');
             console.error('   NODE_ENV=development pnpm test');

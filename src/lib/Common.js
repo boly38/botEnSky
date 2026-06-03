@@ -77,7 +77,7 @@ export const getUtcTimestampWithDelta = (deltaDays) => {
 export const generateErrorId = () => "ERR_" + dayjs().format("YYYYMMDDHHmmss");
 
 // URL shortener - delegated to dedicated module
-export { buildShortUrlWithText } from './UrlShortener.js';
+export { buildShortUrlWithText } from '../servicesExternal/UrlShortenerService.js';
 export const maxStringLength = (variable, max) => {
     if (variable && variable.length > max) {
         return variable.substring(0, max - 3) + "...";
