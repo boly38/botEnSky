@@ -7,7 +7,7 @@
  *   node tests/manual/url_shortener/service.js
  */
 
-import { buildShortUrlWithText } from '../../../src/lib/UrlShortener.js';
+import { buildShortUrlWithText } from '../../../src/lib/Common.js';
 
 const TEST_URLS = [
   'https://avibase.bsc-eoc.org/species.jsp?lang=EN&avibaseid=0C1EFC9B&sec=flickr',

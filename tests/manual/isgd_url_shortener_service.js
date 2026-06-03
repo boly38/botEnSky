@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { buildShortUrlWithText } from '../../src/lib/UrlShortener.js';
+import { buildShortUrlWithText } from '../../src/lib/Common.js';
 
 const TEST_URL = 'https://avibase.bsc-eoc.org/species.jsp?lang=EN&avibaseid=0C1EFC9B&sec=flickr';
 
