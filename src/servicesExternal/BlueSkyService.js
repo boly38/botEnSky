@@ -17,6 +17,7 @@ export default class BlueSkyService {
         this.api = this.agent.api;// inspired from https://github.com/skyware-js/bot/blob/main/src/bot/Bot.ts#L324
         this.agentConfig = {identifier, password};
         this.profile = null;
+        this.loginPromise = null; // singleton promise to prevent concurrent login attempts (fix #212)
         this.exclusions = isSet(exclusions) ? exclusions.split(",") : [];
         if (!this.exclusions.includes(identifier)) {
             this.exclusions.push(identifier);// exclude bot username to prevent "Ask" plugins from answering itself
@@ -26,6 +27,7 @@ export default class BlueSkyService {
 
     clearLogin() {
         this.profile = null;
+        this.loginPromise = null; // also clear singleton promise when session is cleared
     }
 
     login() {
@@ -35,25 +37,35 @@ export default class BlueSkyService {
             this.logger.info(`login ${identifier}@${service} exists`);
             return Promise.resolve();// login already done
         }
-        return new Promise((resolve, reject) => {
+        // if login is already in flight, reuse the same promise (fix #212 - prevent concurrent login attempts)
+        if (bs.loginPromise !== null) {
+            this.logger.debug(`login ${identifier}@${service} already in flight, reusing promise`);
+            return bs.loginPromise;
+        }
+        // create the login promise and cache it as singleton
+        bs.loginPromise = new Promise((resolve, reject) => {
             this.logger.info(`login ${identifier}@${service}`);
             bs.agent.login(this.agentConfig)
                 .then(loginResponse => {
                     bs.agent.getProfile({"actor": loginResponse.data.did})
                         .then(profileResponse => {
                             bs.profile = profileResponse;
+                            bs.loginPromise = null; // clear singleton promise after success
                             resolve();
                         })
                         .catch(e => {
                             bs.logger.error(e);
+                            bs.loginPromise = null; // clear singleton promise after error
                             reject(new Error("Failed to fetch bot profile. cf. logs."));
                         });
                 })
                 .catch(e => {
                     bs.logger.error(e);
+                    bs.loginPromise = null; // clear singleton promise after error
                     reject(new Error("Failed to log in — double check your credentials and try again."));
                 });
         });
+        return bs.loginPromise;
     }
 
     /**
