@@ -87,3 +87,46 @@ export const maxStringLength = (variable, max) => {
 export const timeout = ms => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+/**
+ * Generic network error handler for upstream API calls
+ * Detects common network/connectivity errors and service unavailability
+ * Returns error object with status code for proper handling
+ */
+export const handleNetworkError = (err, context = '') => {
+    const errMessage = err?.message || String(err);
+    const errStatus = err?.status;
+    
+    // Detect network/connectivity errors and service unavailability
+    const isNetworkError = errMessage.includes('fetch') || 
+                          errMessage.includes('connection') || 
+                          errMessage.includes('timeout') ||
+                          errMessage.includes('ECONNREFUSED') ||
+                          errMessage.includes('ETIMEDOUT') ||
+                          errMessage.includes('ERR_NETWORK') ||
+                          errMessage.includes('unreachable') ||
+                          errMessage.includes('503') ||
+                          errMessage.includes('Connection refused');
+    
+    const availabilityReason = errMessage.includes('timeout') ? 'timeout' : 'service unavailable';
+    
+    return {
+        message: errMessage,
+        status: isNetworkError ? 503 : (errStatus || 500),
+        isNetworkError: isNetworkError,
+        availabilityReason: availabilityReason,
+        originalError: err,
+        context: context
+    };
+};
+
+/**
+ * Log network error at appropriate level
+ * INFO level for upstream unavailability, ERROR for other issues
+ */
+export const logNetworkError = (logger, errorObj, logMessage) => {
+    if (errorObj.isNetworkError) {
+        logger.info(`${logMessage} (${errorObj.availabilityReason})`);
+    } else {
+        logger.error(logMessage);
+    }
+};

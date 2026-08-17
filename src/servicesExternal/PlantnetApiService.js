@@ -1,6 +1,6 @@
 import fs from 'fs';
 import superagent from 'superagent';
-import {isSet, maxStringLength} from "../lib/Common.js";
+import {isSet, maxStringLength, handleNetworkError, logNetworkError} from "../lib/Common.js";
 import {dataSimulationDirectory} from "../services/BotService.js";
 import ImageConverterService from "./ImageConverterService.js";
 
@@ -194,15 +194,12 @@ export default class PlantnetApiService {
                                 let errDetails = (res?.text) ? " - details:" + res?.text : "";
                                 let errResult = "Pl@ntnet identify error (" + errStatus + ") " + errError;
 
-                                // Log as info for service unavailability (408 timeout, 503 unavailable)
-                                if (errStatus === 408 || errStatus === 503) {
-                                    const unavailabilityReason = errStatus === 408 ? "timeout" : "service unavailable";
-                                    service.logger.info(errResult + errDetails + " (" + unavailabilityReason + ")");
-                                } else {
-                                    service.logger.error(errResult + errDetails);
-                                }
+                                // Use generic network error handler
+                                const errorObj = handleNetworkError(err, 'Plantnet API call');
+                                const logResult = errResult + errDetails;
+                                logNetworkError(service.logger, errorObj, logResult);
 
-                                reject({message: errResult, status: errStatus});
+                                reject({message: logResult, status: errorObj.status});
                                 return;
                             }
                             service.logger.info(`[plantnet:upload:done] status=${res.status}`);

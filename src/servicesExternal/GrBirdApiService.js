@@ -9,7 +9,7 @@
  * year: 2024
  */
 import {Client} from "@gradio/client";
-import {isSet} from "../lib/Common.js";
+import {isSet, handleNetworkError, logNetworkError} from "../lib/Common.js";
 import {postLinkOf} from "../domain/post.js";
 
 const GRADIO_APPLICATION_REFERENCE = "3oly/grBird";
@@ -41,6 +41,7 @@ export default class GrBirdApiService {
         const postUrl = isSet(post) ? postLinkOf(post) : null;
         const logContext = isSet(postUrl) ? `post: ${postUrl}` : '';
         this.logger.debug(`birdIdentify options : ${JSON.stringify({imageUrl, postUrl, lang})}`, context);
+        
         let birdResults = await this.api_classification(imageUrl, postUrl);
         this.logger.debug(`birdResults : ${JSON.stringify(birdResults)} ${logContext}`, context);
         const firstScoredResult = this.hasScoredResult(birdResults, GR_BIRD_MINIMAL_RATIO);
@@ -73,10 +74,25 @@ export default class GrBirdApiService {
     async api_classification(image_url = null, postUrl = null) {
         const logContext = isSet(postUrl) ? ` from post: ${postUrl}` : '';
         this.logger.info(`Bioclip classification for the following image : ${image_url}${logContext}`);
-        const client = await Client.connect("3oly/grBird");
-        const result = await client.predict("/api_classification", [image_url]);
-        const {data} = result;
-        return data[0];
+        
+        try {
+            const client = await Client.connect("3oly/grBird");
+            const result = await client.predict("/api_classification", [image_url]);
+            const {data} = result;
+            return data[0];
+        } catch (err) {
+            // Use generic network error handler
+            const errorObj = handleNetworkError(err, `BioClip API call${logContext}`);
+            const logResult = `Bioclip identify error: ${errorObj.message}`;
+            logNetworkError(this.logger, errorObj, logResult);
+            
+            // Throw with status code for proper handling in plugins
+            throw {
+                message: logResult,
+                status: errorObj.status,
+                originalError: err
+            };
+        }
     }
 
     hasScoredResult(birdPredictions, minimalScore) {
