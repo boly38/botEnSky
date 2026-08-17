@@ -1,6 +1,6 @@
 import {dataSimulationDirectory, pluginReject, pluginResolve} from "./BotService.js";
 import {postAuthorOf, postHtmlOf, postImageOf, postInfoOf, postLinkOf, postTextOf} from "../domain/post.js";
-import {isSet, loadJsonResource} from "../lib/Common.js";
+import {isSet, loadJsonResource, handleNetworkError, logNetworkError} from "../lib/Common.js";
 import {arrayIsNotEmpty} from "../lib/ArrayUtil.js";
 
 export default class PluginsCommonService {
@@ -46,15 +46,30 @@ export default class PluginsCommonService {
             this.logger.info(`simulate search using ${searchSimulationFile}`, context);
             return Promise.resolve(loadJsonResource(`${dataSimulationDirectory}/${searchSimulationFile}.json`));
         }
-        const candidatePosts = await blueskyService.searchPosts({
-            searchQuery: questions[bookmark],
-            hasImages,
-            hasNoReply,
-            hasNoReplyFromBot,
-            threadGetLimited,
-            isNotMuted,
-            maxHoursOld// now-<maxHoursOld>h ... now
-        })
+        let candidatePosts;
+        try {
+            candidatePosts = await blueskyService.searchPosts({
+                searchQuery: questions[bookmark],
+                hasImages,
+                hasNoReply,
+                hasNoReplyFromBot,
+                threadGetLimited,
+                isNotMuted,
+                maxHoursOld// now-<maxHoursOld>h ... now
+            })
+        } catch (err) {
+            // Handle network errors from Bluesky API
+            const errorObj = handleNetworkError(err, 'Bluesky searchPosts');
+            const logResult = `Unable to search posts: ${errorObj.message}`;
+            logNetworkError(logger, errorObj, logResult);
+            
+            // Re-throw with status code for proper error handling
+            throw {
+                message: logResult,
+                status: errorObj.status,
+                originalError: err
+            };
+        }
         logger.info(`${candidatePosts.length} candidate(s)`, context);
         if (arrayIsNotEmpty(candidatePosts)) {
             return Promise.resolve(candidatePosts[0]);
