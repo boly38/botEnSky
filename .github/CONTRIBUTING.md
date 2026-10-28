@@ -53,14 +53,10 @@ pnpm start
 ```
 
 
-## About nixpacks packaging
+## Production deployment
 
-This app is a Node.js ESM simple application.
-
-- compatible with [nixpacks](https://nixpacks.com/docs/getting-started)
-
-### nixpacks build
-cf. [OPS_app](../doc/OPS_app.md)
+BotEnSky is deployed on Coolify with Docker Compose. See the
+[application deployment guide](../doc/OPS_coolify_botensky_app.md).
 
 
 ## PullRequests additional information
@@ -71,8 +67,9 @@ Activated bot:
 # Maintainer HowTos
 
 ## HowTo operate bot hosting
-- for now, botEnSky is manually deployed via www.render.com free plan in state. There is just ENV to setup.
-- there is a plan to move on a dedicated VM (#142), and a draft version of [OPS](../doc/OPS.md) guide exist.
+- Production is deployed on Coolify using the Docker Compose package published by GitHub Actions.
+- See the [operations guide](../doc/OPS.md) and the
+  [Coolify application deployment guide](../doc/OPS_coolify_botensky_app.md).
 
 
 ## HowTo create a fresh version
