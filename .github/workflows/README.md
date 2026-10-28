@@ -3,7 +3,6 @@
 ## Organization
 - GitHub Actions dont support subdirectories for workflows
 - feature are prefixed with `aX_`
-- analytics umami reports are prefixed with `umami_`
 
 ## Cron
 GHA BeS Cron expression rely on month workaround to support FR timezone
