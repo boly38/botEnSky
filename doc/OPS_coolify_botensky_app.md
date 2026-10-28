@@ -2,7 +2,9 @@
 
 ## Coolify > BotEnSky Application deployment
 
-Coolify is used to deploy app.
+Coolify deploys BotEnSky from the Docker Compose package published by GitHub Actions.
+The workflow builds and publishes the `ghcr.io/boly38/botensky:latest-prod` image and publishes
+the Compose file on the `deploy-prod-package` branch.
 
 - Requirement : Coolify is installed,
   With at minimum:
@@ -15,9 +17,9 @@ Add botEnSky as a new Coolify project instance :
 - `Projects > +add` : add and name a new project ex. Name `boly38/botensky` - Description `botensky`
 - Environment `Production` > `+Add Resource`
 - `Public Repository` > Repository URL `https://github.com/boly38/botEnSky` > `Check repository`
-- `Configuration` > branch `deploy-prod-package` > Build Pack `Docker compose`
+- `Configuration` > branch `deploy-prod-package` > Build Pack `Docker Compose`
 - `Configuration` > `Domains for app` > `https://bes.example.fr` [doc](https://coolify.io/docs/knowledge-base/docker/compose)
-- Docker compose location : `/docker-compose.yml` > Click on `Continue`
+- Docker Compose location: `/docker-compose.yaml` > Click on `Continue`
 - Wait for it
 - When compose file is loaded, click on `Save`
 - Click on `Deploy` et voilà 🚀

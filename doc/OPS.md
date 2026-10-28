@@ -1,18 +1,13 @@
 [< botEnSky](../README.md)
 
-# Operator guide - OPS guide --- DRAFT VERSION
+# Operator guide
 
-BotEnSky application is currently deployed on render.com free plan without special requirements out of setting environment.
-This page don't talk about render.com as there is nothing to add to official doc.
+BotEnSky is deployed on a private VM using Coolify.
 
-BotEnSky application planB (#142) is to deploy it on a private VM having special requirements : ex. #143 Coolify PaaS
+This page describes the VM requirements. For setup and deployment instructions, see:
 
-💁 NOTE: this is a DRAFT VERSION, as for now only local test has been done
-
-This page describe VM requirements
-
-For Coolify PaaS installation, cf. [OPS_coolify](./OPS_coolify.md)
-For BotEnSky applications install, cf. [OPS_coolify_botensky_app](./OPS_coolify_botensky_app.md)
+- [Coolify installation](./OPS_coolify.md)
+- [BotEnSky application deployment](./OPS_coolify_botensky_app.md)
 
 ## Requirements
 
