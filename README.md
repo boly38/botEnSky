@@ -1,6 +1,6 @@
 # botEnSky
 
-👢 botEnSky is a [BlueSky social app](https://bsky.app/) 🤖 bot born on May 16, 2024.
+👢 botEnSky is a [BlueSky social app](https://bsky.app/) 🤖 bot born on May 16, 2024. And [will](https://bsky.app/profile/botensky.bsky.social/post/3mzdch4h4o227) say goodbye in late December 2026
 - written in JavaScript (Node.js ESM Project),
 - the worthy successor to [@botentrain1](https://twitter.com/botentrain1) (ex Twitter bot - [code](https://github.com/boly38/botEnTrain)) but for BlueSky.
 
